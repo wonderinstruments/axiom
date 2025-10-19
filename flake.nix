@@ -42,6 +42,7 @@
               ./modules/stylix.nix
               ./modules/neovim.nix
               ./modules/admin.nix
+              ./modules/rofi.nix
             ];
             home-manager.users.edmund = {
               imports = [

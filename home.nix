@@ -21,7 +21,6 @@
   };
   programs.kitty.enable = true;
   programs.bat.enable = true;
-  programs.rofi.enable = true;
 
   programs.command-not-found.enable = false;
   programs.fish = {
