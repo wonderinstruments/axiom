@@ -9,6 +9,7 @@
     fzf
     nixfmt-rfc-style
     starship
+    neovim
   ];
 
   programs.fish.enable = true;

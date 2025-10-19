@@ -4,7 +4,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     home-manager.url = "github:nix-community/home-manager/release-25.05";
-    home-manager.inputs.nixpgs.follows = "nixpkgs";
+    kickstart = {
+      url = "github:nvim-lua/kickstart.nvim";
+      flake = false;
+    };
   };
 
   outputs =
@@ -12,6 +15,7 @@
       self,
       nixpkgs,
       home-manager,
+      kickstart,
       ...
     }:
     {
@@ -23,21 +27,10 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.edmund =
-              { pkgs, ... }:
-              {
-                home.stateVersion = "25.05";
-                xsession.windowManager.i3 = {
-                  enable = true;
-                  config = {
-                    modifier = "Mod4";
-                    terminal = "kitty";
-                    keybindings = {
-                      "Mod4+Return" = "exec kitty";
-                    };
-                  };
-                };
-              };
+            home-manager.extraSpecialArgs = {
+              inherit kickstart;
+            };
+            home-manager.users.edmund = import ./home.nix;
           }
         ];
       };
