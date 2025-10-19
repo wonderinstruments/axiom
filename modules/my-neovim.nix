@@ -90,33 +90,32 @@ in
     '';
 
     # Seeding / Reset logic
-  };
-  # Seed / Reset logic
-  home.activation.myNeovim_seedOrReset = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    set -eu
+    home.activation.myNeovim_seedOrReset = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      set -eu
 
-    # If requested, wipe and reseed
-    if ${lib.boolToString cfg.resetOnNextSwitch}; then
-      echo "[myNeovim] Reset requested: removing ${cfgDir} and reseeding from pristine."
-      rm -rf "${cfgDir}"
-    fi
-
-    # Seed when init.lua is missing (directory might exist due to userFiles)
-    if ${lib.boolToString cfg.seedIfMissing}; then
-      if [ ! -f "${cfgDir}/init.lua" ]; then
-        echo "[myNeovim] Seeding ${cfgDir} from pristine Kickstart (init.lua missing)."
-        mkdir -p "${cfgDir}"
-        # Copy everything but don't overwrite existing files
-        if command -v rsync >/dev/null 2>&1; then
-          rsync -a --ignore-existing "${pristineDir}/" "${cfgDir}/"
-        else
-          # cp -n is fine as a fallback
-          cp -Rn --no-preserve=mode,ownership "${pristineDir}/." "${cfgDir}/" || true
-        fi
-      else
-        echo "[myNeovim] ${cfgDir}/init.lua exists; not touching user edits."
+      # If requested, wipe and reseed
+      if ${lib.boolToString cfg.resetOnNextSwitch}; then
+        echo "[myNeovim] Reset requested: removing ${cfgDir} and reseeding from pristine."
+        rm -rf "${cfgDir}"
       fi
-    fi
-  '';
 
+      # Seed when init.lua is missing (directory might exist due to userFiles)
+      if ${lib.boolToString cfg.seedIfMissing}; then
+        if [ ! -f "${cfgDir}/init.lua" ]; then
+          echo "[myNeovim] Seeding ${cfgDir} from pristine Kickstart (init.lua missing)."
+          mkdir -p "${cfgDir}"
+          # Copy everything but don't overwrite existing files
+          if command -v rsync >/dev/null 2>&1; then
+            rsync -a --ignore-existing "${pristineDir}/" "${cfgDir}/"
+          else
+            # cp -n is fine as a fallback
+            cp -Rn --no-preserve=mode,ownership "${pristineDir}/." "${cfgDir}/" || true
+          fi
+        else
+          echo "[myNeovim] ${cfgDir}/init.lua exists; not touching user edits."
+        fi
+      fi
+    '';
+
+  };
 }
