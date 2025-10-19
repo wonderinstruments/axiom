@@ -13,7 +13,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./modules/modules/cli.nix
+    ./modules/cli.nix
     ./modules/theme.nix
     ./admin.nix
   ];
