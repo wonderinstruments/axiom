@@ -10,7 +10,10 @@
   imports = [
     ./modules/neovim.nix
     ./modules/admin.nix
+    ./modules/stylix.nix
     ./templates/admin.nix
+    ./templates/neovim.nix
+    ./templates/theme.nix
   ];
 
   home.stateVersion = "25.05";
@@ -50,9 +53,6 @@
 
   myNeovim = {
     enable = true;
-
-    # Set true once if you want to nuke ~/.config/nvim and re-seed on next switch
-    resetOnNextSwitch = false;
 
     # Appended once (with a marker) at the end of init.lua
     extraLua = ''
