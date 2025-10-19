@@ -93,87 +93,77 @@
       display-filebrowser = "";
     };
 
-    # Custom theme - stylix will handle colors, we just need the layout
-    theme = pkgs.writeText "rofi-theme.rasi" ''
-      /* Custom rofi theme - colors managed by stylix */
+    # Custom theme using attribute set - stylix will handle colors
+    theme = {
+      "*" = {
+        padding = "0px";
+        margin = "0px";
+      };
 
-      * {
-        background-color: transparent;
-        padding: 0px;
-        margin: 0px;
-      }
+      window = {
+        fullscreen = true;
+        padding = "1em";
+      };
 
-      window {
-        fullscreen: true;
-        padding: 1em;
-      }
+      mainbox = {
+        padding = "8px";
+      };
 
-      mainbox {
-        padding: 8px;
-      }
+      inputbar = {
+        margin = "0px calc( 50% - 120px )";
+        padding = "2px 4px";
+        spacing = "4px";
+        border = "1px";
+        border-radius = "2px";
+        children = [
+          "icon-search"
+          "entry"
+        ];
+      };
 
-      inputbar {
-        margin: 0px calc( 50% - 120px );
-        padding: 2px 4px;
-        spacing: 4px;
-        border: 1px;
-        border-radius: 2px;
-        children: [icon-search,entry];
-      }
+      prompt = {
+        enabled = false;
+      };
 
-      prompt {
-        enabled: false;
-      }
+      "icon-search" = {
+        expand = false;
+        filename = "search";
+        vertical-align = "0.5";
+      };
 
-      icon-search {
-        expand: false;
-        filename: "search";
-        vertical-align: 0.5;
-      }
+      entry = {
+        placeholder = "Search";
+        width = "100px";
+      };
 
-      entry {
-        placeholder: "Search";
-        width: 100px;
-      }
+      listview = {
+        margin = "48px calc( 50% - 560px )";
+        spacing = "48px";
+        columns = 6;
+        flow = "horizontal";
+        cycle = true;
+        fixed-columns = true;
+      };
 
-      listview {
-        margin: 48px calc( 50% - 560px );
-        spacing: 48px;
-        columns: 6;
-        flow: horizontal;
-        cycle: true;
-        fixed-columns: true;
-      }
+      "element, element-text, element-icon" = {
+        cursor = "pointer";
+      };
 
-      element, element-text, element-icon {
-        cursor: pointer;
-      }
+      element = {
+        padding = "8px";
+        spacing = "4px";
+        orientation = "vertical";
+        border-radius = "16px";
+      };
 
-      element {
-        padding: 8px;
-        spacing: 4px;
-        orientation: vertical;
-        border-radius: 16px;
-      }
+      "element-icon" = {
+        size = "4em";
+        horizontal-align = "0.5";
+      };
 
-      element-icon {
-        size: 4em;
-        horizontal-align: 0.5;
-      }
-
-      element-text {
-        horizontal-align: 0.5;
-      }
-
-      timeout {
-        action: "kb-cancel";
-        delay: 0;
-      }
-
-      filebrowser {
-        directories-first: true;
-        sorting-method: "name";
-      }
-    '';
+      "element-text" = {
+        horizontal-align = "0.5";
+      };
+    };
   };
 }
