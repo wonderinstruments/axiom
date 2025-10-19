@@ -14,8 +14,6 @@ let
 in
 {
   options.axiom.neovim = {
-    enable = lib.mkEnableOption "Editable Neovim seeded from kickstart.nvim";
-
     # Copy pristine -> ~/.config/nvim ONLY if the target is missing/empty.
     seedIfMissing = lib.mkOption {
       type = lib.types.bool;
@@ -60,7 +58,7 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = {
     programs.neovim = {
       enable = true;
       plugins = [ ]; # let Lazy from Kickstart manage plugins

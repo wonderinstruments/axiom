@@ -40,25 +40,4 @@
       '';
     };
   };
-
-  axiom.neovim = {
-    enable = true;
-
-    # Appended once (with a marker) at the end of init.lua
-    extraLua = ''
-      -- modest defaults
-      vim.o.number = true
-      vim.o.relativenumber = true
-      vim.o.updatetime = 200
-    '';
-
-    userFiles = {
-      "keymaps.lua" = ''
-        vim.keymap.set("n", "<leader>e", vim.cmd.Ex, { desc = "NetRW" })
-      '';
-      "after/plugin/colors.lua" = ''
-        pcall(vim.cmd.colorscheme, "habamax")
-      '';
-    };
-  };
 }
