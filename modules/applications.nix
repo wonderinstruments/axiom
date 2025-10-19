@@ -22,7 +22,7 @@ let
 
     # Text Editors & Writing
     ghostwriter = {
-      package = pkgs.ghostwriter;
+      package = pkgs.kdePackages.ghostwriter;
       exec = "ghostwriter";
       icon = "ghostwriter";
       comment = "Markdown Editor";
@@ -30,13 +30,6 @@ let
         "Office"
         "WordProcessor"
       ];
-    };
-    xpad = {
-      package = pkgs.xpad;
-      exec = "xpad";
-      icon = "xpad";
-      comment = "Sticky Note Pad";
-      categories = [ "Utility" ];
     };
 
     # Information & Education
@@ -74,7 +67,7 @@ let
       ];
     };
     marble = {
-      package = pkgs.marble;
+      package = pkgs.kdePackages.marble;
       exec = "marble";
       icon = "marble";
       comment = "Virtual Globe and World Atlas";
@@ -95,28 +88,6 @@ let
         "Game"
       ];
     };
-    tuxmath = {
-      package = pkgs.tuxmath;
-      exec = "tuxmath";
-      icon = "tuxmath";
-      comment = "Educational Math Game";
-      categories = [
-        "Education"
-        "Game"
-        "Math"
-      ];
-    };
-    golly = {
-      package = pkgs.golly;
-      exec = "golly";
-      icon = "golly";
-      comment = "Game of Life simulator";
-      categories = [
-        "Game"
-        "Simulation"
-        "Education"
-      ];
-    };
 
     # Creativity
     shotcut = {
@@ -127,7 +98,6 @@ let
       categories = [
         "AudioVideo"
         "Video"
-        "VideoEditor"
       ];
     };
     lmms = {
