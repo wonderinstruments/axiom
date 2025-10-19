@@ -40,11 +40,5 @@
         pcall(vim.cmd.colorscheme, "habamax")
       '';
     };
-
-    extraPackages = with pkgs; [
-      ripgrep
-      fd
-      lua-language-server
-    ];
   };
 }
