@@ -12,8 +12,8 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./modules/cli.nix
-    ./modules/theme.nix
+    ./core/cli.nix
+    ./core/theme.nix
     ./stylix.nix
     ./admin.nix
   ];

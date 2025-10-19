@@ -8,6 +8,7 @@
     ranger
     fzf
     nixfmt-rfc-style
+    nixfmt-tree
     starship
     kitty
   ];
