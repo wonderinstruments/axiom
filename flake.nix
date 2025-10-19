@@ -1,5 +1,5 @@
 {
-  description = "A very basic flake";
+  description = "Axiom System Flake";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
@@ -7,6 +7,10 @@
     kickstart = {
       url = "github:nvim-lua/kickstart.nvim";
       flake = false;
+    };
+    stylix = {
+      url = "github:nix-community/stylix/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -16,6 +20,7 @@
       nixpkgs,
       home-manager,
       kickstart,
+      stylix,
       ...
     }:
     {
@@ -23,6 +28,7 @@
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
+          stylix.nixosModules.stylix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

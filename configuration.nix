@@ -14,6 +14,7 @@
     ./hardware-configuration.nix
     ./modules/cli.nix
     ./modules/theme.nix
+    ./stylix.nix
     ./admin.nix
   ];
   nix.settings.experimental-features = [
