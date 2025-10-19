@@ -3,6 +3,7 @@
   pkgs,
   lib,
   kickstart,
+  stylix,
   ...
 }:
 {
@@ -23,6 +24,8 @@
   programs.kitty = {
     enable = true;
   };
+
+  stylix.targets.neovim.enable = false; # using kickstart config
 
   programs.command-not-found.enable = false;
   programs.fish = {
