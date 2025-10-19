@@ -37,7 +37,7 @@
 
       # Application launcher settings
       drun-match-fields = "name,generic,exec,categories,keywords";
-      drun-categories = "";
+      drun-categories = "RofiCustom";
       drun-show-actions = false;
       drun-display-format = "{name}";
       drun-url-launcher = "xdg-open";

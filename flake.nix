@@ -43,12 +43,15 @@
               ./modules/neovim.nix
               ./modules/admin.nix
               ./modules/rofi.nix
+              ./modules/applications.nix
+              ./modules/keybindings.nix
             ];
             home-manager.users.edmund = {
               imports = [
                 ./templates/theme.nix
                 ./templates/neovim.nix
                 ./templates/admin.nix
+                ./templates/keybindings.nix
               ];
             };
           }

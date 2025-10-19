@@ -9,16 +9,6 @@
 {
   home.stateVersion = "25.05";
 
-  xsession.windowManager.i3 = {
-    enable = true;
-    config = {
-      modifier = "Mod4";
-      terminal = "kitty";
-      keybindings = {
-        "Mod4+Return" = "exec kitty";
-      };
-    };
-  };
   programs.kitty.enable = true;
   programs.bat.enable = true;
 
