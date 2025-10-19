@@ -13,8 +13,9 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    modules/cli.nix
-    modules/theme.nix
+    ./modules/modules/cli.nix
+    ./modules/theme.nix
+    ./admin.nix
   ];
   nix.settings.experimental-features = [
     "nix-command"
@@ -96,20 +97,11 @@
     ];
   };
 
-  programs.firefox.enable = true;
-  # programs.fish.enable = true;
-
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    kitty
     wget
-    bat
-    ranger
-    eza
-    tmux
-    warp-terminal
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
