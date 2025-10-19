@@ -73,10 +73,11 @@ let
       ### Safe File Deletion 🗑️
       **Important**: Never use `rm` - it deletes files forever!
       ```bash
-      # Use trashy instead - it's much safer!
-      trashy file.txt         # Moves file to trash (can get it back!)
-      trashy restore          # Get files back from trash
-      trashy list             # See what's in the trash
+      # Use trash instead - it's much safer!
+      trash file.txt         # Moves file to trash (can get it back!)
+      trash restore          # Get files back from trash
+      trash list             # See what's in the trash
+      trash empty file.txt   # Empty file.txt from the trash, deleting it forever
       ```
 
       ## Reading Files

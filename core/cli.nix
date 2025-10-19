@@ -13,6 +13,8 @@
     kitty
     bat
     rofi
+    trashy
+    ripgrep
   ];
 
   programs.fish.enable = true;
