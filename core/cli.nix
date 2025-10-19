@@ -11,6 +11,8 @@
     nixfmt-tree
     starship
     kitty
+    bat
+    rofi
   ];
 
   programs.fish.enable = true;
