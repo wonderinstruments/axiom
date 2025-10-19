@@ -7,7 +7,10 @@
   ...
 }:
 {
-  imports = [ ./modules/my-neovim.nix ];
+  imports = [
+    ./configurable_modules/my-neovim.nix
+    ./configurable_modules/admin.nix
+  ];
 
   home.stateVersion = "25.05";
 
@@ -42,6 +45,10 @@
         	true
       '';
     };
+  };
+
+  admin = {
+    webBrowser.enable = true;
   };
 
   myNeovim = {
