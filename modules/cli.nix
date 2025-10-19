@@ -9,6 +9,7 @@
     fzf
     nixfmt-rfc-style
     starship
+    kitty
   ];
 
   programs.fish.enable = true;

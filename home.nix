@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   kickstart,
@@ -8,7 +9,7 @@
   imports = [ ./modules/my-neovim.nix ];
 
   home.stateVersion = "25.05";
-  
+
   xsession.windowManager.i3 = {
     enable = true;
     config = {
@@ -20,14 +21,14 @@
     };
   };
 
-  programs.fish = {
-    enable = true;
-    interactiveShellInit = ''
-      set fish_greeting # Disable greeting
-      zoxide init fish | source
-      starship init fish | source
-    '';
-  };
+  # programs.fish = {
+  # enable = true;
+  # interactiveShellInit = ''
+  # set fish_greeting # Disable greeting
+  # zoxide init fish | source
+  # starship init fish | source
+  #   '';
+  # };
 
   myNeovim = {
     enable = true;
