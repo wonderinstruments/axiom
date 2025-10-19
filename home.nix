@@ -24,14 +24,13 @@
     enable = true;
   };
 
-  # programs.fish = {
-  # enable = true;
-  # interactiveShellInit = ''
-  # set fish_greeting # Disable greeting
-  # zoxide init fish | source
-  # starship init fish | source
-  #   '';
-  # };
+  programs.fish = {
+    enable = true;
+    interactiveShellInit = ''
+      set fish_greeting # Disable greeting
+      zoxide init fish | source
+    '';
+  };
 
   myNeovim = {
     enable = true;
