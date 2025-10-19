@@ -45,6 +45,7 @@
               ./modules/rofi.nix
               ./modules/applications.nix
               ./modules/keybindings.nix
+              ./modules/docs.nix
             ];
             home-manager.users.edmund = {
               imports = [
@@ -52,6 +53,7 @@
                 ./templates/neovim.nix
                 ./templates/admin.nix
                 ./templates/keybindings.nix
+                ./templates/docs.nix
               ];
             };
           }
