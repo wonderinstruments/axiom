@@ -6,14 +6,14 @@
   ...
 }:
 let
-  cfg = config.myNeovim;
+  cfg = config.axiom.neovim;
 
   # Paths we’ll use
   cfgDir = "${config.xdg.configHome}/nvim"; # ~/.config/nvim
   pristineDir = "${config.xdg.dataHome}/nvim/kickstart-pristine"; # ~/.local/share/nvim/kickstart-pristine
 in
 {
-  options.myNeovim = {
+  options.axiom.neovim = {
     enable = lib.mkEnableOption "Editable Neovim seeded from kickstart.nvim";
 
     # Copy pristine -> ~/.config/nvim ONLY if the target is missing/empty.

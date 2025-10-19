@@ -24,9 +24,6 @@
   };
   programs.bat.enable = true;
 
-  stylix.targets.neovim.enable = false; # using kickstart config
-  stylix.enable = true;
-
   programs.command-not-found.enable = false;
   programs.fish = {
     enable = false;
@@ -44,7 +41,7 @@
     };
   };
 
-  myNeovim = {
+  axiom.neovim = {
     enable = true;
 
     # Appended once (with a marker) at the end of init.lua

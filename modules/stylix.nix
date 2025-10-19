@@ -27,7 +27,9 @@ in
   config = {
     stylix = {
       enable = true;
+
       base16Scheme = "${pkgs.base16-schemes}/share/themes/${cfg.colors}.yaml";
+
       fonts = {
         monospace = {
           package = pkgs.atkinson-hyperlegible-mono;
@@ -38,6 +40,8 @@ in
           name = "Atkinson Hyperlegible Next";
         };
       };
+
+      targets.neovim.enable = false; # using kickstart config
     };
   };
 }

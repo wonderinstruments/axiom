@@ -5,11 +5,11 @@
   ...
 }:
 let
-  cfg = config.admin;
+  cfg = config.axiom.admin;
 in
 {
   options = {
-    admin = {
+    axiom.admin = {
       webBrowser = {
         enable = lib.mkEnableOption "Enable firefox browser";
       };

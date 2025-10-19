@@ -1,6 +1,6 @@
 { ... }:
 {
-  admin = {
+  axiom.admin = {
     webBrowser.enable = true;
   };
 }
