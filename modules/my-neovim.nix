@@ -9,8 +9,8 @@ let
   cfg = config.myNeovim;
 
   # Paths we’ll use
-  cfgDir = "$XDG_CONFIG_HOME/nvim"; # ~/.config/nvim
-  pristineDir = "$XDG_DATA_HOME/nvim/kickstart-pristine"; # ~/.local/share/nvim/kickstart-pristine
+  cfgDir = "${config.xdg.configHome}/nvim"; # ~/.config/nvim
+  pristineDir = "${config.xdg.dataHome}/nvim/kickstart-pristine"; # ~/.local/share/nvim/kickstart-pristine
 in
 {
   options.myNeovim = {
