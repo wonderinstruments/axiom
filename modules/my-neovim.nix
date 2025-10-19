@@ -50,6 +50,9 @@ in
       default = with pkgs; [
         ripgrep
         fd
+	gcc
+	gnumake
+	git unzip curl
       ];
       description = "Extra CLI tools available to Neovim (PATH).";
     };
