@@ -7,15 +7,6 @@
   ...
 }:
 {
-  imports = [
-    ./modules/neovim.nix
-    ./modules/admin.nix
-    ./modules/stylix.nix
-    ./templates/admin.nix
-    ./templates/neovim.nix
-    ./templates/theme.nix
-  ];
-
   home.stateVersion = "25.05";
 
   xsession.windowManager.i3 = {
@@ -31,8 +22,10 @@
   programs.kitty = {
     enable = true;
   };
+  programs.bat.enable = true;
 
   stylix.targets.neovim.enable = false; # using kickstart config
+  stylix.enable = true;
 
   programs.command-not-found.enable = false;
   programs.fish = {

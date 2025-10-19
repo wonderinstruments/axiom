@@ -36,7 +36,20 @@
             home-manager.extraSpecialArgs = {
               inherit kickstart;
             };
-            home-manager.users.edmund = import ./home.nix;
+            home-manager.sharedModules = [
+              stylix.homeModules.stylix
+              ./home.nix
+              ./modules/stylix.nix
+              ./modules/neovim.nix
+              ./modules/admin.nix
+            ];
+            home-manager.users.edmund = {
+              imports = [
+                ./templates/theme.nix
+                ./templates/neovim.nix
+                ./templates/admin.nix
+              ];
+            };
           }
         ];
       };
