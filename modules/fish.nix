@@ -36,21 +36,13 @@ in
             	true
           '';
         };
-      } // lib.optionalAttrs cfg.autoEza.enable {
+      }
+      // lib.optionalAttrs cfg.autoEza.enable {
         # Override cd to run eza after changing directory
         cd = {
           wraps = "cd";
           body = ''
             builtin cd $argv
-            and eza --icons=always
-          '';
-        };
-        # Hook into zoxide's z command
-        __zoxide_z = {
-          wraps = "__zoxide_z";
-          body = ''
-            command zoxide query --exclude (pwd) -- $argv
-            and builtin cd $result
             and eza --icons=always
           '';
         };
