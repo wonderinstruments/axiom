@@ -15,8 +15,6 @@
     ./core/cli.nix
     ./core/theme.nix
     ./core/python.nix
-    ./modules/polybar.nix
-    ./modules/i3.nix
     ./admin.nix
   ];
   nix.settings.experimental-features = [
@@ -63,6 +61,7 @@
     enable = true;
     extraPackages = with pkgs; [
       dmenu
+      i3status
     ];
   };
   services.displayManager.defaultSession = "xfce+i3";
@@ -104,7 +103,6 @@
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     xclip
-    polybar
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
