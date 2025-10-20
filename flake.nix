@@ -56,6 +56,7 @@
                 ./templates/admin.nix
                 ./templates/keybindings.nix
                 ./templates/docs.nix
+                ./templates/terminal.nix
               ];
             };
           }
