@@ -3,39 +3,41 @@
   ...
 }:
 {
-  # Install Python with all packages
-  environment.systemPackages = with pkgs.python3Packages; [
-    # Specified packages from ansible
-    i3ipc
-    numpy
-    pandas
-    tqdm
+  # Install Python with all packages in a proper environment
+  environment.systemPackages = [
+    (pkgs.python313.withPackages (
+      ps: with ps; [
+        # Specified packages from ansible
+        i3ipc
+        numpy
+        pandas
+        tqdm
 
-    # Essential Python libraries
-    python-dateutil
-    jinja2
-    click
-    colorama
+        # Essential Python libraries
+        python-dateutil
+        jinja2
+        click
+        colorama
 
-    # Development and debugging tools
-    pydantic
-    ipython
-    pytest
-    black
-    flake8
-    mypy
+        # Development and debugging tools
+        pydantic
+        ipython
+        pytest
+        black
+        flake8
+        mypy
 
-    # Data science essentials
-    pillow
-    matplotlib
-    scipy
-    scikit-learn
+        # Data science essentials
+        pillow
+        matplotlib
+        scipy
+        scikit-learn
+      ]
+    ))
   ];
-  environment.SystemPackages = [
-    pkgs.python3 # Keep base python3 available
-  ];
 
-  home.shellAliases = {
+  # Create python alias to python3
+  environment.shellAliases = {
     python = "python3";
   };
 }
