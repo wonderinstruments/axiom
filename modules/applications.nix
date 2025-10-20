@@ -133,6 +133,14 @@ let
         "Graphics"
       ];
     };
+    # coding
+    thonny = {
+      package = pkgs.thonny;
+      exec = "thonny";
+      icon = "thonny";
+      comment = "Python Coding Environment";
+      categories = [ ];
+    };
   };
 
 in
