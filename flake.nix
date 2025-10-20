@@ -46,6 +46,8 @@
               ./modules/applications.nix
               ./modules/keybindings.nix
               ./modules/docs.nix
+              ./modules/fish.nix
+              ./modules/kitty.nix
             ];
             home-manager.users.edmund = {
               imports = [

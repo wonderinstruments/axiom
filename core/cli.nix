@@ -15,9 +15,11 @@
     rofi
     trashy
     ripgrep
+    tldr
   ];
 
   programs.fish.enable = true;
+  documentation.man.generateCaches = false;
 
   programs.tmux = {
     enable = true;
