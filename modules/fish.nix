@@ -24,8 +24,10 @@ in
     programs.fish = {
       enable = true;
       interactiveShellInit = ''
-        set fish_greeting # Disable greeting
-        zoxide init fish | source
+                                set fish_greeting # Disable greeting
+                                zoxide init fish | source
+        			export LESS="-R -Ps(-- press 'q' to quit, '/' to search, arrows to scroll, 'h' for help --)"
+                        	bat ~/WELCOME.md
       '';
       functions = {
         __fish_command_not_found_handler = {

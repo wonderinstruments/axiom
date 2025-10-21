@@ -21,6 +21,8 @@
   programs.fish.enable = true;
   documentation.man.generateCaches = false;
 
+  programs.less.enable = true;
+
   programs.tmux = {
     enable = true;
     keyMode = "vi";
