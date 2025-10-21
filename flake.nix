@@ -47,6 +47,7 @@
               ./modules/keybindings.nix
               ./modules/docs.nix
               ./modules/fish.nix
+              ./modules/i3.nix
               ./modules/kitty.nix
             ];
             home-manager.users.edmund = {
