@@ -8,6 +8,11 @@
           command = "i3-msg 'workspace 1; exec kitty'";
           always = false;
         }
+        {
+          command = "exec pasystray";
+          always = false;
+          notification = false;
+        }
       ];
       bars = [
         {

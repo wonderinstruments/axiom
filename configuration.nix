@@ -62,6 +62,7 @@
     extraPackages = with pkgs; [
       dmenu
       i3status
+      pasystray
     ];
   };
   services.displayManager.defaultSession = "xfce+i3";
