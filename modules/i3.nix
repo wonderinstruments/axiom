@@ -19,6 +19,9 @@
             style = "Bold";
             size = 14.0;
           };
+          extraConfig = ''
+            	    workspace_min_width 60
+            	  '';
           colors = {
             background = "#${config.lib.stylix.colors.base00}";
             statusline = "#${config.lib.stylix.colors.base05}";
