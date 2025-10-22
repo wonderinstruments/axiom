@@ -66,6 +66,7 @@
     ];
   };
   services.displayManager.defaultSession = "xfce+i3";
+  powerManagement.enable = false;
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -104,6 +105,7 @@
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     xclip
+    cmatrix
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

@@ -49,6 +49,7 @@
               ./modules/fish.nix
               ./modules/i3.nix
               ./modules/kitty.nix
+              ./modules/screen-locker.nix
             ];
             home-manager.users.edmund = {
               imports = [
