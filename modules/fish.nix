@@ -28,6 +28,17 @@ in
                                 zoxide init fish | source
         			export LESS="-R -Ps(-- press 'q' to quit, '/' to search, arrows to scroll, 'h' for help --)"
                         	bat ~/WELCOME.md
+                        	
+                        	# Guide LLM integration - type ?your question
+                        	function ?
+                        	  if test (count $argv) -eq 0
+                        	    echo "Usage: ? your question here"
+                        	    return 1
+                        	  end
+                        	  
+                        	  set -l prompt (string join " " $argv)
+                        	  history --null --max=200 | guide --from-fish --nul-history -- "$prompt"
+                        	end
       '';
       functions = {
         __fish_command_not_found_handler = {
