@@ -6,6 +6,7 @@ let
     #!/usr/bin/env bash
     set -euo pipefail
     exec ${pkgs.xterm}/bin/xterm -fullscreen -fa "Monospace" -fs 14 \
+         -xrm "XTerm*pointerShape: none" +pc \
          -e ${pkgs.cmatrix}/bin/cmatrix -a -b
   '';
 

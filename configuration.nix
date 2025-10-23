@@ -67,6 +67,13 @@
   };
   services.displayManager.defaultSession = "xfce+i3";
   powerManagement.enable = false;
+  services.logind.extraConfig = ''
+    IdleAction=ignore
+    HandleSuspendKey=ignore
+    HandleHibernateKey=ignore
+    HandleLidSwitch=ignore
+    HandleLidSwitchDocked=ignore
+  '';
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
