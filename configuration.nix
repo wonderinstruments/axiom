@@ -55,6 +55,7 @@
       enable = true;
       noDesktop = true;
       enableXfwm = false;
+      enableScreensaver = false;
     };
   };
   services.xserver.windowManager.i3 = {
