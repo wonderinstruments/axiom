@@ -125,6 +125,16 @@
 
   # List services that you want to enable:
 
+  # Guide LLM service
+  services.guide = {
+    enable = true;
+    user = "edmund"; # Run as your user instead of creating a new one
+    group = "users";
+    package = pkgs.guide;
+    launcherPackage = pkgs.guide-llama-launcher;
+    # Model is automatically provided from flake input
+  };
+
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 

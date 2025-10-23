@@ -12,6 +12,10 @@
       url = "github:nix-community/stylix/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    guide = {
+      url = "git+file:///home/edmund/wonderinstruments/guide";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -21,14 +25,17 @@
       home-manager,
       kickstart,
       stylix,
+      guide,
       ...
     }:
     {
       nixosConfigurations.axiom = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
+          { nixpkgs.overlays = [ guide.overlays.default ]; }
           ./configuration.nix
           stylix.nixosModules.stylix
+          guide.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             # home-manager.useGlobalPkgs = true;
