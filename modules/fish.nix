@@ -21,6 +21,8 @@ in
 
   config = {
     programs.command-not-found.enable = false;
+    programs.eza.enable = true;
+    programs.eza.icons = "always";
     programs.fish = {
       enable = true;
       interactiveShellInit = ''
@@ -49,6 +51,13 @@ in
             	true
           '';
         };
+        # Always alias ls to eza
+        ls = {
+          wraps = "ls";
+          body = ''
+            	    eza
+            	  '';
+        };
       }
       // lib.optionalAttrs cfg.autoEza.enable {
         # Override cd to run eza after changing directory
@@ -56,7 +65,15 @@ in
           wraps = "cd";
           body = ''
             builtin cd $argv
-            and eza --icons=always
+            and eza
+          '';
+        };
+        # Override z to run eza after changing directory
+        z = {
+          wraps = "z";
+          body = ''
+            __zoxide_z $argv
+            and eza
           '';
         };
       };
