@@ -25,6 +25,8 @@ in
       settings = {
         shell = "${pkgs.fish}/bin/fish";
         font_size = cfg.fontSize;
+        cursor_trail = 20;
+        hide_window_decorations = true;
       };
     };
   };
