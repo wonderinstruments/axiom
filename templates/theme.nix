@@ -1,6 +1,9 @@
 { stylix, ... }:
 {
   axiom.theme = {
-    colors = "everforest";
+    colors = "spaceduck";
+  };
+  axiom.terminal = {
+    fontSize = 18;
   };
 }

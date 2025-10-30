@@ -15,12 +15,16 @@ in
       type = types.enum [
         "rose-pine-moon"
         "everforest"
+        "moonlight"
+        "spaceduck"
+        "woodland"
+        "sandcastle"
         "selenized-dark"
         "tokyo-night-storm"
         "zenbones"
         "zenburn"
       ];
-      default = "rose-pine-moon";
+      default = "tokyo-night-storm";
       description = "System theme colors";
     };
   };

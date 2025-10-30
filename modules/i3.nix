@@ -19,6 +19,9 @@
           notification = false;
         }
       ];
+      gaps = {
+        inner = 50;
+      };
       bars = [
         {
           id = "bottom";
