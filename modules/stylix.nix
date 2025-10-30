@@ -22,6 +22,9 @@ in
         "selenized-dark"
         "tokyo-night-storm"
         "zenbones"
+        "eris"
+        "blueforest"
+        "aztec"
         "zenburn"
       ];
       default = "tokyo-night-storm";

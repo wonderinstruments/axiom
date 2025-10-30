@@ -1,7 +1,7 @@
 { stylix, ... }:
 {
   axiom.theme = {
-    colors = "tokyo-night-storm";
+    colors = "spaceduck";
   };
   axiom.terminal = {
     fontSize = 18;

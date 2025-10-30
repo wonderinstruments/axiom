@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   services.picom = {
     enable = true;
@@ -6,8 +6,10 @@
     inactiveOpacity = 0.8;
     shadow = true;
     settings = {
-      shadow-radius = 20;
-      shadow-color = "#00bfff";
+      shadow-radius = 60;
+      shadow-color = "#${config.lib.stylix.colors.base0D}";
+      shadow-offset-x = -60;
+      shadow-offset-y = -60;
     };
   };
 }
