@@ -58,6 +58,7 @@
               ./modules/picom.nix
               ./modules/kitty.nix
               ./modules/screen-locker.nix
+              ./modules/fractal-wallpaper.nix
             ];
             home-manager.users.edmund = {
               imports = [
@@ -67,6 +68,7 @@
                 ./templates/keybindings.nix
                 ./templates/docs.nix
                 ./templates/terminal.nix
+                ./templates/fractal-wallpaper.nix
               ];
             };
           }
