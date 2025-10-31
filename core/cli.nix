@@ -16,6 +16,7 @@
     trashy
     ripgrep
     tldr
+    fd
   ];
 
   programs.fish.enable = true;

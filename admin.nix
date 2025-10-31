@@ -8,5 +8,4 @@
     discord
   ];
   programs.chromium.enable = true;
-  virtualization.docker.enable = true;
 }
