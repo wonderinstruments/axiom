@@ -17,7 +17,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixvim = {
-      url = "github:nix-community/nixvim";
+      url = "github:nix-community/nixvim/nixos-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -42,10 +42,10 @@
           stylix.nixosModules.stylix
           guide.nixosModules.default
           home-manager.nixosModules.home-manager
-          nixvim.nixosModules.nixvim
           {
             # home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = {
               inherit kickstart;
             };

@@ -98,7 +98,7 @@ in
         set -eu
 
         # If requested, wipe and reseed
-        if ${lib.boolToString cfg.resetOnNextSwitch}; then
+        if ${lib.boolToString cfg.resetConfigFileOnNextSwitch}; then
           echo "[myNeovim] Reset requested: removing ${cfgDir} and reseeding from pristine."
           rm -rf "${cfgDir}"
         fi
