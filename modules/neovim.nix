@@ -142,6 +142,8 @@ in
           comment.enable = true;
           web-devicons.enable = true;
           tmux-navigator.enable = true;
+          conform-nvim.enable = true;
+          todo-comments.enable = true;
           telescope = {
             enable = true;
             extensions = {
@@ -176,6 +178,22 @@ in
           {
             action = "<cmd>Oil<CR>";
             key = "-";
+          }
+          {
+            action = "<cmd>echo \"Use h to move!!\"<CR>";
+            key = "<left>";
+          }
+          {
+            action = "<cmd>echo \"Use l to move!!\"<CR>";
+            key = "<right>";
+          }
+          {
+            action = "<cmd>echo \"Use k to move!!\"<CR>";
+            key = "<up>";
+          }
+          {
+            action = "<cmd>echo \"Use j to move!!\"<CR>";
+            key = "<down>";
           }
         ];
       };
