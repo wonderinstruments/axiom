@@ -5,6 +5,9 @@
   ...
 }:
 
+let
+  inherit (config.lib.formats.rasi) mkLiteral;
+in
 {
   programs.rofi = {
     enable = true;
@@ -12,15 +15,6 @@
     extraConfig = {
       # Basic modes and layout
       modi = "window,run,ssh,drun";
-      width = 50;
-      lines = 15;
-      columns = 1;
-      bw = 1;
-      location = 0;
-      padding = 5;
-      yoffset = 0;
-      xoffset = 0;
-      fixed-num-lines = true;
 
       # Icons and appearance
       show-icons = true;
@@ -96,26 +90,30 @@
     # Custom theme using attribute set - stylix will handle colors
     theme = {
       "*" = {
-        padding = "0px";
-        margin = "0px";
+        padding = mkLiteral "0px";
+        margin = mkLiteral "0px";
       };
 
       window = {
         fullscreen = true;
-        padding = "1em";
+        padding = mkLiteral "1em";
       };
 
       mainbox = {
-        padding = "8px";
+        padding = mkLiteral "8px";
+        children = map mkLiteral [
+          "inputbar"
+          "listview"
+        ];
       };
 
       inputbar = {
-        margin = "0px calc( 50% - 120px )";
-        padding = "2px 4px";
-        spacing = "4px";
-        border = "1px";
-        border-radius = "2px";
-        children = [
+        margin = mkLiteral "0px calc( 50% - 300px )";
+        padding = mkLiteral "8px 12px";
+        spacing = mkLiteral "8px";
+        border = mkLiteral "2px";
+        border-radius = mkLiteral "4px";
+        children = map mkLiteral [
           "icon-search"
           "entry"
         ];
@@ -128,41 +126,41 @@
       "icon-search" = {
         expand = false;
         filename = "search";
-        vertical-align = "0.5";
+        vertical-align = mkLiteral "0.5";
       };
 
       entry = {
         placeholder = "Search";
-        width = "100px";
+        width = mkLiteral "580px";
       };
 
       listview = {
-        margin = "48px calc( 50% - 560px )";
-        spacing = "48px";
+        margin = mkLiteral "48px calc( 50% - 560px )";
+        spacing = mkLiteral "48px";
         columns = 6;
-        flow = "horizontal";
+        flow = mkLiteral "horizontal";
         cycle = true;
         fixed-columns = true;
       };
 
       "element, element-text, element-icon" = {
-        cursor = "pointer";
+        cursor = mkLiteral "pointer";
       };
 
       element = {
-        padding = "8px";
-        spacing = "4px";
-        orientation = "vertical";
-        border-radius = "16px";
+        padding = mkLiteral "8px";
+        spacing = mkLiteral "4px";
+        orientation = mkLiteral "vertical";
+        border-radius = mkLiteral "16px";
       };
 
       "element-icon" = {
-        size = "4em";
-        horizontal-align = "0.5";
+        size = mkLiteral "4em";
+        horizontal-align = mkLiteral "0.5";
       };
 
       "element-text" = {
-        horizontal-align = "0.5";
+        horizontal-align = mkLiteral "0.5";
       };
     };
   };

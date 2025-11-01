@@ -11,5 +11,8 @@
       shadow-offset-x = -60;
       shadow-offset-y = -60;
     };
+    opacityRules = [
+      "100:class_g = 'Rofi'"
+    ];
   };
 }

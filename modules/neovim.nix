@@ -180,6 +180,10 @@ in
             key = "-";
           }
           {
+            action = "<cmd>echo \"Use :q to quit!! (or :wq to save and quit)\"<CR>";
+            key = "<esc>";
+          }
+          {
             action = "<cmd>echo \"Use h to move!!\"<CR>";
             key = "<left>";
           }
