@@ -47,8 +47,6 @@ in
           name = "Atkinson Hyperlegible Next";
         };
       };
-
-      targets.neovim.enable = false; # using kickstart config
     };
   };
 }

@@ -16,6 +16,10 @@
       url = "git+file:///home/edmund/wonderinstruments/guide";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -26,6 +30,7 @@
       kickstart,
       stylix,
       guide,
+      nixvim,
       ...
     }:
     {
@@ -37,6 +42,7 @@
           stylix.nixosModules.stylix
           guide.nixosModules.default
           home-manager.nixosModules.home-manager
+          nixvim.nixosModules.nixvim
           {
             # home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
@@ -45,6 +51,7 @@
             };
             home-manager.sharedModules = [
               stylix.homeModules.stylix
+              nixvim.homeModules.nixvim
               ./home.nix
               ./modules/stylix.nix
               ./modules/neovim.nix
