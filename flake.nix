@@ -77,6 +77,7 @@
                 ./templates/docs.nix
                 ./templates/terminal.nix
                 ./templates/fractal-wallpaper.nix
+                ./templates/sounds.nix
               ];
             };
           }
