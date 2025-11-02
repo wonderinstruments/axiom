@@ -34,6 +34,7 @@ in
   config = {
     stylix = {
       enable = true;
+      targets.firefox.enable = false;
 
       base16Scheme = "${pkgs.base16-schemes}/share/themes/${cfg.colors}.yaml";
 

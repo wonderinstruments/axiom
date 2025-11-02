@@ -34,10 +34,6 @@
         scikit-learn
       ]
     ))
+    pkgs.python3 # Add python3 package so 'python' command is available
   ];
-
-  # Create python alias to python3
-  environment.shellAliases = {
-    python = "python3";
-  };
 }

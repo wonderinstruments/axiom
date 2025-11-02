@@ -129,6 +129,12 @@ in
       default = 0.27015;
       description = "Imaginary part of C for Julia set";
     };
+
+    regenerateOnRebuild = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to regenerate the wallpaper on every rebuild";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -138,11 +144,13 @@ in
       regenerate-script
     ];
 
-    # Generate wallpaper on activation
-    home.activation.generateFractalWallpaper = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      run mkdir -p ${config.home.homeDirectory}/.cache
-      run ${generateCommand}
-    '';
+    # Generate wallpaper on activation (if enabled)
+    home.activation.generateFractalWallpaper = mkIf cfg.regenerateOnRebuild (
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        run mkdir -p ${config.home.homeDirectory}/.cache
+        run ${generateCommand}
+      ''
+    );
 
     # Set the wallpaper using feh in i3 startup
     xsession.windowManager.i3.config.startup = [

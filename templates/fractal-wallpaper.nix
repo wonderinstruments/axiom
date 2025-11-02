@@ -5,8 +5,9 @@
     width = 1920;
     height = 1080;
     fractalType = "mandelbrot"; # or "julia"
-    iterations = 256; # Higher = more detail but slower
-    searchDepth = 3; # Higher = more zoomed in (2-5 recommended)
+    iterations = 100; # Higher = more detail but slower
+    searchDepth = 4; # Higher = more zoomed in (2-5 recommended)
+    regenerateOnRebuild = false; # Set to true to regenerate on every rebuild
 
     # For Julia set, customize these:
     # juliaCReal = -0.7;

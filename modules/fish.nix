@@ -13,9 +13,6 @@ in
       rmToTrash = {
         enable = lib.mkEnableOption "Alias rm to trash for safety";
       };
-      autoEza = {
-        enable = lib.mkEnableOption "Automatically run eza after cd/z commands";
-      };
     };
   };
 
@@ -23,11 +20,12 @@ in
     programs.command-not-found.enable = false;
     programs.eza.enable = true;
     programs.eza.icons = "always";
+    programs.eza.enableFishIntegration = false; # Disable auto aliases so our functions work
     programs.fish = {
       enable = true;
       interactiveShellInit = ''
                                 set fish_greeting # Disable greeting
-                                zoxide init fish | source
+                                zoxide init fish --no-cmd | source
         			export LESS="-R -Ps(-- press 'q' to quit, '/' to search, arrows to scroll, 'h' for help --)"
                         	bat ~/WELCOME.md
                         	
@@ -42,13 +40,28 @@ in
                         	  history --null --max=200 | guide --from-fish --nul-history -- "$prompt"
                         	end
                         	
-                        	# Helper function to play sound on success/failure
-                        	function __play_sound_on_result
-                        	  set -l success_sound $argv[1]
-                        	  set -l command_parts $argv[2..-1]
-                        	  
-                        	  if eval $command_parts
-                        	    canberra-gtk-play -i $success_sound 2>/dev/null &
+                        	# Override system functions with sound-enabled versions
+                        	# These are defined here to run after system config loads
+                        	
+                        	function ls
+                        	  canberra-gtk-play -i ls 2>/dev/null &
+                        	  eza $argv
+                        	end
+                        	
+                        	function z
+                        	  if __zoxide_z $argv
+                        	    canberra-gtk-play -i cd 2>/dev/null &
+                        	    eza
+                        	  else
+                        	    canberra-gtk-play -i oops 2>/dev/null &
+                        	    return 1
+                        	  end
+                        	end
+                        	
+                        	function cd
+                        	  if builtin cd $argv
+                        	    canberra-gtk-play -i cd 2>/dev/null &
+                        	    eza
                         	  else
                         	    canberra-gtk-play -i oops 2>/dev/null &
                         	    return 1
@@ -63,18 +76,6 @@ in
                     canberra-gtk-play -i oops 2>/dev/null &
                     echo "'$cmd' not found"
             	true
-          '';
-        };
-        # Always alias ls to eza with sound
-        ls = {
-          wraps = "ls";
-          body = ''
-            if eza $argv
-              canberra-gtk-play -i ls 2>/dev/null &
-            else
-              canberra-gtk-play -i oops 2>/dev/null &
-              return 1
-            end
           '';
         };
         # Add sound to trash command
@@ -102,34 +103,6 @@ in
             else
               canberra-gtk-play -i oops 2>/dev/null &
               command bat $argv
-            end
-          '';
-        };
-      }
-      // lib.optionalAttrs cfg.autoEza.enable {
-        # Override cd to run eza after changing directory
-        cd = {
-          wraps = "cd";
-          body = ''
-            if builtin cd $argv
-              canberra-gtk-play -i cd 2>/dev/null &
-              eza
-            else
-              canberra-gtk-play -i oops 2>/dev/null &
-              return 1
-            end
-          '';
-        };
-        # Override z to run eza after changing directory
-        z = {
-          wraps = "z";
-          body = ''
-            if __zoxide_z $argv
-              canberra-gtk-play -i cd 2>/dev/null &
-              eza
-            else
-              canberra-gtk-play -i oops 2>/dev/null &
-              return 1
             end
           '';
         };
