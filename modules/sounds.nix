@@ -33,6 +33,7 @@ in
     xdg.dataFile."sounds/WonderTheme/stereo/oops.wav".source = ../sounds/oops.wav;
     xdg.dataFile."sounds/WonderTheme/stereo/bat.ogg".source = ../sounds/bat.ogg;
     xdg.dataFile."sounds/WonderTheme/stereo/cd.ogg".source = ../sounds/cd.ogg;
+    xdg.dataFile."sounds/WonderTheme/stereo/ls.ogg".source = ../sounds/ls.ogg;
 
     # Configure the system to use the sound theme
     dconf.settings = {

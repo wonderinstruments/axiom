@@ -65,12 +65,17 @@ in
             	true
           '';
         };
-        # Always alias ls to eza
+        # Always alias ls to eza with sound
         ls = {
           wraps = "ls";
           body = ''
-            	    eza
-            	  '';
+            if eza $argv
+              canberra-gtk-play -i ls 2>/dev/null &
+            else
+              canberra-gtk-play -i oops 2>/dev/null &
+              return 1
+            end
+          '';
         };
         # Add sound to trash command
         trash = {
