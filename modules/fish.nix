@@ -72,6 +72,14 @@ in
             end
           '';
         };
+        # Add sound to bat command
+        bat = {
+          wraps = "bat";
+          body = ''
+            command bat $argv
+            and canberra-gtk-play -i bat 2>/dev/null &
+          '';
+        };
       }
       // lib.optionalAttrs cfg.autoEza.enable {
         # Override cd to run eza after changing directory
