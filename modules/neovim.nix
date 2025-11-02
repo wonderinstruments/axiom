@@ -180,23 +180,23 @@ in
             key = "-";
           }
           {
-            action = "<cmd>echo \"Use :q to quit!! (or :wq to save and quit)\"<CR>";
+            action = "<cmd>call system('canberra-gtk-play -i oops 2>/dev/null &') | echo \"Use :q to quit!! (or :wq to save and quit)\"<CR>";
             key = "<esc>";
           }
           {
-            action = "<cmd>echo \"Use h to move!!\"<CR>";
+            action = "<cmd>call system('canberra-gtk-play -i oops 2>/dev/null &') | echo \"Use h to move!!\"<CR>";
             key = "<left>";
           }
           {
-            action = "<cmd>echo \"Use l to move!!\"<CR>";
+            action = "<cmd>call system('canberra-gtk-play -i oops 2>/dev/null &') | echo \"Use l to move!!\"<CR>";
             key = "<right>";
           }
           {
-            action = "<cmd>echo \"Use k to move!!\"<CR>";
+            action = "<cmd>call system('canberra-gtk-play -i oops 2>/dev/null &') | echo \"Use k to move!!\"<CR>";
             key = "<up>";
           }
           {
-            action = "<cmd>echo \"Use j to move!!\"<CR>";
+            action = "<cmd>call system('canberra-gtk-play -i oops 2>/dev/null &') | echo \"Use j to move!!\"<CR>";
             key = "<down>";
           }
         ];

@@ -25,3 +25,4 @@
 - search / grep / etc
 - creating a file
 - opening a file
+- copy / paste

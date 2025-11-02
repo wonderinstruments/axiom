@@ -58,6 +58,19 @@ in
             	    eza
             	  '';
         };
+        # Add sound to trash command
+        trash = {
+          wraps = "trash";
+          body = ''
+            # Only play sound if not listing or emptying
+            if not contains -- $argv[1] list empty
+              command trash $argv
+              and canberra-gtk-play -i trash 2>/dev/null &
+            else
+              command trash $argv
+            end
+          '';
+        };
       }
       // lib.optionalAttrs cfg.autoEza.enable {
         # Override cd to run eza after changing directory
@@ -76,10 +89,17 @@ in
             and eza
           '';
         };
+      }
+      // lib.optionalAttrs cfg.rmToTrash.enable {
+        # Alias rm to trash (with sound)
+        rm = {
+          wraps = "rm";
+          body = ''
+            trash $argv
+          '';
+        };
       };
-      shellAliases = lib.optionalAttrs cfg.rmToTrash.enable {
-        rm = "trash";
-      };
+      shellAliases = { };
     };
   };
 }
