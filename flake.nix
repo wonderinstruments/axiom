@@ -73,6 +73,7 @@
               ./modules/screen-locker.nix
               ./modules/fractal-wallpaper.nix
               ./modules/sounds.nix
+              ./modules/clipboard-monitor.nix
             ];
             home-manager.users.edmund = {
               imports = [
@@ -84,6 +85,7 @@
                 ./templates/terminal.nix
                 ./templates/fractal-wallpaper.nix
                 ./templates/sounds.nix
+                ./templates/clipboard-monitor.nix
               ];
             };
           }
