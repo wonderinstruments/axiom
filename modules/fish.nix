@@ -76,8 +76,12 @@ in
         bat = {
           wraps = "bat";
           body = ''
-            command bat $argv
-            and canberra-gtk-play -i bat 2>/dev/null &
+            if command bat $argv
+              canberra-gtk-play -i bat 2>/dev/null &
+            else
+              canberra-gtk-play -i oops 2>/dev/null &
+              return 1
+            end
           '';
         };
       }
