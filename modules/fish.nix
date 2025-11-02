@@ -76,11 +76,14 @@ in
         bat = {
           wraps = "bat";
           body = ''
-            if command bat $argv
+            # Check if we can open the file before playing sound
+            # Run bat with --no-pager first to check if it will succeed
+            if test (count $argv) -eq 0; or command bat --no-pager $argv >/dev/null 2>&1
               canberra-gtk-play -i bat 2>/dev/null &
+              command bat $argv
             else
               canberra-gtk-play -i oops 2>/dev/null &
-              return 1
+              command bat $argv
             end
           '';
         };
