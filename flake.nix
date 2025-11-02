@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     kickstart = {
       url = "github:nvim-lua/kickstart.nvim";
@@ -26,6 +27,7 @@
     {
       self,
       nixpkgs,
+      nixpkgs-unstable,
       home-manager,
       kickstart,
       stylix,
@@ -48,6 +50,10 @@
             home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = {
               inherit kickstart;
+              pkgs-unstable = import nixpkgs-unstable {
+                system = "x86_64-linux";
+                config.allowUnfree = true;
+              };
             };
             home-manager.sharedModules = [
               stylix.homeModules.stylix

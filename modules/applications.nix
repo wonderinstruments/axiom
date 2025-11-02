@@ -1,7 +1,8 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
+  pkgs-unstable,
   ...
 }:
 
@@ -98,6 +99,26 @@ let
       categories = [
         "AudioVideo"
         "Video"
+      ];
+    };
+    kwave = {
+      package = pkgs-unstable.kdePackages.kwave;
+      exec = "kwave";
+      icon = "kwave";
+      comment = "Audio Editor";
+      categories = [
+        "AudioVideo"
+        "Audio"
+      ];
+    };
+    rosegarden = {
+      package = pkgs.rosegarden;
+      exec = "rosegarden";
+      icon = "rosegarden";
+      comment = "Audio composer";
+      categories = [
+        "AudioVideo"
+        "Audio"
       ];
     };
     lmms = {

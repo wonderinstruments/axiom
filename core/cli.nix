@@ -17,6 +17,7 @@
     ripgrep
     tldr
     fd
+    ffmpeg
   ];
 
   programs.fish.enable = true;
