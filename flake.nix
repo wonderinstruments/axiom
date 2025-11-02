@@ -66,6 +66,7 @@
               ./modules/kitty.nix
               ./modules/screen-locker.nix
               ./modules/fractal-wallpaper.nix
+              ./modules/sounds.nix
             ];
             home-manager.users.edmund = {
               imports = [
