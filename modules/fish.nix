@@ -41,6 +41,19 @@ in
                         	  set -l prompt (string join " " $argv)
                         	  history --null --max=200 | guide --from-fish --nul-history -- "$prompt"
                         	end
+                        	
+                        	# Helper function to play sound on success/failure
+                        	function __play_sound_on_result
+                        	  set -l success_sound $argv[1]
+                        	  set -l command_parts $argv[2..-1]
+                        	  
+                        	  if eval $command_parts
+                        	    canberra-gtk-play -i $success_sound 2>/dev/null &
+                        	  else
+                        	    canberra-gtk-play -i oops 2>/dev/null &
+                        	    return 1
+                        	  end
+                        	end
       '';
       functions = {
         __fish_command_not_found_handler = {
@@ -93,16 +106,26 @@ in
         cd = {
           wraps = "cd";
           body = ''
-            builtin cd $argv
-            and eza
+            if builtin cd $argv
+              canberra-gtk-play -i cd 2>/dev/null &
+              eza
+            else
+              canberra-gtk-play -i oops 2>/dev/null &
+              return 1
+            end
           '';
         };
         # Override z to run eza after changing directory
         z = {
           wraps = "z";
           body = ''
-            __zoxide_z $argv
-            and eza
+            if __zoxide_z $argv
+              canberra-gtk-play -i cd 2>/dev/null &
+              eza
+            else
+              canberra-gtk-play -i oops 2>/dev/null &
+              return 1
+            end
           '';
         };
       }
