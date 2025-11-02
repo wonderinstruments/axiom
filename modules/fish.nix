@@ -47,6 +47,7 @@ in
           onEvent = "fish_command_not_found";
           body = ''
             	set -l cmd $argv[1]
+                    canberra-gtk-play -i oops 2>/dev/null &
                     echo "'$cmd' not found"
             	true
           '';
