@@ -1,5 +1,11 @@
-{ config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
+  cfg = config.axiom.screenLocker;
   pidfile = "$HOME/.cache/cmatrix.pid";
 
   cmatrixSaver = pkgs.writeShellScriptBin "cmatrix-saver" ''
@@ -14,19 +20,27 @@ let
   cancellerCmd = ''[ -f ${pidfile} ] && kill "$(cat ${pidfile})" 2>/dev/null || true; rm -f ${pidfile}'';
 in
 {
-  home.packages = with pkgs; [
-    cmatrix
-    cmatrixSaver
-  ];
+  options = {
+    axiom.screenLocker = {
+      enable = lib.mkEnableOption "cmatrix screensaver";
+    };
+  };
 
-  services.xidlehook = {
-    enable = true;
-    timers = [
-      {
-        delay = 120;
-        command = timeoutCmd;
-        canceller = cancellerCmd;
-      }
+  config = lib.mkIf cfg.enable {
+    home.packages = with pkgs; [
+      cmatrix
+      cmatrixSaver
     ];
+
+    services.xidlehook = {
+      enable = true;
+      timers = [
+        {
+          delay = 120;
+          command = timeoutCmd;
+          canceller = cancellerCmd;
+        }
+      ];
+    };
   };
 }

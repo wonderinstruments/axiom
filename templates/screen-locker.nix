@@ -1,0 +1,6 @@
+{ ... }:
+{
+  axiom.screenLocker = {
+    enable = false;
+  };
+}

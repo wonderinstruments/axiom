@@ -86,6 +86,7 @@
                 ./templates/fractal-wallpaper.nix
                 ./templates/sounds.nix
                 ./templates/clipboard-monitor.nix
+                ./templates/screen-locker.nix
               ];
             };
           }
