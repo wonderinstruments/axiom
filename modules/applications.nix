@@ -32,6 +32,15 @@ let
         "WordProcessor"
       ];
     };
+    freeplane = {
+      package = pkgs.freeplane;
+      exec = "freeplane";
+      icon = "freeplane";
+      comment = "Mind Maps";
+      categories = [
+        "Office"
+      ];
+    };
 
     # Information & Education
     stellarium = {
