@@ -2,6 +2,8 @@
 {
   environment.systemPackages = with pkgs; [
     git
+    micro
+    lazygit
     gh
     tmux
     eza
