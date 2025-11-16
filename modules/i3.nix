@@ -20,7 +20,7 @@
         }
       ];
       gaps = {
-        inner = 50;
+        inner = 40;
       };
       bars = [
         {

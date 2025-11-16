@@ -15,7 +15,6 @@
     ./core/cli.nix
     ./core/theme.nix
     ./core/python.nix
-    ./admin.nix
   ];
   nix.settings.experimental-features = [
     "nix-command"
