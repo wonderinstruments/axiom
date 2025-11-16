@@ -10,7 +10,7 @@ let
   games = {
     freeciv = {
       package = pkgs.freeciv;
-      exec = "freeciv";
+      exec = "freeciv-gtk3.22";
       icon = "freeciv";
       comment = "Freeciv";
       categories = [
