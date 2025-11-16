@@ -7,8 +7,43 @@
 let
   cfg = config.axiom.admin.games;
 
-  # Map of games to Nix packages
   games = {
+    zeroad = {
+      package = pkgs.zeroad;
+      exec = "zeroad";
+      icon = "zeroad";
+      comment = "0 A.D.";
+      categories = [
+        "Game"
+      ];
+    };
+    openttd = {
+      package = pkgs.openttd;
+      exec = "openttd";
+      icon = "openttd";
+      comment = "OpenTTD";
+      categories = [
+        "Game"
+      ];
+    };
+    katomic = {
+      package = pkgs.kdePackages.katomic;
+      exec = "katomic";
+      icon = "katomic";
+      comment = "KAtomic";
+      categories = [
+        "Game"
+      ];
+    };
+    mindustry = {
+      package = pkgs.mindustry;
+      exec = "mindustry";
+      icon = "mindustry";
+      comment = "Mindustry";
+      categories = [
+        "Game"
+      ];
+    };
     endless-sky = {
       package = pkgs.endless-sky;
       exec = "endless-sky";
