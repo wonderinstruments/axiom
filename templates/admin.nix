@@ -10,10 +10,13 @@
     discord.enable = true;
     games = {
       endless-sky.enable = true;
+      widelands.enable = true;
+      the-powder-toy.enable = true;
       zeroad.enable = true;
       openttd.enable = true;
       katomic.enable = true;
       mindustry.enable = true;
+      luanti.enable = true;
     };
   };
 }

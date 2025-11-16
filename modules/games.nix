@@ -8,6 +8,33 @@ let
   cfg = config.axiom.admin.games;
 
   games = {
+    widelands = {
+      package = pkgs.widelands;
+      exec = "widelands";
+      icon = "widelands";
+      comment = "Widelands";
+      categories = [
+        "Game"
+      ];
+    };
+    the-powder-toy = {
+      package = pkgs.the-powder-toy;
+      exec = "the-powder-toy";
+      icon = "the-powder-toy";
+      comment = "The Powder Toy";
+      categories = [
+        "Game"
+      ];
+    };
+    luanti = {
+      package = pkgs.luanti;
+      exec = "luanti";
+      icon = "luanti";
+      comment = "Luanti";
+      categories = [
+        "Game"
+      ];
+    };
     zeroad = {
       package = pkgs.zeroad;
       exec = "zeroad";
