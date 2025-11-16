@@ -74,6 +74,7 @@
               ./modules/fractal-wallpaper.nix
               ./modules/sounds.nix
               ./modules/clipboard-monitor.nix
+              ./modules/micro.nix
             ];
             home-manager.users.edmund = {
               imports = [
