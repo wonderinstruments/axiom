@@ -47,7 +47,8 @@ in
   programs.micro = {
     enable = true;
     settings = {
-      colorscheme = "stylix";
+      colorscheme = lib.mkForce "stylix";
+      syntax = true;
     };
   };
 }
