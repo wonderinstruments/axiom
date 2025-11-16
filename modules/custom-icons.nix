@@ -1,16 +1,30 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
+let
+  # Read all files from the icons directory
+  iconsDir = ../icons;
+  iconFiles = builtins.readDir iconsDir;
+
+  # Generate xdg.dataFile entries for each icon
+  iconDataFiles = lib.mapAttrs' (
+    filename: type:
+    let
+      # Determine the icon size/type based on file extension
+      extension = lib.last (lib.splitString "." filename);
+      size = if extension == "svg" then "scalable" else "128x128";
+      iconName = lib.removeSuffix ".${extension}" filename;
+    in
+    lib.nameValuePair "icons/hicolor/${size}/apps/${filename}" { source = iconsDir + "/${filename}"; }
+  ) (lib.filterAttrs (name: type: type == "regular") iconFiles);
+in
 {
   # Install custom application icons
-  xdg.dataFile = {
-    "icons/hicolor/128x128/apps/tuxtype.png".source = ../icons/tuxtype.png;
-    "icons/hicolor/128x128/apps/freeplane.png".source = ../icons/freeplane.png;
-    "icons/hicolor/scalable/apps/kwave.svg".source = ../icons/kwave.svg;
-    "icons/hicolor/128x128/apps/shotcut.png".source = ../icons/shotcut.png;
-    "icons/hicolor/128x128/apps/spotify.png".source = ../icons/spotify.png;
-    "icons/hicolor/128x128/apps/warp.png".source = ../icons/warp.png;
-    "icons/hicolor/128x128/apps/endless-sky.png".source = ../icons/endless-sky.png;
-  };
+  xdg.dataFile = iconDataFiles;
 
   # Update icon cache after installation
   home.activation.updateIconCache = config.lib.dag.entryAfter [ "writeBoundary" ] ''
