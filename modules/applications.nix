@@ -100,6 +100,16 @@ let
     };
 
     # Creativity
+    pinta = {
+      package = pkgs.pinta;
+      exec = "pinta";
+      icon = "pinta";
+      comment = "Drawing";
+      categories = [
+        "Art"
+        "Graphics"
+      ];
+    };
     shotcut = {
       package = pkgs.shotcut;
       exec = "shotcut";
