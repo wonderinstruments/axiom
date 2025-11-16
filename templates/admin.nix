@@ -11,6 +11,7 @@
     games = {
       endless-sky.enable = true;
       widelands.enable = true;
+      freeciv.enable = true;
       the-powder-toy.enable = true;
       zeroad.enable = true;
       openttd.enable = true;

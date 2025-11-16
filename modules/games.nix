@@ -8,6 +8,15 @@ let
   cfg = config.axiom.admin.games;
 
   games = {
+    freeciv = {
+      package = pkgs.freeciv;
+      exec = "freeciv";
+      icon = "freeciv";
+      comment = "Freeciv";
+      categories = [
+        "Game"
+      ];
+    };
     widelands = {
       package = pkgs.widelands;
       exec = "widelands";
@@ -19,7 +28,7 @@ let
     };
     the-powder-toy = {
       package = pkgs.the-powder-toy;
-      exec = "the-powder-toy";
+      exec = "powder";
       icon = "the-powder-toy";
       comment = "The Powder Toy";
       categories = [
