@@ -21,6 +21,10 @@
       url = "github:nix-community/nixvim/nixos-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    parental-controls = {
+      url = "git+file:///home/edmund/wonderinstruments/parental-controls";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -33,13 +37,21 @@
       stylix,
       guide,
       nixvim,
+      parental-controls,
       ...
     }:
     {
       nixosConfigurations.axiom = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          { nixpkgs.overlays = [ guide.overlays.default ]; }
+          {
+            nixpkgs.overlays = [
+              guide.overlays.default
+              (final: prev: {
+                parental-controls = parental-controls.packages.${prev.system}.default;
+              })
+            ];
+          }
           ./configuration.nix
           stylix.nixosModules.stylix
           guide.nixosModules.default
