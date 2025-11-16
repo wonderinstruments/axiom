@@ -9,6 +9,7 @@
     "icons/hicolor/128x128/apps/shotcut.png".source = ../icons/shotcut.png;
     "icons/hicolor/128x128/apps/spotify.png".source = ../icons/spotify.png;
     "icons/hicolor/128x128/apps/warp.png".source = ../icons/warp.png;
+    "icons/hicolor/128x128/apps/endless-sky.png".source = ../icons/endless-sky.png;
   };
 
   # Update icon cache after installation

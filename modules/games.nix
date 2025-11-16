@@ -15,7 +15,7 @@ let
       icon = "endless-sky";
       comment = "Endless Sky";
       categories = [
-        "Games"
+        "Game"
       ];
     };
   };
@@ -26,7 +26,13 @@ let
 in
 {
   options = {
-    axiom.admin.games = {
+    axiom.admin.games = lib.mkOption {
+      type = lib.types.submodule {
+        options = lib.mapAttrs (name: _: {
+          enable = lib.mkEnableOption "${name} game";
+        }) games;
+      };
+      default = { };
     };
   };
   config = lib.mkMerge [
