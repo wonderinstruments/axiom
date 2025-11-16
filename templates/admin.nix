@@ -8,5 +8,8 @@
     obsidian.enable = true;
     slack.enable = true;
     discord.enable = true;
+    games = {
+      endless-sky.enable = true;
+    };
   };
 }

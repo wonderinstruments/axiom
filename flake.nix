@@ -62,6 +62,7 @@
               ./modules/stylix.nix
               ./modules/neovim.nix
               ./modules/admin.nix
+              ./modules/games.nix
               ./modules/rofi.nix
               ./modules/applications.nix
               ./modules/keybindings.nix
