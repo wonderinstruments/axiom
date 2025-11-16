@@ -12,7 +12,7 @@ let
     warp-terminal = {
       package = pkgs.warp-terminal;
       exec = "warp-terminal";
-      icon = "warp-terminal";
+      icon = "warp";
       comment = "Warp Terminal";
       categories = [
         "System"
