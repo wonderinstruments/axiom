@@ -75,6 +75,7 @@
               ./modules/sounds.nix
               ./modules/clipboard-monitor.nix
               ./modules/micro.nix
+              ./modules/custom-icons.nix
             ];
             home-manager.users.edmund = {
               imports = [
