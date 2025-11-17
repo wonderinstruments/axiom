@@ -3,6 +3,14 @@
   xsession.windowManager.i3 = {
     enable = true;
     config = {
+      window.commands = [
+        {
+          command = "fullscreen enable";
+          criteria = {
+            title = "parental-controls";
+          };
+        }
+      ];
       startup = [
         {
           command = "i3-msg 'workspace 1; exec kitty'";
