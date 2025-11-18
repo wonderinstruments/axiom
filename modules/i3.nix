@@ -26,12 +26,17 @@
           always = false;
           notification = false;
         }
+        {
+          command = "systemctl --user restart polybar";
+          always = true;
+          notification = false;
+        }
       ];
       gaps = {
         inner = 40;
       };
       # Disabled in favor of polybar
-      bars = [];
+      bars = [ ];
     };
   };
 
