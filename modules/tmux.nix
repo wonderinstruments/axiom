@@ -10,6 +10,12 @@
       yank
     ];
     extraConfig = with config.lib.stylix.colors.withHashtag; ''
+      # Start windows at 1 instead of 0
+      set -g base-index 1
+      set -g pane-base-index 1
+      set-window-option -g pane-base-index 1
+      set-option -g renumber-windows on
+
       # Status bar
       set-option -g status "on"
       set -g status-interval 2
