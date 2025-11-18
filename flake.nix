@@ -81,6 +81,7 @@
               ./modules/docs.nix
               ./modules/fish.nix
               ./modules/i3.nix
+              ./modules/polybar.nix
               ./modules/picom.nix
               ./modules/kitty.nix
               ./modules/screen-locker.nix
