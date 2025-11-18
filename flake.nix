@@ -89,6 +89,7 @@
               ./modules/clipboard-monitor.nix
               ./modules/micro.nix
               ./modules/custom-icons.nix
+              ./modules/tmux.nix
             ];
             home-manager.users.edmund = {
               imports = [

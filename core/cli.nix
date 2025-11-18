@@ -26,17 +26,6 @@
 
   programs.less.enable = true;
 
-  programs.tmux = {
-    enable = true;
-    keyMode = "vi";
-    shortcut = "a";
-    terminal = "screen-256color";
-    plugins = with pkgs.tmuxPlugins; [
-      vim-tmux-navigator
-      yank
-    ];
-  };
-
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
