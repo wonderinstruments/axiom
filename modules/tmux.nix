@@ -5,6 +5,7 @@
     keyMode = "vi";
     shortcut = "a";
     terminal = "screen-256color";
+    shell = "${pkgs.fish}/bin/fish";
     plugins = with pkgs.tmuxPlugins; [
       vim-tmux-navigator
       yank
