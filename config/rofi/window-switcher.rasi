@@ -1,0 +1,66 @@
+/* Window Switcher - List Style */
+
+@import "~/.config/rofi/config.rasi"
+
+window {
+    /* Fullscreen overlay */
+    fullscreen: true;
+    location: center;
+    anchor: center;
+    width: 100%;
+    height: 100%;
+    
+    /* Center the list in the middle of the screen */
+    padding: 30% 25%;
+    
+    /* Ensure background matches theme but allows transparency if set */
+    background-color: @background;
+    border: 0;
+}
+
+mainbox {
+    orientation: vertical;
+    children: [ inputbar, listview ];
+    spacing: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+inputbar {
+    padding: 8px;
+    children: [ icon-search, entry ];
+    border: 0 0 2px 0;
+    border-color: @border-color;
+}
+
+listview {
+    /* List mode: 1 column */
+    columns: 1;
+    lines: 10;
+    
+    spacing: 4px;
+    cycle: true;
+    dynamic: true;
+    layout: vertical;
+    scrollbar: false;
+    
+    /* No flow, just top to bottom */
+    flow: vertical;
+    fixed-height: false;
+}
+
+element {
+    orientation: horizontal;
+    padding: 8px;
+    spacing: 12px;
+    border-radius: 6px;
+}
+
+element-icon {
+    size: 24px;
+    vertical-align: 0.5;
+}
+
+element-text {
+    vertical-align: 0.5;
+}

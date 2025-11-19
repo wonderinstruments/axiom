@@ -14,6 +14,7 @@
     kitty
     bat
     rofi
+    wmctrl
     trashy
     ripgrep
     tldr

@@ -27,6 +27,12 @@ in
       description = "Key combination to launch the application launcher.";
     };
 
+    windowSwitcher = lib.mkOption {
+      type = lib.types.str;
+      default = "Mod4+Tab";
+      description = "Key combination to open the window switcher.";
+    };
+
     # Window focus (vim-inspired)
     focusLeft = lib.mkOption {
       type = lib.types.str;
@@ -218,6 +224,7 @@ in
             # Application shortcuts
             "${cfg.newTerminal}" = "exec kitty";
             "${cfg.applicationLauncher}" = "exec rofi -show drun";
+            "${cfg.windowSwitcher}" = "exec rofi -show window -config ~/.config/rofi/window-switcher.rasi";
 
             # Window focus (vim-inspired)
             "${cfg.focusLeft}" = "focus left";

@@ -26,7 +26,7 @@ in
       run-command = "{cmd}";
       run-list-command = "";
       run-shell-command = "{terminal} -e {cmd}";
-      window-command = "wmctrl -i -R {window}";
+      window-command = "wmctrl -i -a {window}";
       window-match-fields = "all";
 
       # Application launcher settings
@@ -177,4 +177,7 @@ in
       };
     };
   };
+
+  xdg.configFile."rofi/window-switcher.rasi".source = ../config/rofi/window-switcher.rasi;
+}
 }
