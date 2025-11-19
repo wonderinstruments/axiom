@@ -162,6 +162,19 @@ in
       "element-text" = {
         horizontal-align = mkLiteral "0.5";
       };
+
+      "element alternate.normal" = {
+        background-color = lib.mkForce (mkLiteral "transparent");
+        text-color = lib.mkForce (mkLiteral "@normal-foreground");
+      };
+      "element alternate.active" = {
+        background-color = lib.mkForce (mkLiteral "transparent");
+        text-color = lib.mkForce (mkLiteral "@active-foreground");
+      };
+      "element alternate.urgent" = {
+        background-color = lib.mkForce (mkLiteral "transparent");
+        text-color = lib.mkForce (mkLiteral "@urgent-foreground");
+      };
     };
   };
 }
