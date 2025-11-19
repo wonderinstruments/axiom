@@ -32,6 +32,9 @@
         matplotlib
         scipy
         scikit-learn
+
+        # fun
+        pyfiglet
       ]
     ))
     pkgs.python3 # Add python3 package so 'python' command is available

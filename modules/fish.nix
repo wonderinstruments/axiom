@@ -27,7 +27,7 @@ in
                                 set fish_greeting # Disable greeting
                                 zoxide init fish --no-cmd | source
         			export LESS="-R -Ps(-- press 'q' to quit, '/' to search, arrows to scroll, 'h' for help --)"
-                        	bat ~/WELCOME.md
+                        	python ~/scripts/welcome.py
                         	
                         	# Guide LLM integration - type ?your question
                         	function ?

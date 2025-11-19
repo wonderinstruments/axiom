@@ -7,9 +7,12 @@
 let
   cfg = config.axiom.docs;
 
+  # Welcome script from scripts directory
+  welcomeScript = builtins.readFile ../scripts/welcome.py;
+
   # Documentation files from the ansible templates
   docTemplates = {
-    "WELCOME.md" = ''
+    "docs/WELCOME.md" = ''
       # Quick Reference Guide
 
       Welcome to Axiom 1! Here are some helpful commands and shortcuts:
@@ -26,9 +29,9 @@ let
       - `ranger` - Enter file manager
 
       ---
-      *This file is located at `~/WELCOME.md`. You can open it directly with `bat WELCOME.md`*
+      *This file is located at `~/docs/WELCOME.md`. You can open it directly with `bat docs/WELCOME.md`*
 
-      More pointers can be found in ~/docs/. You can list the help files with `eza docs`.
+      More help files can be found in ~/docs/. You can list them with `eza docs`.
 
       To read one of those files, use their location + filename. For example: `bat docs/TERMINAL.md`.
     '';
@@ -371,7 +374,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Deploy documentation files using home.file for direct file management
+    # Deploy documentation files and scripts using home.file for direct file management
     home.file =
       let
         # Merge default templates with custom docs
@@ -385,12 +388,21 @@ in
             force = cfg.overwrite;
           };
       in
-      lib.mapAttrs' createFileEntry allDocs;
+      (lib.mapAttrs' createFileEntry allDocs)
+      // {
+        # Deploy welcome script
+        "scripts/welcome.py" = {
+          text = welcomeScript;
+          executable = true;
+          force = cfg.overwrite;
+        };
+      };
 
-    # Ensure the docs directory exists by creating a placeholder file that gets removed
+    # Ensure the docs and scripts directories exist
     home.activation.docsDirectory = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       set -eu
       mkdir -p "$HOME/docs"
+      mkdir -p "$HOME/scripts"
     '';
   };
 }
