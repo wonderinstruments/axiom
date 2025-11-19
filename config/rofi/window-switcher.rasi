@@ -19,23 +19,21 @@ window {
 }
 
 configuration {
-    /* Desktop/workspace number + window title */
-    window-format: "{d} · {t}";
+    /* Show app name and title */
+    window-format: "{c} · {t}";
+    
+    /* Vim-style keybindings for window switcher */
+    kb-row-down: "Down,Control+n,j";
+    kb-row-up: "Up,Control+p,k";
+    kb-accept-entry: "Return,KP_Enter,l";
 }
 
 mainbox {
     orientation: vertical;
-    children: [ inputbar, listview ];
-    spacing: 16px;
+    children: [ listview ];
+    spacing: 0;
     margin: 0;
     padding: 0;
-}
-
-inputbar {
-    padding: 8px;
-    children: [ icon-search, entry ];
-    border: 0 0 2px 0;
-    border-color: @border-color;
 }
 
 listview {
@@ -47,7 +45,7 @@ listview {
     cycle: true;
     dynamic: true;
     layout: vertical;
-    scrollbar: true;
+    scrollbar: false;
     
     /* No flow, just top to bottom */
     flow: vertical;
@@ -58,7 +56,12 @@ element {
     orientation: horizontal;
     padding: 8px;
     spacing: 12px;
-    border-radius: 6px;
+    border-radius: 16px;
+}
+
+element selected {
+    background-color: @selected-normal-background;
+    text-color: @selected-normal-foreground;
 }
 
 element-icon {
@@ -68,9 +71,5 @@ element-icon {
 
 element-text {
     vertical-align: 0.5;
-    text-color: @foreground;
-}
-
-entry {
-    text-color: @foreground;
+    text-color: inherit;
 }
