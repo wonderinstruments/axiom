@@ -26,14 +26,25 @@ configuration {
     kb-row-down: "Down,Control+n,j";
     kb-row-up: "Up,Control+p,k";
     kb-accept-entry: "Return,KP_Enter,l";
+    kb-custom-1: "d";
 }
 
 mainbox {
     orientation: vertical;
-    children: [ listview ];
-    spacing: 0;
+    children: [ listview, message ];
+    spacing: 8px;
     margin: 0;
     padding: 0;
+}
+
+message {
+    padding: 8px;
+    border: 2px 0 0 0;
+    border-color: @border-color;
+}
+
+textbox {
+    text-color: @foreground;
 }
 
 listview {
