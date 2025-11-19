@@ -34,6 +34,7 @@
       ];
       gaps = {
         inner = 40;
+        bottom = 40;
       };
       # Disabled in favor of polybar
       bars = [ ];

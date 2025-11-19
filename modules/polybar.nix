@@ -31,6 +31,7 @@
         alert = "#${config.lib.stylix.colors.base08}";
         disabled = "#${config.lib.stylix.colors.base03}";
         accent = "#${config.lib.stylix.colors.base0A}";
+        transparent = "#00000000";
       };
 
       # Main bar configuration
@@ -40,96 +41,148 @@
         height = "32pt";
         radius = 0;
         bottom = true;
+        override-redirect = true;
 
-        background = "\${colors.background}";
+        background = "\${colors.transparent}";
         foreground = "\${colors.foreground}";
 
-        line.size = "3pt";
+        line.size = "0pt";
 
-        border.size = "4pt";
-        border.color = "#00000000";
+        border.size = "0pt";
+        border.color = "\${colors.transparent}";
 
-        padding.left = 1;
-        padding.right = 2;
+        padding.left = 0;
+        padding.right = 0;
+        padding.top = 0;
+        padding.bottom = 0;
 
-        module.margin = 1;
+        module.margin = 0;
 
-        separator = "|";
+        separator = "";
 
         font = [
-          "Atkinson Hyperlegible:style=Bold:size=11;2"
-          "Font Awesome 6 Free Solid:size=11;2"
+          "Atkinson Hyperlegible:style=Bold:size=14;2"
+          "Font Awesome 6 Free Solid:size=16;2"
           "Font Awesome 6 Brands:size=11;2"
         ];
 
-        modules.left = "i3workspaces";
-        modules.right = "date";
+        modules.center = "ws-left i3workspaces ws-right";
+        modules.right = "right-start systray date time right-end";
 
         cursor.click = "pointer";
         cursor.scroll = "ns-resize";
 
         enable-ipc = true;
 
-        tray-position = "right";
+        tray-position = "none";
+      };
+
+      # Workspace pill left cap
+      "module/ws-left" = {
+        type = "custom/text";
+        content = "";
+        content-background = "\${colors.transparent}";
+        content-foreground = "\${colors.background}";
+      };
+
+      # Workspace pill right cap
+      "module/ws-right" = {
+        type = "custom/text";
+        content = "";
+        content-background = "\${colors.transparent}";
+        content-foreground = "\${colors.background}";
+      };
+
+      # Right pill start
+      "module/right-start" = {
+        type = "custom/text";
+        content = "";
+        content-background = "\${colors.transparent}";
+        content-foreground = "\${colors.background}";
+      };
+
+      # Right pill end
+      "module/right-end" = {
+        type = "custom/text";
+        content = "";
+        content-background = "\${colors.transparent}";
+        content-foreground = "\${colors.background}";
+      };
+
+      # System tray
+      "module/systray" = {
+        type = "internal/tray";
+        tray-spacing = "8pt";
+        tray-background = "\${colors.background}";
         tray-padding = 2;
       };
 
-      # i3 workspaces module
+      # i3 workspaces module with circles
       "module/i3workspaces" = {
         type = "internal/i3";
 
-        pin.workspaces = true;
-        show.urgent = true;
-        strip.wsnumbers = false;
-        index.sort = true;
+        pin-workspaces = true;
+        show-urgent = true;
+        strip-wsnumbers = false;
+        index-sort = true;
 
-        # Workspace number label format
-        label = {
-          focused = {
-            text = "%index%";
-            background = "\${colors.primary}";
-            foreground = "\${colors.background}";
-            padding = 2;
-          };
-          unfocused = {
-            text = "%index%";
-            background = "\${colors.background}";
-            foreground = "\${colors.foreground}";
-            padding = 2;
-          };
-          visible = {
-            text = "%index%";
-            background = "\${colors.disabled}";
-            foreground = "\${colors.foreground}";
-            padding = 2;
-          };
-          urgent = {
-            text = "%index%";
-            background = "\${colors.alert}";
-            foreground = "\${colors.background}";
-            padding = 2;
-          };
-        };
+        format = "<label-state>";
+        format-background = "\${colors.background}";
+
+        # Use circle icons - make square with equal padding
+        label-focused = "   %index%   ";
+        label-focused-foreground = "\${colors.primary}";
+        label-focused-background = "\${colors.background}";
+        label-focused-padding = 0;
+
+        label-unfocused = "   %index%   ";
+        label-unfocused-foreground = "\${colors.disabled}";
+        label-unfocused-background = "\${colors.background}";
+        label-unfocused-padding = 0;
+
+        label-visible = "   %index%   ";
+        label-visible-foreground = "\${colors.secondary}";
+        label-visible-background = "\${colors.background}";
+        label-visible-padding = 0;
+
+        label-urgent = "   %index%   ";
+        label-urgent-foreground = "\${colors.alert}";
+        label-urgent-background = "\${colors.background}";
+        label-urgent-padding = 0;
       };
 
-      # Date/Time module
+      # Date module
       "module/date" = {
+        type = "internal/date";
+        interval = 60;
+
+        date = "%a %b %d";
+
+        format = "<label>";
+        format-background = "\${colors.background}";
+        format-padding = 0;
+        format-margin = 0;
+        label = " %date%";
+      };
+
+      # Time module
+      "module/time" = {
         type = "internal/date";
         interval = 1;
 
-        date = "%a %b %d";
         time = "%I:%M %p";
 
-        label = {
-          text = " %date%  %time%";
-          foreground = "\${colors.foreground}";
-        };
+        format = "<label>";
+        format-background = "\${colors.background}";
+        format-padding = 0;
+        format-margin = 0;
+        label = " %time%";
       };
 
       # Global settings
       "settings" = {
         screenchange.reload = true;
-        pseudo.transparency = false;
+        pseudo.transparency = true;
       };
     };
   };
