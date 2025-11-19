@@ -1,0 +1,77 @@
+/* Confirmation Dialog */
+
+@import "~/.config/rofi/config.rasi"
+
+configuration {
+    /* Vim-style keybindings */
+    kb-row-down: "Down,Control+n,j";
+    kb-row-up: "Up,Control+p,k";
+    kb-accept-entry: "Return,KP_Enter,l";
+}
+
+window {
+    fullscreen: false;
+    location: center;
+    anchor: center;
+    width: 35%;
+    
+    background-color: @background;
+    border: 2px;
+    border-color: @border-color;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+mainbox {
+    orientation: vertical;
+    children: [ message, inputbar, listview ];
+    spacing: 12px;
+}
+
+message {
+    padding: 8px;
+    border: 0 0 2px 0;
+    border-color: @border-color;
+}
+
+textbox {
+    text-color: @foreground;
+}
+
+inputbar {
+    padding: 8px;
+    children: [ prompt ];
+    border: 0 0 1px 0;
+    border-color: @border-color;
+}
+
+prompt {
+    text-color: @foreground;
+}
+
+listview {
+    columns: 1;
+    lines: 2;
+    spacing: 4px;
+    cycle: true;
+    dynamic: false;
+    scrollbar: false;
+}
+
+element {
+    orientation: horizontal;
+    padding: 12px;
+    spacing: 8px;
+    border-radius: 6px;
+}
+
+element selected {
+    background-color: @selected-normal-background;
+    text-color: @selected-normal-foreground;
+}
+
+element-text {
+    vertical-align: 0.5;
+    text-color: inherit;
+    horizontal-align: 0.5;
+}

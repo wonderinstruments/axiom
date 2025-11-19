@@ -115,6 +115,7 @@ in
 
   xdg.configFile."rofi/app-launcher.rasi".source = ../config/rofi/app-launcher.rasi;
   xdg.configFile."rofi/window-switcher.rasi".source = ../config/rofi/window-switcher.rasi;
+  xdg.configFile."rofi/confirm-dialog.rasi".source = ../config/rofi/confirm-dialog.rasi;
 
   home.file.".local/bin/rofi-window-switcher" = {
     source = ../scripts/rofi-window-switcher.sh;

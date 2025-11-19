@@ -15,6 +15,8 @@
     bat
     rofi
     wmctrl
+    xorg.xprop
+    jq
     trashy
     ripgrep
     tldr
