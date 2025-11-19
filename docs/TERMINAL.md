@@ -82,7 +82,7 @@ command --help   # Quick help for most commands
 
 ## Safety First! ⚠️
 
-1. **Always use `trashy` instead of `rm`** - you can get your files back!
+1. **Always use `trash` instead of `rm`** - you can get your files back!
 2. **Ctrl+C is your friend** - use it if something seems stuck
 3. **Ask for help** if you're not sure about a command:
 ```bash

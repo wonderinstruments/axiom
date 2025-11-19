@@ -99,7 +99,6 @@
                 ./templates/admin.nix
                 ./templates/keybindings.nix
                 ./templates/docs.nix
-                ./templates/terminal.nix
                 ./templates/fractal-wallpaper.nix
                 ./templates/sounds.nix
                 ./templates/clipboard-monitor.nix

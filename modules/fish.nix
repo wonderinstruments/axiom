@@ -10,9 +10,6 @@ in
 {
   options = {
     axiom.terminal = {
-      rmToTrash = {
-        enable = lib.mkEnableOption "Alias rm to trash for safety";
-      };
     };
   };
 
@@ -104,15 +101,6 @@ in
               canberra-gtk-play -i oops 2>/dev/null &
               command bat $argv
             end
-          '';
-        };
-      }
-      // lib.optionalAttrs cfg.rmToTrash.enable {
-        # Alias rm to trash (with sound)
-        rm = {
-          wraps = "rm";
-          body = ''
-            trash $argv
           '';
         };
       };
