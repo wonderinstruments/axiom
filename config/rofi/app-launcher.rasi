@@ -1,0 +1,81 @@
+/* App Launcher - Grid Style */
+
+@import "~/.config/rofi/config.rasi"
+
+window {
+    fullscreen: true;
+    padding: 1em;
+}
+
+mainbox {
+    padding: 8px;
+    children: [ "inputbar", "listview" ];
+}
+
+inputbar {
+    margin: 0px calc(50% - 300px);
+    padding: 8px 12px;
+    spacing: 8px;
+    border: 2px;
+    border-radius: 4px;
+    children: [ "icon-search", "entry" ];
+}
+
+prompt {
+    enabled: false;
+}
+
+icon-search {
+    expand: false;
+    filename: "search";
+    vertical-align: 0.5;
+}
+
+entry {
+    placeholder: "Search";
+    width: 580px;
+}
+
+listview {
+    margin: 48px calc(50% - 560px);
+    spacing: 48px;
+    columns: 6;
+    flow: horizontal;
+    cycle: true;
+    fixed-columns: true;
+}
+
+element, element-text, element-icon {
+    cursor: pointer;
+}
+
+element {
+    padding: 8px;
+    spacing: 4px;
+    orientation: vertical;
+    border-radius: 16px;
+}
+
+element-icon {
+    size: 4em;
+    horizontal-align: 0.5;
+}
+
+element-text {
+    horizontal-align: 0.5;
+}
+
+element alternate.normal {
+    background-color: transparent;
+    text-color: @normal-foreground;
+}
+
+element alternate.active {
+    background-color: transparent;
+    text-color: @active-foreground;
+}
+
+element alternate.urgent {
+    background-color: transparent;
+    text-color: @urgent-foreground;
+}

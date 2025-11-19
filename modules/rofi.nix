@@ -87,80 +87,15 @@ in
       display-filebrowser = "";
     };
 
-    # Custom theme using attribute set - stylix will handle colors
+    # Shared theme defaults (layout lives in external .rasi files)
     theme = {
       "*" = {
         padding = mkLiteral "0px";
         margin = mkLiteral "0px";
       };
 
-      window = {
-        fullscreen = true;
-        padding = mkLiteral "1em";
-      };
-
-      mainbox = {
-        padding = mkLiteral "8px";
-        children = map mkLiteral [
-          "inputbar"
-          "listview"
-        ];
-      };
-
-      inputbar = {
-        margin = mkLiteral "0px calc( 50% - 300px )";
-        padding = mkLiteral "8px 12px";
-        spacing = mkLiteral "8px";
-        border = mkLiteral "2px";
-        border-radius = mkLiteral "4px";
-        children = map mkLiteral [
-          "icon-search"
-          "entry"
-        ];
-      };
-
-      prompt = {
-        enabled = false;
-      };
-
-      "icon-search" = {
-        expand = false;
-        filename = "search";
-        vertical-align = mkLiteral "0.5";
-      };
-
-      entry = {
-        placeholder = "Search";
-        width = mkLiteral "580px";
-      };
-
-      listview = {
-        margin = mkLiteral "48px calc( 50% - 560px )";
-        spacing = mkLiteral "48px";
-        columns = 6;
-        flow = mkLiteral "horizontal";
-        cycle = true;
-        fixed-columns = true;
-      };
-
       "element, element-text, element-icon" = {
         cursor = mkLiteral "pointer";
-      };
-
-      element = {
-        padding = mkLiteral "8px";
-        spacing = mkLiteral "4px";
-        orientation = mkLiteral "vertical";
-        border-radius = mkLiteral "16px";
-      };
-
-      "element-icon" = {
-        size = mkLiteral "4em";
-        horizontal-align = mkLiteral "0.5";
-      };
-
-      "element-text" = {
-        horizontal-align = mkLiteral "0.5";
       };
 
       "element alternate.normal" = {
@@ -178,6 +113,6 @@ in
     };
   };
 
+  xdg.configFile."rofi/app-launcher.rasi".source = ../config/rofi/app-launcher.rasi;
   xdg.configFile."rofi/window-switcher.rasi".source = ../config/rofi/window-switcher.rasi;
-}
 }

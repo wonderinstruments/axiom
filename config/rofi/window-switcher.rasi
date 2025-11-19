@@ -10,12 +10,17 @@ window {
     width: 100%;
     height: 100%;
     
-    /* Center the list in the middle of the screen */
-    padding: 30% 25%;
+    /* Center the list in the middle area of the screen */
+    padding: 15% 15%;
     
     /* Ensure background matches theme but allows transparency if set */
     background-color: @background;
     border: 0;
+}
+
+configuration {
+    /* Desktop/workspace number + window title */
+    window-format: "{d} · {t}";
 }
 
 mainbox {
@@ -36,13 +41,13 @@ inputbar {
 listview {
     /* List mode: 1 column */
     columns: 1;
-    lines: 10;
+    lines: 15;
     
     spacing: 4px;
     cycle: true;
     dynamic: true;
     layout: vertical;
-    scrollbar: false;
+    scrollbar: true;
     
     /* No flow, just top to bottom */
     flow: vertical;
@@ -57,10 +62,15 @@ element {
 }
 
 element-icon {
-    size: 24px;
+    size: 28px;
     vertical-align: 0.5;
 }
 
 element-text {
     vertical-align: 0.5;
+    text-color: @foreground;
+}
+
+entry {
+    text-color: @foreground;
 }

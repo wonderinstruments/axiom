@@ -223,7 +223,7 @@ in
           {
             # Application shortcuts
             "${cfg.newTerminal}" = "exec kitty";
-            "${cfg.applicationLauncher}" = "exec rofi -show drun";
+            "${cfg.applicationLauncher}" = "exec rofi -show drun -config ~/.config/rofi/app-launcher.rasi";
             "${cfg.windowSwitcher}" = "exec rofi -show window -config ~/.config/rofi/window-switcher.rasi";
 
             # Window focus (vim-inspired)
