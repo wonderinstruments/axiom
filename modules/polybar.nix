@@ -43,7 +43,7 @@
         bottom = true;
         override-redirect = true;
 
-        background = "\${colors.transparent}";
+        background = "\${colors.background}";
         foreground = "\${colors.foreground}";
 
         line.size = "0pt";
@@ -61,13 +61,14 @@
         separator = "";
 
         font = [
-          "Atkinson Hyperlegible:style=Bold:size=14;2"
+          "Atkinson Hyperlegible Mono:size=14;2"
           "Font Awesome 6 Free Solid:size=16;2"
           "Font Awesome 6 Brands:size=11;2"
         ];
 
+        modules.left = "date time";
         modules.center = "ws-left i3workspaces ws-right";
-        modules.right = "right-start systray date time right-end";
+        modules.right = "right-start systray right-end";
 
         cursor.click = "pointer";
         cursor.scroll = "ns-resize";
@@ -129,23 +130,22 @@
         format = "<label-state>";
         format-background = "\${colors.background}";
 
-        # Use circle icons - make square with equal padding
-        label-focused = "   %index%   ";
+        label-focused = " %index% ";
         label-focused-foreground = "\${colors.primary}";
         label-focused-background = "\${colors.background}";
         label-focused-padding = 0;
 
-        label-unfocused = "   %index%   ";
+        label-unfocused = " %index% ";
         label-unfocused-foreground = "\${colors.disabled}";
         label-unfocused-background = "\${colors.background}";
         label-unfocused-padding = 0;
 
-        label-visible = "   %index%   ";
+        label-visible = " %index% ";
         label-visible-foreground = "\${colors.secondary}";
         label-visible-background = "\${colors.background}";
         label-visible-padding = 0;
 
-        label-urgent = "   %index%   ";
+        label-urgent = " %index% ";
         label-urgent-foreground = "\${colors.alert}";
         label-urgent-background = "\${colors.background}";
         label-urgent-padding = 0;

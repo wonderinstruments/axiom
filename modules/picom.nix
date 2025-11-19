@@ -9,15 +9,14 @@
       "class_g = 'Polybar'"
     ];
     settings = {
-      shadow-radius = 50;
+      shadow-radius = 60;
       shadow-color = "#${config.lib.stylix.colors.base0D}";
-      shadow-offset-x = -50;
-      shadow-offset-y = -50;
-      shadow-ignore-shaped = false;
+      shadow-offset-x = -60;
+      shadow-offset-y = -60;
     };
     opacityRules = [
       "100:class_g = 'Rofi'"
-      "90:class_g = 'Polybar'"
+      "95:class_g = 'Polybar'"
     ];
   };
 }
