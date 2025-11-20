@@ -36,8 +36,8 @@ while IFS= read -r line; do
     # Fallback to "?" if workspace not found
     WORKSPACE=${WORKSPACE:-"?"}
     
-    # Format: "WS · CLASS · TITLE<TAB>WINDOW_ID"
-    WINDOW_LIST+="${WORKSPACE} · ${CLASS} · ${TITLE}	${WIN_ID}"
+    # Format: "WS · CLASS · TITLE<TAB>WINDOW_ID<TAB>ICON_NAME"
+    WINDOW_LIST+="${WORKSPACE} · ${CLASS} · ${TITLE}"$'\t'"${WIN_ID}"$'\t'"${CLASS,,}"
     WINDOW_LIST+=$'\n'
 done < <(wmctrl -l)
 
@@ -45,12 +45,10 @@ if [ -z "$WINDOW_LIST" ]; then
     exit 0
 fi
 
-# Show only the display part (before tab) to user
-DISPLAY_LIST=$(echo "$WINDOW_LIST" | cut -f1)
-
 # Run rofi in dmenu mode with help message
+# Generate input with icon escape sequences: text\0icon\x1ficon_name
 # Exit codes: 0 = selected with Enter, 10 = kb-custom-1, 1 = cancelled
-SELECTED=$(echo "$DISPLAY_LIST" | rofi -dmenu -config ~/.config/rofi/window-switcher.rasi -mesg "j/k: navigate  l: switch  d: close" -format 'i' -selected-row 0)
+SELECTED=$(echo "$WINDOW_LIST" | awk -F'\t' '{printf "%s%cicon%c%s\n", $1, 0, 31, $3}' | rofi -dmenu -config ~/.config/rofi/window-switcher.rasi -mesg "j/k: navigate  l: switch  d: close" -format 'i' -selected-row 0)
 EXIT_CODE=$?
 
 # SELECTED is the 0-based index, or empty if cancelled
@@ -72,7 +70,7 @@ case $EXIT_CODE in
         ;;
     10)
         # Custom key 1 (d) - confirm then close window
-        WINDOW_NAME=$(echo "$DISPLAY_LIST" | sed -n "$((SELECTED + 1))p")
+        WINDOW_NAME=$(echo "$WINDOW_LIST" | sed -n "$((SELECTED + 1))p" | cut -f1)
         CONFIRM=$(printf "No\nYes" | rofi -dmenu -config ~/.config/rofi/confirm-dialog.rasi -p "Close window?" -mesg "$WINDOW_NAME")
         if [ "$CONFIRM" = "Yes" ]; then
             wmctrl -i -a "$WINDOW_ID"

@@ -22,6 +22,9 @@ configuration {
     /* Show app name and title */
     window-format: "{c} · {t}";
     
+    /* Enable icons */
+    show-icons: true;
+    
     /* Vim-style keybindings for window switcher */
     kb-row-down: "Down,Control+n,j";
     kb-row-up: "Up,Control+p,k";
