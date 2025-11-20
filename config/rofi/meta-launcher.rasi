@@ -1,0 +1,95 @@
+/* Meta Launcher - Large Icons Grid Style */
+
+@import "~/.config/rofi/config.rasi"
+
+configuration {
+    /* Vim-style keybindings */
+    kb-row-down: "Down,Control+n,j";
+    kb-row-up: "Up,Control+p,k";
+    kb-accept-entry: "Return,KP_Enter,l";
+    kb-remove-to-eol: "";
+    kb-mode-next: "";
+    kb-mode-previous: "";
+}
+
+window {
+    fullscreen: true;
+    padding: 1em;
+}
+
+mainbox {
+    padding: 8px;
+    children: [ "listview", "message" ];
+    spacing: 24px;
+}
+
+prompt {
+    enabled: false;
+}
+
+inputbar {
+    enabled: false;
+}
+
+message {
+    padding: 8px;
+    border: 2px 0 0 0;
+    border-color: @border-color;
+}
+
+textbox {
+    text-color: @foreground;
+    horizontal-align: 0.5;
+}
+
+listview {
+    margin: 48px calc(50% - 400px);
+    spacing: 48px;
+    columns: 4;
+    flow: horizontal;
+    cycle: true;
+    fixed-columns: true;
+    lines: 2;
+}
+
+element, element-text, element-icon {
+    cursor: pointer;
+}
+
+element {
+    padding: 16px;
+    spacing: 12px;
+    orientation: vertical;
+    border-radius: 16px;
+}
+
+element selected {
+    background-color: @selected-normal-background;
+    text-color: @selected-normal-foreground;
+}
+
+element-icon {
+    size: 6em;
+    horizontal-align: 0.5;
+}
+
+element-text {
+    horizontal-align: 0.5;
+    vertical-align: 0.5;
+    text-color: inherit;
+}
+
+element alternate.normal {
+    background-color: transparent;
+    text-color: @normal-foreground;
+}
+
+element alternate.active {
+    background-color: transparent;
+    text-color: @active-foreground;
+}
+
+element alternate.urgent {
+    background-color: transparent;
+    text-color: @urgent-foreground;
+}
