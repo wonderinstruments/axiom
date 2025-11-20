@@ -30,6 +30,16 @@ configuration {
     kb-row-up: "Up,Control+p,k";
     kb-accept-entry: "Return,KP_Enter,l";
     kb-custom-1: "d";
+    kb-custom-2: "1";
+    kb-custom-3: "2";
+    kb-custom-4: "3";
+    kb-custom-5: "4";
+    kb-custom-6: "5";
+    kb-custom-7: "6";
+    kb-custom-8: "7";
+    kb-custom-9: "8";
+    kb-custom-10: "9";
+    kb-custom-11: "0";
 }
 
 mainbox {
