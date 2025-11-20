@@ -33,12 +33,6 @@ in
       description = "Key combination to open the window switcher.";
     };
 
-    metaLauncher = lib.mkOption {
-      type = lib.types.str;
-      default = "Mod4+Escape";
-      description = "Key combination to open the meta-launcher (launcher menu).";
-    };
-
     # Window focus (vim-inspired)
     focusLeft = lib.mkOption {
       type = lib.types.str;
@@ -231,7 +225,6 @@ in
             "${cfg.newTerminal}" = "exec kitty";
             "${cfg.applicationLauncher}" = "exec rofi -show drun -config ~/.config/rofi/app-launcher.rasi";
             "${cfg.windowSwitcher}" = "exec ~/.local/bin/rofi-window-switcher";
-            "${cfg.metaLauncher}" = "exec ~/.local/bin/rofi-meta-launcher";
 
             # Window focus (vim-inspired)
             "${cfg.focusLeft}" = "focus left";
