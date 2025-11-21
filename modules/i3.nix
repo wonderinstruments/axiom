@@ -10,6 +10,12 @@
             title = "parental-controls";
           };
         }
+        {
+          command = "fullscreen enable; border pixel 0";
+          criteria = {
+            title = "^cmatrix-saver-[0-9]+$";
+          };
+        }
       ];
       startup = [
         {
