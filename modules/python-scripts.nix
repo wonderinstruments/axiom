@@ -14,16 +14,26 @@ let
   # Join a list with spaces for shell loop usage
   pyListForShell = lib.concatStringsSep " " pyScripts;
   toSourcePath = name: builtins.toPath "${scriptDir}/${name}";
-  mkCanonicalFile = name:
+  mkCanonicalFile =
+    name:
     lib.nameValuePair "${cfg.canonicalDir}/${name}" {
       source = toSourcePath name;
       executable = true;
       force = true; # always overwrite canonical copies
     };
+
+  # Package restore_scripts.py as a command-line tool
+  restore-scripts = pkgs.writeShellScriptBin "restore-scripts" ''
+    exec ${pkgs.python3}/bin/python3 ${../scripts/restore_scripts.py} "$@"
+  '';
 in
 {
   options.axiom.python-scripts = {
-    enable = lib.mkEnableOption "install python scripts to user scripts dir and canonical location";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Install python scripts to user scripts dir and canonical location.";
+    };
 
     userDir = lib.mkOption {
       type = lib.types.str;
@@ -39,18 +49,23 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # Add restore-scripts to user's PATH
+    home.packages = [ restore-scripts ];
+
     # Ensure directories exist and populate missing user copies from canonical
     home.activation.pythonScriptsInit = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       set -eu
       mkdir -p "$HOME/${cfg.userDir}"
       mkdir -p "$HOME/${cfg.canonicalDir}"
 
+      echo "Checking for missing Python scripts in ~/${cfg.userDir}..."
       for f in ${pyListForShell}; do
         src="$HOME/${cfg.canonicalDir}/$f"
         dest="$HOME/${cfg.userDir}/$f"
         if [ ! -e "$dest" ] && [ -e "$src" ]; then
-          cp -f "$src" "$dest"
-          chmod +x "$dest"
+          run cp -f "$src" "$dest"
+          run chmod +x "$dest"
+          echo "  Installed missing script: $f"
         fi
       done
     '';
