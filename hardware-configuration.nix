@@ -73,7 +73,7 @@
 
   # Required hardware settings for Wayland
   hardware.graphics = {
-    enable = false;
+    enable = true;
   };
 
   # Essential environment variables for Wayland + NVIDIA
