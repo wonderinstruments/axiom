@@ -10,7 +10,7 @@
 
     # Or use the fractal zoom screensaver:
     # command = "python $HOME/scripts/fractal_saver.py";
-    
+
     # Or aquarium:
     # command = "asciiquarium";
 
