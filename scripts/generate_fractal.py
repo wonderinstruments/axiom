@@ -11,8 +11,10 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 from term_image.image import from_file
+from tqdm import tqdm
 
 import axiom.colors
+import axiom.wallpaper
 
 
 def hex_to_rgb(hex_color):
@@ -209,7 +211,7 @@ def generate_fractal(
     y_min = center_y - (2.0 / zoom)
     y_max = center_y + (2.0 / zoom)
 
-    for py in range(height):
+    for py in tqdm(range(height), desc="Generating fractal", unit="row"):
         for px in range(width):
             x = x_min + (x_max - x_min) * px / width
             y = y_min + (y_max - y_min) * py / height
@@ -234,7 +236,7 @@ def colorize_fractal(fractal_data, colors, max_iter):
     # Convert hex colors to RGB
     rgb_colors = [hex_to_rgb(c) for c in colors]
 
-    for py in range(height):
+    for py in tqdm(range(height), desc="Colorizing", unit="row"):
         for px in range(width):
             iteration = fractal_data[py, px]
 
@@ -340,7 +342,6 @@ def main():
     )
     print(f"Found region: center=({center_x:.6f}, {center_y:.6f}), zoom={zoom:.2f}\n")
 
-    print(f"Generating {args.type} fractal ({args.width}x{args.height})...")
     fractal_data = generate_fractal(
         args.width,
         args.height,
@@ -353,10 +354,9 @@ def main():
         args.julia_c_imag,
     )
 
-    print(f"Colorizing with {len(colors)} theme colors...")
     image = colorize_fractal(fractal_data, colors, args.iterations)
 
-    print(f"Saving to {output_path}...")
+    print(f"\nSaving to {output_path}...")
     image.save(output_path)
     print(f"✓ Saved to {output_path}\n")
 
@@ -364,6 +364,16 @@ def main():
     print("Displaying image in terminal...\n")
     term_image = from_file(str(output_path))
     term_image.draw()
+
+    # Ask if user wants to set as wallpaper
+    print()
+    response = input("Set this as your wallpaper? [y/N] ")
+    if response.lower() == "y":
+        try:
+            axiom.wallpaper.set(output_path)
+            print(f"✓ Wallpaper set!")
+        except Exception as e:
+            print(f"Error setting wallpaper: {e}")
 
 
 if __name__ == "__main__":

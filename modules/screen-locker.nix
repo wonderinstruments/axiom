@@ -42,7 +42,7 @@ let
            -xrm "XTerm*borderWidth: 0" \
            -xrm "XTerm*internalBorder: 0" \
            +pc \
-           -e ${pkgs.cmatrix}/bin/cmatrix -a -b & 
+           -e ${cfg.command} &
         pid=$!
         
         # Wait for window to exist
@@ -116,11 +116,16 @@ in
 {
   options = {
     axiom.screensaver = {
-      enable = lib.mkEnableOption "cmatrix screensaver";
+      enable = lib.mkEnableOption "screensaver";
       sleepAfterMinutes = lib.mkOption {
         type = lib.types.int;
         default = 15;
         description = "Idle timeout in minutes before the screensaver starts.";
+      };
+      command = lib.mkOption {
+        type = lib.types.str;
+        default = "${pkgs.cmatrix}/bin/cmatrix -a -b";
+        description = "Command to run as the screensaver.";
       };
     };
   };

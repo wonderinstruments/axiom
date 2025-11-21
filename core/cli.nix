@@ -22,6 +22,7 @@
     tldr
     fd
     ffmpeg
+    asciiquarium
   ];
 
   programs.fish.enable = true;
