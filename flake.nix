@@ -91,6 +91,7 @@
               ./modules/micro.nix
               ./modules/custom-icons.nix
               ./modules/tmux.nix
+              ./modules/axiom-python.nix
             ];
             home-manager.users.edmund = {
               imports = [

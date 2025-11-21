@@ -36,7 +36,7 @@ let
 
   # Build the wallpaper file path
   wallpaperPath = "${config.home.homeDirectory}/.cache/fractal-wallpaper.png";
-  
+
   # Wallpaper config file location
   wallpaperConfigPath = "${config.home.homeDirectory}/.config/axiom/wallpaper";
 
