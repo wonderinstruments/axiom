@@ -23,7 +23,7 @@
           always = false;
         }
         {
-          command = "exec --no-startup-id xset s off -dpms s noblank";
+          command = "xset s off -dpms s noblank";
           always = false;
           notification = false;
         }
