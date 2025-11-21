@@ -17,29 +17,6 @@ let
     ];
   };
 
-  # Build pynoise from GitLab
-  pynoise = pkgs.python313.pkgs.buildPythonPackage {
-    pname = "pynoise";
-    version = "3.0.0";
-    format = "setuptools";
-
-    src = pkgs.fetchgit {
-      url = "https://gitlab.com/atrus6/pynoise.git";
-      rev = "a51f2f908b969596bbbebd005ab9b0c5950385f8";
-      sha256 = "sha256-2w1FmlbDcx66J90KoS4JG50NlLgwoRm+fMVg1qRaYRc=";
-    };
-
-    propagatedBuildInputs = with pkgs.python313.pkgs; [
-      sortedcontainers
-      pillow
-      numpy
-      pyopencl
-    ];
-
-    # Skip tests if they fail
-    doCheck = false;
-  };
-
   # Build p5 from GitHub
   p5 = pkgs.python313.pkgs.buildPythonPackage {
     pname = "p5";
@@ -101,12 +78,12 @@ in
         # fun
         pyfiglet
         term-image
+        noise
 
         # axiom library
         axiom
 
         # custom packages
-        pynoise
         p5
       ]
     ))

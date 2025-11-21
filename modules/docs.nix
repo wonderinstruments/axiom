@@ -12,6 +12,7 @@ let
   generateFractalScript = builtins.readFile ../scripts/generate_fractal.py;
   setWallpaperScript = builtins.readFile ../scripts/set_wallpaper.py;
   fractalSaverScript = builtins.readFile ../scripts/fractal_saver.py;
+  noiseSaverScript = builtins.readFile ../scripts/noise_saver.py;
 
   # Documentation files from the docs directory
   docTemplates = {
@@ -83,6 +84,11 @@ in
         };
         "scripts/fractal_saver.py" = {
           text = fractalSaverScript;
+          executable = true;
+          force = cfg.overwrite;
+        };
+        "scripts/noise_saver.py" = {
+          text = noiseSaverScript;
           executable = true;
           force = cfg.overwrite;
         };
