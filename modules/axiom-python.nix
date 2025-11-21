@@ -1,17 +1,9 @@
 {
-  lib,
   config,
   pkgs,
   ...
 }:
 let
-  inherit (lib)
-    mkOption
-    mkEnableOption
-    mkIf
-    types
-    ;
-  cfg = config.axiom.python;
 
   # Build the axiom package with generated colors from Stylix
   axiomPackage = pkgs.python313.pkgs.buildPythonPackage {
@@ -28,7 +20,7 @@ let
 
     # Generate colors.py from template with Stylix colors
     postPatch = ''
-      substituteInPlace colors.py.in \
+      substituteInPlace axiom/colors.py.in \
         --replace "@base00@" "${config.lib.stylix.colors.base00}" \
         --replace "@base01@" "${config.lib.stylix.colors.base01}" \
         --replace "@base02@" "${config.lib.stylix.colors.base02}" \
@@ -45,7 +37,7 @@ let
         --replace "@base0D@" "${config.lib.stylix.colors.base0D}" \
         --replace "@base0E@" "${config.lib.stylix.colors.base0E}" \
         --replace "@base0F@" "${config.lib.stylix.colors.base0F}"
-      mv colors.py.in colors.py
+      mv axiom/colors.py.in axiom/colors.py
     '';
   };
 
@@ -53,17 +45,11 @@ let
   pythonWithAxiom = pkgs.python313.withPackages (ps: [ axiomPackage ]);
 in
 {
-  options.axiom.python = {
-    enable = mkEnableOption "axiom Python library";
-  };
+  # Add axiom to home packages
+  home.packages = [ pythonWithAxiom ];
 
-  config = mkIf cfg.enable {
-    # Add axiom to home packages
-    home.packages = [ pythonWithAxiom ];
-
-    # Set PYTHONPATH so axiom is available
-    home.sessionVariables = {
-      PYTHONPATH = "${pythonWithAxiom}/${pythonWithAxiom.sitePackages}:$PYTHONPATH";
-    };
+  # Set PYTHONPATH so axiom is available
+  home.sessionVariables = {
+    PYTHONPATH = "${pythonWithAxiom}/${pythonWithAxiom.sitePackages}:$PYTHONPATH";
   };
 }
