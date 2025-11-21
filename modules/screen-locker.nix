@@ -81,17 +81,14 @@ let
         x="''${BASH_REMATCH[3]}"
         y="''${BASH_REMATCH[4]}"
 
-        ${pkgs.dzen2}/bin/dzen2 \
+        (echo "Press Ctrl+c to escape" | ${pkgs.dzen2}/bin/dzen2 \
           -x "$x" -y "$((y + height - 30))" -w "$width" -h 30 \
           -ta c \
-          -fn "${config.stylix.fonts.sansSerif.name}:pixelsize=18" \
+          -fn "${config.stylix.fonts.monospace.name}:pixelsize=18" \
           -fg "#${config.lib.stylix.colors.base0B}" \
-          -bg "#${config.lib.stylix.colors.base00}" -p &
+          -bg "#${config.lib.stylix.colors.base00}" -e "onstart=uncollapse" -p) &
         dzen_pid=$!
         children+=("$dzen_pid")
-
-        # Send the help text to dzen2 via its stdin
-        printf '%s\n' "Press Ctrl+c to escape" > "/proc/$dzen_pid/fd/0" 2>/dev/null || true
       fi
     done
 

@@ -17,6 +17,7 @@
     opacityRules = [
       "100:class_g = 'Rofi'"
       "95:class_g = 'Polybar'"
+      "90:name *= 'cmatrix-saver'"
     ];
   };
 }

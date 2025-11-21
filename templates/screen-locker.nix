@@ -2,6 +2,6 @@
 {
   axiom.screensaver = {
     enable = true;
-    sleepAfterMinutes = 1;
+    sleepAfterMinutes = 10;
   };
 }
