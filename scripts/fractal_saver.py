@@ -119,26 +119,91 @@ def pick_interesting_location(fractal_type):
         return (random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5))
 
 
+def sample_region(
+    center_x, center_y, zoom, fractal_type, max_iter, julia_c, sample_size=15
+):
+    """Sample a region to find interesting areas with detail."""
+    samples_in = 0
+    samples_out = 0
+    iteration_variance = []
+
+    for i in range(sample_size):
+        for j in range(sample_size):
+            x_offset = (i / sample_size - 0.5) * 2.0 / zoom
+            y_offset = (j / sample_size - 0.5) * 2.0 / zoom
+            x = center_x + x_offset
+            y = center_y + y_offset
+
+            if fractal_type == "mandelbrot":
+                c = complex(x, y)
+                iterations = mandelbrot(c, max_iter)
+            else:
+                z = complex(x, y)
+                iterations = julia(z, julia_c, max_iter)
+
+            if iterations == max_iter:
+                samples_in += 1
+            else:
+                samples_out += 1
+                iteration_variance.append(iterations)
+
+    total = samples_in + samples_out
+    fraction_in = samples_in / total
+    fraction_out = samples_out / total
+
+    # Interest score: prefer boundary areas with variance
+    boundary_score = 4 * fraction_in * fraction_out
+    variance_score = 0
+    if len(iteration_variance) > 1:
+        variance = np.var(iteration_variance)
+        variance_score = min(variance / (max_iter * 0.3), 1.0)
+
+    interest = boundary_score * 0.6 + variance_score * 0.4
+    return interest
+
+
+def find_zoom_target(center_x, center_y, zoom, fractal_type, max_iter, julia_c):
+    """Find an interesting nearby point to zoom toward."""
+    best_interest = 0
+    best_x = center_x
+    best_y = center_y
+
+    # Sample a 5x5 grid around current center
+    search_radius = 0.8 / zoom
+    for i in range(5):
+        for j in range(5):
+            test_x = center_x + (i / 4 - 0.5) * search_radius
+            test_y = center_y + (j / 4 - 0.5) * search_radius
+
+            interest = sample_region(
+                test_x, test_y, zoom * 1.3, fractal_type, max_iter, julia_c
+            )
+
+            if interest > best_interest:
+                best_interest = interest
+                best_x = test_x
+                best_y = test_y
+
+    return best_x, best_y
+
+
 def main():
-    # Terminal size (smaller for faster rendering)
-    width, height = 160, 80
-    max_iter = 128
+    # Higher resolution for better quality
+    width, height = 320, 160
+    max_iter = 256
     colors = axiom.colors.all_colors
+
+    # Julia constants
+    julia_constants = [
+        complex(-0.7, 0.27015),
+        complex(-0.835, -0.2321),
+        complex(-0.8, 0.156),
+        complex(0.285, 0.01),
+    ]
 
     # Randomly choose fractal type
     fractal_type = random.choice(["mandelbrot", "julia"])
-    
-    # For Julia sets, pick an interesting constant
-    if fractal_type == "julia":
-        julia_constants = [
-            complex(-0.7, 0.27015),
-            complex(-0.835, -0.2321),
-            complex(-0.8, 0.156),
-            complex(0.285, 0.01),
-        ]
-        julia_c = random.choice(julia_constants)
-    else:
-        julia_c = complex(0, 0)
+    julia_c = random.choice(julia_constants) if fractal_type == "julia" else complex(0, 0)
 
     # Pick starting location and zoom
     center_x, center_y = pick_interesting_location(fractal_type)
@@ -161,27 +226,33 @@ def main():
             term_image = AutoImage(image)
             term_image.draw()
 
+            # Find interesting nearby point to zoom toward
+            if frame_count % 3 == 0:  # Update target every 3 frames
+                target_x, target_y = find_zoom_target(
+                    center_x, center_y, zoom, fractal_type, max_iter, julia_c
+                )
+            
+            # Gradually move toward target
+            center_x = center_x * 0.7 + target_x * 0.3
+            center_y = center_y * 0.7 + target_y * 0.3
+
             # Zoom in gradually
-            zoom *= 1.15
+            zoom *= 1.2
             frame_count += 1
 
-            # Add small random drift to center point
-            center_x += random.uniform(-0.001 / zoom, 0.001 / zoom)
-            center_y += random.uniform(-0.001 / zoom, 0.001 / zoom)
-
-            # Reset after zooming too far
-            if zoom > 1e10 or frame_count > 100:
+            # Reset after zooming too far or too long
+            if zoom > 1e12 or frame_count > 80:
                 center_x, center_y = pick_interesting_location(fractal_type)
                 zoom = 0.5
                 frame_count = 0
                 # Occasionally switch fractal type
                 if random.random() < 0.3:
                     fractal_type = random.choice(["mandelbrot", "julia"])
-                    if fractal_type == "julia":
-                        julia_c = random.choice(julia_constants)
+                    julia_c = random.choice(julia_constants) if fractal_type == "julia" else complex(0, 0)
+                print(f"\nSwitching to {fractal_type}...")
 
             # Brief pause between frames
-            time.sleep(0.5)
+            time.sleep(0.3)
 
     except KeyboardInterrupt:
         print("\nExiting fractal screensaver...")

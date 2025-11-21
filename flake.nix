@@ -84,7 +84,7 @@
               ./modules/polybar.nix
               ./modules/picom.nix
               ./modules/kitty.nix
-              ./modules/screen-locker.nix
+              ./modules/screensaver.nix
               ./modules/fractal-wallpaper.nix
               ./modules/sounds.nix
               ./modules/clipboard-monitor.nix
@@ -102,7 +102,7 @@
                 ./templates/fractal-wallpaper.nix
                 ./templates/sounds.nix
                 ./templates/clipboard-monitor.nix
-                ./templates/screen-locker.nix
+                ./templates/screensaver.nix
               ];
             };
           }
