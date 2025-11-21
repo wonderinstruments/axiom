@@ -7,13 +7,6 @@
 let
   cfg = config.axiom.docs;
 
-  # Scripts from scripts directory
-  welcomeScript = builtins.readFile ../scripts/welcome.py;
-  generateFractalScript = builtins.readFile ../scripts/generate_fractal.py;
-  setWallpaperScript = builtins.readFile ../scripts/set_wallpaper.py;
-  fractalSaverScript = builtins.readFile ../scripts/fractal_saver.py;
-  noiseSaverScript = builtins.readFile ../scripts/noise_saver.py;
-
   # Documentation files from the docs directory
   docTemplates = {
     "docs/WELCOME.md" = builtins.readFile ../docs/WELCOME.md;
@@ -50,7 +43,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Deploy documentation files and scripts using home.file for direct file management
+    # Deploy documentation files using home.file for direct file management
     home.file =
       let
         # Merge default templates with custom docs
@@ -64,41 +57,12 @@ in
             force = cfg.overwrite;
           };
       in
-      (lib.mapAttrs' createFileEntry allDocs)
-      // {
-        # Deploy scripts
-        "scripts/welcome.py" = {
-          text = welcomeScript;
-          executable = true;
-          force = cfg.overwrite;
-        };
-        "scripts/generate_fractal.py" = {
-          text = generateFractalScript;
-          executable = true;
-          force = cfg.overwrite;
-        };
-        "scripts/set_wallpaper.py" = {
-          text = setWallpaperScript;
-          executable = true;
-          force = cfg.overwrite;
-        };
-        "scripts/fractal_saver.py" = {
-          text = fractalSaverScript;
-          executable = true;
-          force = cfg.overwrite;
-        };
-        "scripts/noise_saver.py" = {
-          text = noiseSaverScript;
-          executable = true;
-          force = cfg.overwrite;
-        };
-      };
+      (lib.mapAttrs' createFileEntry allDocs);
 
-    # Ensure the docs and scripts directories exist
+    # Ensure the docs directory exists
     home.activation.docsDirectory = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       set -eu
       mkdir -p "$HOME/docs"
-      mkdir -p "$HOME/scripts"
     '';
   };
 }
