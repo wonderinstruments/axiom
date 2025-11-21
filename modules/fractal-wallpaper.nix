@@ -36,6 +36,9 @@ let
 
   # Build the wallpaper file path
   wallpaperPath = "${config.home.homeDirectory}/.cache/fractal-wallpaper.png";
+  
+  # Wallpaper config file location
+  wallpaperConfigPath = "${config.home.homeDirectory}/.config/axiom/wallpaper";
 
   # Build the colors list from stylix
   colorsList = with config.lib.stylix.colors; [
@@ -76,6 +79,9 @@ let
     #!/usr/bin/env bash
     echo "Regenerating fractal wallpaper..."
     ${generateCommand}
+    echo "Updating wallpaper config..."
+    mkdir -p ${config.home.homeDirectory}/.config/axiom
+    echo "${wallpaperPath}" > ${wallpaperConfigPath}
     echo "Setting wallpaper..."
     ${pkgs.feh}/bin/feh --bg-scale ${wallpaperPath}
     echo "Done!"
@@ -148,14 +154,16 @@ in
     home.activation.generateFractalWallpaper = mkIf cfg.regenerateOnRebuild (
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         run mkdir -p ${config.home.homeDirectory}/.cache
+        run mkdir -p ${config.home.homeDirectory}/.config/axiom
         run ${generateCommand}
+        run echo "${wallpaperPath}" > ${wallpaperConfigPath}
       ''
     );
 
-    # Set the wallpaper using feh in i3 startup
+    # Set the wallpaper using feh in i3 startup (reads from config file)
     xsession.windowManager.i3.config.startup = [
       {
-        command = "${pkgs.feh}/bin/feh --bg-scale ${wallpaperPath}";
+        command = ''[ -f ${wallpaperConfigPath} ] && ${pkgs.feh}/bin/feh --bg-scale "$(cat ${wallpaperConfigPath})"'';
         always = true;
         notification = false;
       }

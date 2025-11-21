@@ -7,8 +7,10 @@
 let
   cfg = config.axiom.docs;
 
-  # Welcome script from scripts directory
+  # Scripts from scripts directory
   welcomeScript = builtins.readFile ../scripts/welcome.py;
+  generateFractalScript = builtins.readFile ../scripts/generate_fractal.py;
+  setWallpaperScript = builtins.readFile ../scripts/set_wallpaper.py;
 
   # Documentation files from the docs directory
   docTemplates = {
@@ -62,9 +64,19 @@ in
       in
       (lib.mapAttrs' createFileEntry allDocs)
       // {
-        # Deploy welcome script
+        # Deploy scripts
         "scripts/welcome.py" = {
           text = welcomeScript;
+          executable = true;
+          force = cfg.overwrite;
+        };
+        "scripts/generate_fractal.py" = {
+          text = generateFractalScript;
+          executable = true;
+          force = cfg.overwrite;
+        };
+        "scripts/set_wallpaper.py" = {
+          text = setWallpaperScript;
           executable = true;
           force = cfg.overwrite;
         };
