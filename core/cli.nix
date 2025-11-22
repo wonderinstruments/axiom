@@ -24,6 +24,7 @@
     ffmpeg
     asciiquarium
     visidata
+    fx
   ];
 
   programs.fish.enable = true;
