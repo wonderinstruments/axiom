@@ -14,6 +14,9 @@
     # Or aquarium:
     # command = "asciiquarium";
 
+    # Or pipes
+    # command = "pipes-rs";
+
     # Or customize cmatrix:
     # command = "cmatrix -C cyan";  # Different color
     # command = "cmatrix -a -b -u 2";  # Slower speed

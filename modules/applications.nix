@@ -474,38 +474,40 @@ in
     }) allActiveApps;
 
     # Create rofi-specific desktop entries (RofiCustom category)
-    xdg.dataFile = lib.mapAttrs' (name: app: {
-      name = "applications/rofi-${name}.desktop";
-      value = {
-        text = ''
-          [Desktop Entry]
-          Version=1.0
-          Type=Application
-          Name=${name}
-          Comment=${app.comment}
-          Exec=${if app.isTui or false then "kitty -e ${app.exec}" else app.exec}
-          Icon=${app.icon}
-          Categories=${lib.concatStringsSep ";" app.categories};RofiCustom;
-          Terminal=false
-          StartupNotify=true
-        '';
-      };
-    }) allActiveApps // lib.mapAttrs' (name: app: {
-      name = "applications/launcher-${name}.desktop";
-      value = {
-        text = ''
-          [Desktop Entry]
-          Version=1.0
-          Type=Application
-          Name=${name}
-          Comment=${app.comment}
-          Exec=${app.exec}
-          Icon=${app.icon}
-          Categories=${lib.concatStringsSep ";" app.categories};LauncherCustom;
-          Terminal=${if app.isTui or false then "true" else "false"}
-          StartupNotify=true
-        '';
-      };
-    }) allActiveApps;
+    xdg.dataFile =
+      lib.mapAttrs' (name: app: {
+        name = "applications/rofi-${name}.desktop";
+        value = {
+          text = ''
+            [Desktop Entry]
+            Version=1.0
+            Type=Application
+            Name=${name}
+            Comment=${app.comment}
+            Exec=${if app.isTui or false then "kitty -e ${app.exec}" else app.exec}
+            Icon=${app.icon}
+            Categories=${lib.concatStringsSep ";" app.categories};RofiCustom;
+            Terminal=false
+            StartupNotify=true
+          '';
+        };
+      }) allActiveApps
+      // lib.mapAttrs' (name: app: {
+        name = "applications/launcher-${name}.desktop";
+        value = {
+          text = ''
+            [Desktop Entry]
+            Version=1.0
+            Type=Application
+            Name=${name}
+            Comment=${app.comment}
+            Exec=${app.exec}
+            Icon=${app.icon}
+            Categories=${lib.concatStringsSep ";" app.categories};LauncherCustom;
+            Terminal=${if app.isTui or false then "true" else "false"}
+            StartupNotify=true
+          '';
+        };
+      }) allActiveApps;
   };
 }

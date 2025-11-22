@@ -2,11 +2,9 @@
 {
   environment.systemPackages = with pkgs; [
     git
-    lazygit
     gh
     tmux
     eza
-    ranger
     fzf
     nixfmt-rfc-style
     nixfmt-tree
@@ -22,8 +20,6 @@
     tldr
     fd
     ffmpeg
-    asciiquarium
-    visidata
     fx
   ];
 

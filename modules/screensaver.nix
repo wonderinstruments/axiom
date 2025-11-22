@@ -137,6 +137,8 @@ in
       startScreensaver
       dzen2
       i3
+      asciiquarium
+      pipes-rs
     ];
 
     services.xidlehook = {
