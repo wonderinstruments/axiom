@@ -249,6 +249,41 @@ let
       comment = "Python Coding Environment";
       categories = [ ];
     };
+
+    # TUI Applications
+    ranger = {
+      package = pkgs.ranger;
+      exec = "ranger";
+      icon = "utilities-terminal";
+      comment = "File Manager";
+      categories = [
+        "System"
+        "FileManager"
+      ];
+      terminal = true;
+    };
+    visidata = {
+      package = pkgs.visidata;
+      exec = "visidata";
+      icon = "utilities-terminal";
+      comment = "Terminal Spreadsheet";
+      categories = [
+        "Office"
+        "Utility"
+      ];
+      terminal = true;
+    };
+    lazygit = {
+      package = pkgs.lazygit;
+      exec = "lazygit";
+      icon = "git";
+      comment = "Git Terminal UI";
+      categories = [
+        "Development"
+        "Utility"
+      ];
+      terminal = true;
+    };
   };
 
   # Separate applications into those with and without enable options
@@ -285,7 +320,7 @@ in
       exec = app.exec;
       icon = app.icon;
       categories = app.categories;
-      terminal = false;
+      terminal = app.terminal or false;
       startupNotify = true;
     }) allActiveApps;
 
@@ -302,7 +337,7 @@ in
           Exec=${app.exec}
           Icon=${app.icon}
           Categories=${lib.concatStringsSep ";" app.categories};RofiCustom;
-          Terminal=false
+          Terminal=${if app.terminal or false then "true" else "false"}
           StartupNotify=true
         '';
       };
