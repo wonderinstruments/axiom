@@ -15,6 +15,7 @@
     wmctrl
     xorg.xprop
     jq
+    yq
     trashy
     ripgrep
     tldr

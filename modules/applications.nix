@@ -422,6 +422,17 @@ let
       ];
       isTui = true;
     };
+    play = {
+      package = pkgs.play;
+      exec = "sh -c 'CMD=$(echo -e \"awk\\ngrep\\nsed\\njq\\nyq\" | fzf --prompt=\"Select command: \") && play $CMD'";
+      icon = "utilities-terminal";
+      comment = "Command Practice Tool";
+      categories = [
+        "Development"
+        "Utility"
+      ];
+      isTui = true;
+    };
   };
 
   # Separate applications into those with and without enable options
