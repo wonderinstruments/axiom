@@ -43,6 +43,15 @@ let
     };
 
     # Information & Education
+    anki = {
+      package = pkgs.anki;
+      exec = "anki";
+      icon = "anki";
+      comment = "Flashcards";
+      categories = [
+        "Educations"
+      ];
+    };
     stellarium = {
       package = pkgs.stellarium;
       exec = "stellarium";

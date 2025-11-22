@@ -38,6 +38,7 @@ let
       pyopengl-accelerate
       requests
       skia-pathops
+      genanki
     ];
 
     # Skip tests if they fail
