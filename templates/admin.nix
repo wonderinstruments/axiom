@@ -1,13 +1,10 @@
 { ... }:
 {
   axiom.admin = {
-    webBrowser.enable = true;
-    chromium.enable = true;
-    warp-terminal.enable = true;
-    spotify.enable = true;
-    obsidian.enable = true;
-    slack.enable = true;
-    discord.enable = true;
+    web = {
+      firefox.enable = true;
+      chromium.enable = true;
+    };
     games = {
       endless-sky.enable = true;
       widelands.enable = true;
@@ -18,9 +15,16 @@
       katomic.enable = true;
       mindustry.enable = true;
       luanti.enable = true;
+      pingus.enable = true;
+      tuxtype.enable = true;
     };
     applications = {
       xiphos.enable = true;
+      warp-terminal.enable = true;
+      spotify.enable = true;
+      obsidian.enable = true;
+      slack.enable = true;
+      discord.enable = true;
     };
   };
 }
