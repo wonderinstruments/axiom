@@ -158,15 +158,6 @@ let
         "Audio"
       ];
     };
-    darktable = {
-      package = pkgs.darktable;
-      exec = "darktable";
-      icon = "darktable";
-      comment = "Photography Processing";
-      categories = [
-        "Graphics"
-      ];
-    };
     easyeffects = {
       package = pkgs.easyeffects;
       exec = "easyeffects";
@@ -175,6 +166,15 @@ let
       categories = [
         "AudioVideo"
         "Audio"
+      ];
+    };
+    vlc = {
+      package = pkgs.vlc;
+      exec = "vlc";
+      icon = "vlc";
+      comment = "AudioVideo Player";
+      categories = [
+        "AudioVideo"
       ];
     };
     lmms = {
