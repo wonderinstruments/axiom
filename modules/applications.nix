@@ -22,6 +22,15 @@ let
     };
 
     # Text Editors & Writing
+    vimiv = {
+      package = pkgs.vimiv-qt;
+      exec = "vimiv";
+      icon = "vimiv";
+      comment = "Image Viewer";
+      categories = [
+        "Office"
+      ];
+    };
     zathura = {
       package = pkgs.zathura;
       exec = "zathura";

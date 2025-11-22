@@ -16,6 +16,11 @@ let
   };
 
   defaultCanonicalDir = ".local/share/axiom/bashcrawl";
+
+  # Package the launcher script
+  bashcrawl-launcher = pkgs.writeShellScriptBin "bashcrawl-launcher" ''
+    exec ${pkgs.bash}/bin/bash ${../scripts/bashcrawl-launcher.sh}
+  '';
 in
 {
   options.axiom.bashcrawl = {
@@ -39,6 +44,39 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # Add launcher to PATH
+    home.packages = [ bashcrawl-launcher ];
+
+    # Regular desktop entry
+    xdg.desktopEntries.bashcrawl = {
+      name = "Bashcrawl";
+      genericName = "Terminal Adventure Game";
+      comment = "Learn bash through a dungeon crawling adventure";
+      exec = "${pkgs.kitty}/bin/kitty --hold ${bashcrawl-launcher}/bin/bashcrawl-launcher";
+      icon = "utilities-terminal";
+      terminal = false;
+      categories = [
+        "Game"
+        "Education"
+      ];
+    };
+
+    # Rofi-specific desktop entry
+    xdg.dataFile."applications/rofi-bashcrawl.desktop" = {
+      text = ''
+        [Desktop Entry]
+        Version=1.0
+        Type=Application
+        Name=Bashcrawl
+        Comment=Learn bash through a dungeon crawling adventure
+        Exec=${pkgs.kitty}/bin/kitty --hold ${bashcrawl-launcher}/bin/bashcrawl-launcher
+        Icon=utilities-terminal
+        Categories=Game;Education;RofiCustom;
+        Terminal=false
+        StartupNotify=true
+      '';
+    };
+
     # Ensure directories exist and populate user copy from canonical if missing
     home.activation.bashcrawlInit = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       set -eu
