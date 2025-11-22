@@ -186,6 +186,16 @@ let
         "AudioVideo"
       ];
     };
+    helm = {
+      package = pkgs.helm;
+      exec = "helm";
+      icon = "helm";
+      comment = "Polyphonic Synthesizer";
+      categories = [
+        "AudioVideo"
+        "Audio"
+      ];
+    };
     lmms = {
       package = pkgs.lmms;
       exec = "lmms";
