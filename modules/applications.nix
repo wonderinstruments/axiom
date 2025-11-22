@@ -43,13 +43,22 @@ let
     };
 
     # Information & Education
+    xiphos = {
+      package = pkgs.xiphos;
+      exec = "xiphos";
+      icon = "xiphos";
+      comment = "Bible Study";
+      categories = [
+        "Education"
+      ];
+    };
     anki = {
       package = pkgs.anki;
       exec = "anki";
       icon = "anki";
       comment = "Flashcards";
       categories = [
-        "Educations"
+        "Education"
       ];
     };
     stellarium = {
@@ -144,6 +153,25 @@ let
       exec = "rosegarden";
       icon = "rosegarden";
       comment = "Audio composer";
+      categories = [
+        "AudioVideo"
+        "Audio"
+      ];
+    };
+    darktable = {
+      package = pkgs.darktable;
+      exec = "darktable";
+      icon = "darktable";
+      comment = "Photography Processing";
+      categories = [
+        "Graphics"
+      ];
+    };
+    easyeffects = {
+      package = pkgs.easyeffects;
+      exec = "easyeffects";
+      icon = "easyeffects";
+      comment = "Audio Effects";
       categories = [
         "AudioVideo"
         "Audio"
