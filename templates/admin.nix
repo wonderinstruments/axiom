@@ -19,5 +19,8 @@
       mindustry.enable = true;
       luanti.enable = true;
     };
+    applications = {
+      xiphos.enable = true;
+    };
   };
 }

@@ -7,6 +7,8 @@
 }:
 
 let
+  cfg = config.axiom.admin.applications;
+
   # Map of Ansible applications to Nix packages where available
   nixApplications = {
     # Gaming
@@ -69,6 +71,7 @@ let
       categories = [
         "Education"
       ];
+      enableOption = true;
     };
     anki = {
       package = pkgs.anki;
@@ -248,38 +251,61 @@ let
     };
   };
 
+  # Separate applications into those with and without enable options
+  appsWithEnableOption = lib.filterAttrs (_: app: app.enableOption or false) nixApplications;
+  appsWithoutEnableOption = lib.filterAttrs (_: app: !(app.enableOption or false)) nixApplications;
+
+  # Filter enabled applications (only applies to apps with enableOption flag)
+  enabledApps = lib.filterAttrs (name: _: cfg.${name}.enable) appsWithEnableOption;
+
+  # Merge enabled apps with apps that don't require enable options
+  allActiveApps = enabledApps // appsWithoutEnableOption;
+
 in
 {
-  # Install available GUI applications
-  home.packages = lib.attrValues (lib.mapAttrs (_: app: app.package) nixApplications);
-
-  # Create desktop entries for applications
-  xdg.desktopEntries = lib.mapAttrs (name: app: {
-    name = lib.strings.toUpper (lib.substring 0 1 name) + lib.substring 1 (-1) name;
-    comment = app.comment;
-    exec = app.exec;
-    icon = app.icon;
-    categories = app.categories;
-    terminal = false;
-    startupNotify = true;
-  }) nixApplications;
-
-  # Create rofi-specific desktop entries (RofiCustom category)
-  xdg.dataFile = lib.mapAttrs' (name: app: {
-    name = "applications/rofi-${name}.desktop";
-    value = {
-      text = ''
-        [Desktop Entry]
-        Version=1.0
-        Type=Application
-        Name=${name}
-        Comment=${app.comment}
-        Exec=${app.exec}
-        Icon=${app.icon}
-        Categories=${lib.concatStringsSep ";" app.categories};RofiCustom;
-        Terminal=false
-        StartupNotify=true
-      '';
+  options = {
+    axiom.admin.applications = lib.mkOption {
+      type = lib.types.submodule {
+        options = lib.mapAttrs (name: _: {
+          enable = lib.mkEnableOption "${name} application";
+        }) appsWithEnableOption;
+      };
+      default = { };
     };
-  }) nixApplications;
+  };
+
+  config = {
+    # Install available GUI applications
+    home.packages = lib.attrValues (lib.mapAttrs (_: app: app.package) allActiveApps);
+
+    # Create desktop entries for applications
+    xdg.desktopEntries = lib.mapAttrs (name: app: {
+      name = lib.strings.toUpper (lib.substring 0 1 name) + lib.substring 1 (-1) name;
+      comment = app.comment;
+      exec = app.exec;
+      icon = app.icon;
+      categories = app.categories;
+      terminal = false;
+      startupNotify = true;
+    }) allActiveApps;
+
+    # Create rofi-specific desktop entries (RofiCustom category)
+    xdg.dataFile = lib.mapAttrs' (name: app: {
+      name = "applications/rofi-${name}.desktop";
+      value = {
+        text = ''
+          [Desktop Entry]
+          Version=1.0
+          Type=Application
+          Name=${name}
+          Comment=${app.comment}
+          Exec=${app.exec}
+          Icon=${app.icon}
+          Categories=${lib.concatStringsSep ";" app.categories};RofiCustom;
+          Terminal=false
+          StartupNotify=true
+        '';
+      };
+    }) allActiveApps;
+  };
 }
