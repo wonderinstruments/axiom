@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.axiom.bashcrawl;
-  
+
   # Download bashcrawl from GitLab
   bashcrawlSrc = pkgs.fetchFromGitLab {
     owner = "slackermedia";
@@ -14,7 +14,7 @@ let
     rev = "stable-2024.02.09";
     sha256 = "sha256-/L3pbyhVlDoorU5fQmLpLIiY0m6NIYeP121PgDVfS7U=";
   };
-  
+
   defaultCanonicalDir = ".local/share/axiom/bashcrawl";
 in
 {
@@ -43,7 +43,7 @@ in
     home.activation.bashcrawlInit = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       set -eu
       mkdir -p "$HOME/${cfg.canonicalDir}"
-      
+
       echo "Checking for bashcrawl in ~/${cfg.userDir}..."
       if [ ! -e "$HOME/${cfg.userDir}" ]; then
         if [ -e "$HOME/${cfg.canonicalDir}/entrance" ]; then
