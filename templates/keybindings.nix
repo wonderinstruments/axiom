@@ -6,6 +6,7 @@ in
   axiom.keybindings = {
     # Application shortcuts
     newTerminal = "${mod}+Return";
+    tuiLauncher = "${mod}+Shift+Return";
     applicationLauncher = "${mod}+space";
 
     # Window management (vim-inspired)

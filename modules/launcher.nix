@@ -16,7 +16,10 @@
     comment = "TUI Application Launcher";
     exec = "kitty -e launcher";
     icon = "preferences-system";
-    categories = [ "System" "Utility" ];
+    categories = [
+      "System"
+      "Utility"
+    ];
     terminal = false;
     startupNotify = true;
   };

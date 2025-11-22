@@ -21,6 +21,12 @@ in
       description = "Key combination to open a new terminal window.";
     };
 
+    tuiLauncher = lib.mkOption {
+      type = lib.types.str;
+      default = "Mod4+Shift+Return";
+      description = "Key combination to open the TUI launcher.";
+    };
+
     applicationLauncher = lib.mkOption {
       type = lib.types.str;
       default = "Mod4+space";
@@ -223,6 +229,7 @@ in
           {
             # Application shortcuts
             "${cfg.newTerminal}" = "exec kitty";
+            "${cfg.tuiLauncher}" = "exec kitty -e launcher";
             "${cfg.applicationLauncher}" = "exec ~/.local/bin/rofi-launcher";
             "${cfg.windowSwitcher}" = "exec ~/.local/bin/rofi-window-switcher";
 
