@@ -53,7 +53,7 @@ in
       genericName = "Terminal Adventure Game";
       comment = "Learn bash through a dungeon crawling adventure";
       exec = "${pkgs.kitty}/bin/kitty --hold ${bashcrawl-launcher}/bin/bashcrawl-launcher";
-      icon = "utilities-terminal";
+      icon = "bashcrawl";
       terminal = false;
       categories = [
         "Game"
@@ -70,7 +70,7 @@ in
         Name=Bashcrawl
         Comment=Learn bash through a dungeon crawling adventure
         Exec=${pkgs.kitty}/bin/kitty --hold ${bashcrawl-launcher}/bin/bashcrawl-launcher
-        Icon=utilities-terminal
+        Icon=bashcrawl
         Categories=Game;Education;RofiCustom;
         Terminal=false
         StartupNotify=true

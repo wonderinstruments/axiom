@@ -130,7 +130,7 @@
 
   # Guide LLM service
   services.guide = {
-    enable = false;
+    enable = true;
     user = "edmund"; # Run as your user instead of creating a new one
     group = "users";
     package = pkgs.guide;
