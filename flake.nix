@@ -25,6 +25,10 @@
       url = "git+file:///home/edmund/wonderinstruments/parental-controls";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    launcher = {
+      url = "git+file:///home/edmund/wonderinstruments/launcher";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -38,6 +42,7 @@
       guide,
       nixvim,
       parental-controls,
+      launcher,
       ...
     }:
     {
@@ -49,6 +54,7 @@
               guide.overlays.default
               (final: prev: {
                 parental-controls = parental-controls.packages.${prev.system}.default;
+                launcher = launcher.packages.${prev.system}.default;
               })
             ];
           }
@@ -61,7 +67,7 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = {
-              inherit kickstart;
+              inherit kickstart launcher;
               pkgs-unstable = import nixpkgs-unstable {
                 system = "x86_64-linux";
                 config.allowUnfree = true;
@@ -93,6 +99,7 @@
               ./modules/micro.nix
               ./modules/custom-icons.nix
               ./modules/tmux.nix
+              ./modules/launcher.nix
             ];
             home-manager.users.edmund = {
               imports = [
