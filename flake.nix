@@ -80,6 +80,7 @@
               ./modules/keybindings.nix
               ./modules/docs.nix
               ./modules/python-scripts.nix
+              ./modules/bashcrawl.nix
               ./modules/fish.nix
               ./modules/i3.nix
               ./modules/polybar.nix
