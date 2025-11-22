@@ -22,6 +22,15 @@ let
     };
 
     # Text Editors & Writing
+    zathura = {
+      package = pkgs.zathura;
+      exec = "zathura";
+      icon = "zathura";
+      comment = "PDF Reader";
+      categories = [
+        "Office"
+      ];
+    };
     ghostwriter = {
       package = pkgs.kdePackages.ghostwriter;
       exec = "ghostwriter";
