@@ -453,6 +453,17 @@ let
       ];
       isTui = true;
     };
+    broot = {
+      package = pkgs.broot;
+      exec = "broot";
+      icon = "utilities-terminal";
+      comment = "Tree based file explorer";
+      categories = [
+        "Office"
+        "Utility"
+      ];
+      isTui = true;
+    };
     visidata = {
       package = pkgs.visidata;
       exec = "visidata";
