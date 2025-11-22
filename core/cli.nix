@@ -22,6 +22,7 @@
     fd
     ffmpeg
     fx
+    play
   ];
 
   programs.fish.enable = true;

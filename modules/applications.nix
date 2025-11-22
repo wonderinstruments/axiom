@@ -423,8 +423,13 @@ let
       isTui = true;
     };
     play = {
-      package = pkgs.play;
-      exec = "sh -c 'CMD=$(echo -e \"awk\\ngrep\\nsed\\njq\\nyq\" | fzf --prompt=\"Select command: \") && play $CMD'";
+      package = pkgs.writeShellScriptBin "play-launcher" ''
+        CMD=$(echo -e "awk\ngrep\nsed\njq\nyq" | fzf --prompt="Select command: ")
+        if [ -n "$CMD" ]; then
+          play "$CMD"
+        fi
+      '';
+      exec = "play-launcher";
       icon = "utilities-terminal";
       comment = "Command Practice Tool";
       categories = [
