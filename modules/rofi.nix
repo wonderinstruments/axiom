@@ -35,6 +35,7 @@ in
       drun-show-actions = false;
       drun-display-format = "{name}";
       drun-url-launcher = "xdg-open";
+      drun-launch-command = "{cmd}";
 
       # Behavior settings
       disable-history = false;
@@ -119,6 +120,11 @@ in
 
   home.file.".local/bin/rofi-window-switcher" = {
     source = ../scripts/rofi-window-switcher.sh;
+    executable = true;
+  };
+
+  home.file.".local/bin/rofi-launcher" = {
+    source = ../scripts/rofi-launcher.sh;
     executable = true;
   };
 }
