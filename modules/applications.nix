@@ -431,6 +431,17 @@ let
       ];
       isTui = true;
     };
+    television = {
+      package = pkgs.television;
+      exec = "tv";
+      icon = "utilities-terminal";
+      comment = "Fuzzy Finder";
+      categories = [
+        "System"
+        "FileManager"
+      ];
+      isTui = true;
+    };
     ranger = {
       package = pkgs.ranger;
       exec = "ranger";
