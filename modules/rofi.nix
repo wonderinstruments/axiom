@@ -35,7 +35,6 @@ in
       drun-show-actions = false;
       drun-display-format = "{name}";
       drun-url-launcher = "xdg-open";
-      drun-launch-command = "{cmd}";
 
       # Behavior settings
       disable-history = false;

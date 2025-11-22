@@ -19,8 +19,16 @@ if [ -z "$new_workspace" ]; then
   new_workspace=$((highest + 1))
 fi
 
-# Export a custom run command that switches workspace before launching
-export ROFI_RUN_COMMAND="i3-msg 'workspace number $new_workspace; exec {cmd}'"
+# Create a temporary wrapper script that will launch apps in the new workspace
+wrapper=$(mktemp)
+cat > "$wrapper" << EOF
+#!/usr/bin/env bash
+i3-msg "workspace number $new_workspace; exec \$*"
+EOF
+chmod +x "$wrapper"
 
-# Launch rofi
-rofi -show drun -config ~/.config/rofi/app-launcher.rasi
+# Launch rofi with custom run command
+rofi -show drun -config ~/.config/rofi/app-launcher.rasi -run-command "$wrapper {cmd}"
+
+# Clean up
+rm -f "$wrapper"
