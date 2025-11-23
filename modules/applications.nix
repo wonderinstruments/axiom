@@ -433,6 +433,19 @@ let
       ];
       isTui = true;
     };
+    nmtui = {
+      # No package specified: we only create desktop entries and do not
+      # add anything to home.packages. Assumes nmtui is available on PATH
+      # (e.g. from the system profile or another module).
+      exec = "nmtui";
+      icon = "network-workgroup";
+      comment = "Network Manager TUI";
+      categories = [
+        "Network"
+        "Settings"
+      ];
+      isTui = true;
+    };
     dua = {
       package = pkgs.dua;
       exec = "dua i";
@@ -558,7 +571,10 @@ in
 
   config = {
     # Install available GUI applications
-    home.packages = lib.attrValues (lib.mapAttrs (_: app: app.package) allActiveApps);
+    # Only include applications that define a `package` attribute.
+    home.packages = lib.attrValues (
+      lib.mapAttrs (_: app: app.package) (lib.filterAttrs (_: app: app ? package) allActiveApps)
+    );
 
     # Create desktop entries for applications
     xdg.desktopEntries = lib.mapAttrs (name: app: {
