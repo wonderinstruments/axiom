@@ -433,6 +433,17 @@ let
       ];
       isTui = true;
     };
+    dua = {
+      package = pkgs.dua;
+      exec = "dua i";
+      icon = "dua";
+      comment = "Disk Usage Analyzer";
+      categories = [
+        "System"
+        "FileManager"
+      ];
+      isTui = true;
+    };
     xplr = {
       package = pkgs.xplr;
       exec = "xplr";

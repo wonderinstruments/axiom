@@ -25,6 +25,7 @@
     fx
     play
     wthrr
+    rip2
   ];
 
   programs.fish.enable = true;
