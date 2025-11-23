@@ -23,6 +23,7 @@
     ffmpeg
     fx
     play
+    wthrr
   ];
 
   programs.fish.enable = true;
