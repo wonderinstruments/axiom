@@ -431,6 +431,17 @@ let
       ];
       isTui = true;
     };
+    htop = {
+      package = pkgs.htop-vim;
+      exec = "htop";
+      icon = "utilities-terminal";
+      comment = "Process Monitor";
+      categories = [
+        "System"
+        "FileManager"
+      ];
+      isTui = true;
+    };
     television = {
       package = pkgs.television;
       exec = "tv";
