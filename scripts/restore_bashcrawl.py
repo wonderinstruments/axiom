@@ -37,7 +37,7 @@ def main() -> int:
         shutil.rmtree(USER_BASHCRAWL_DIR)
 
     print(f"Copying pristine bashcrawl to ~/bashcrawl...")
-    shutil.copytree(CANONICAL_DIR, USER_BASHCRAWL_DIR, symlinks=True)
+    shutil.copytree(CANONICAL_DIR, USER_BASHCRAWL_DIR, symlinks=False)
     print("Restored bashcrawl to pristine state.")
     
     return 0

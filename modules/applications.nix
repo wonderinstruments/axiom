@@ -446,6 +446,17 @@ let
       ];
       isTui = true;
     };
+    glow = {
+      package = pkgs.glow;
+      exec = "glow ~/docs";
+      icon = "glow";
+      comment = "Docs Reader";
+      categories = [
+        "System"
+      ];
+      isTui = true;
+      hideFromRofi = true;
+    };
     dua = {
       package = pkgs.dua;
       exec = "dua i";
@@ -517,6 +528,7 @@ let
         "Development"
       ];
       isTui = true;
+      hideFromRofi = true;
     };
     play = {
       package = pkgs.writeShellScriptBin "play-launcher" ''
@@ -605,7 +617,7 @@ in
             StartupNotify=true
           '';
         };
-      }) allActiveApps
+      }) (lib.filterAttrs (_: app: !(app.hideFromRofi or false)) allActiveApps)
       // lib.mapAttrs' (name: app: {
         name = "applications/launcher-${name}.desktop";
         value = {

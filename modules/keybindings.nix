@@ -34,6 +34,12 @@ in
       description = "Key combination to launch the application launcher.";
     };
 
+    glowLauncher = lib.mkOption {
+      type = lib.types.str;
+      default = "Mod4+Escape";
+      description = "Key combination to open glow in a new workspace.";
+    };
+
     windowSwitcher = lib.mkOption {
       type = lib.types.str;
       default = "Mod4+Tab";
@@ -233,6 +239,7 @@ in
             "${cfg.tuiLauncher}" = "exec --no-startup-id new-workspace kitty -e launcher";
             "${cfg.applicationLauncher}" = "exec ~/.local/bin/rofi-launcher";
             "${cfg.windowSwitcher}" = "exec ~/.local/bin/rofi-window-switcher";
+            "${cfg.glowLauncher}" = "exec --no-startup-id new-workspace kitty -e glow ~/docs";
 
             # Window focus (vim-inspired)
             "${cfg.focusLeft}" = "focus left";
