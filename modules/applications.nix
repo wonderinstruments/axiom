@@ -16,7 +16,7 @@ let
       package = pkgs.freeciv;
       exec = "freeciv-gtk3.22";
       icon = "freeciv";
-      comment = "Freeciv";
+      comment = "Build civilizations from ancient times to the space age";
       categories = [
         "Game"
       ];
@@ -25,7 +25,7 @@ let
       package = pkgs.widelands;
       exec = "widelands";
       icon = "widelands";
-      comment = "Widelands";
+      comment = "Build settlements and manage resources in real-time strategy";
       categories = [
         "Game"
       ];
@@ -34,7 +34,7 @@ let
       package = pkgs.the-powder-toy;
       exec = "powder";
       icon = "the-powder-toy";
-      comment = "The Powder Toy";
+      comment = "Physics sandbox where you can experiment with elements and particles";
       categories = [
         "Game"
       ];
@@ -43,7 +43,7 @@ let
       package = pkgs.luanti;
       exec = "luanti";
       icon = "luanti";
-      comment = "Luanti";
+      comment = "Open-world sandbox for building and exploring with blocks";
       categories = [
         "Game"
       ];
@@ -52,7 +52,7 @@ let
       package = pkgs.zeroad;
       exec = "zeroad";
       icon = "zeroad";
-      comment = "0 A.D.";
+      comment = "Command ancient civilizations in historical battles and empire building";
       categories = [
         "Game"
       ];
@@ -61,7 +61,7 @@ let
       package = pkgs.openttd;
       exec = "openttd";
       icon = "openttd";
-      comment = "OpenTTD";
+      comment = "Build and manage transportation networks with trains, planes, and ships";
       categories = [
         "Game"
       ];
@@ -70,7 +70,7 @@ let
       package = pkgs.kdePackages.katomic;
       exec = "katomic";
       icon = "katomic";
-      comment = "KAtomic";
+      comment = "Solve puzzles by moving atoms to build molecules";
       categories = [
         "Game"
       ];
@@ -79,7 +79,7 @@ let
       package = pkgs.mindustry;
       exec = "mindustry";
       icon = "mindustry";
-      comment = "Mindustry";
+      comment = "Tower defense with factory automation and resource management";
       categories = [
         "Game"
       ];
@@ -88,7 +88,7 @@ let
       package = pkgs.endless-sky;
       exec = "endless-sky";
       icon = "endless-sky";
-      comment = "Endless Sky";
+      comment = "Space trading and combat adventure across the galaxy";
       categories = [
         "Game"
       ];
@@ -97,7 +97,7 @@ let
       package = pkgs.pingus;
       exec = "pingus";
       icon = "pingus";
-      comment = "Lemmings-like puzzle game";
+      comment = "Guide penguins safely through obstacles to reach their goal";
       categories = [
         "Game"
         "ArcadeGame"
@@ -107,7 +107,7 @@ let
       package = pkgs.tuxtype;
       exec = "tuxtype";
       icon = "tuxtype";
-      comment = "Educational Typing Tutor Game";
+      comment = "Learn to type faster with fun games featuring Tux the penguin";
       categories = [
         "Game"
         "Education"
@@ -122,7 +122,7 @@ let
       package = pkgs.warp-terminal;
       exec = "warp-terminal";
       icon = "warp";
-      comment = "Warp Terminal";
+      comment = "Modern terminal for typing commands to control your computer";
       categories = [
         "Development"
         "System"
@@ -134,7 +134,7 @@ let
       package = pkgs.spotify;
       exec = "spotify";
       icon = "spotify";
-      comment = "Music Streaming";
+      comment = "Listen to millions of songs and podcasts";
       categories = [
         "AudioVideo"
         "Audio"
@@ -145,7 +145,7 @@ let
       package = pkgs.obsidian;
       exec = "obsidian";
       icon = "obsidian";
-      comment = "Knowledge Base";
+      comment = "Organize your notes and connect ideas together";
       categories = [
         "Office"
       ];
@@ -155,7 +155,7 @@ let
       package = pkgs.slack;
       exec = "slack";
       icon = "slack";
-      comment = "Team Communication";
+      comment = "Chat and collaborate with your team";
       categories = [
         "Network"
         "InstantMessaging"
@@ -166,7 +166,7 @@ let
       package = pkgs.discord;
       exec = "discord";
       icon = "discord";
-      comment = "Voice and Text Chat";
+      comment = "Talk with friends through voice, video, and text";
       categories = [
         "Network"
         "InstantMessaging"
@@ -179,7 +179,7 @@ let
       package = pkgs.vimiv-qt;
       exec = "vimiv";
       icon = "vimiv";
-      comment = "Image Viewer";
+      comment = "View and browse through your photos and images";
       categories = [
         "Utility"
         "Graphics"
@@ -189,7 +189,7 @@ let
       package = pkgs.zathura;
       exec = "zathura";
       icon = "zathura";
-      comment = "PDF Reader";
+      comment = "Read PDF documents and books";
       categories = [
         "Utility"
         "Office"
@@ -199,7 +199,7 @@ let
       package = pkgs.kdePackages.ghostwriter;
       exec = "ghostwriter";
       icon = "ghostwriter";
-      comment = "Markdown Editor";
+      comment = "Write documents using Markdown formatting";
       categories = [
         "Office"
         "WordProcessor"
@@ -209,7 +209,7 @@ let
       package = pkgs.freeplane;
       exec = "freeplane";
       icon = "freeplane";
-      comment = "Mind Maps";
+      comment = "Create mind maps to organize your thoughts and ideas visually";
       categories = [
         "Office"
       ];
@@ -220,7 +220,7 @@ let
       package = pkgs.xiphos;
       exec = "xiphos";
       icon = "xiphos";
-      comment = "Bible Study";
+      comment = "Read and study the Bible with commentary and reference tools";
       categories = [
         "Education"
       ];
@@ -230,7 +230,7 @@ let
       package = pkgs.anki;
       exec = "anki";
       icon = "anki";
-      comment = "Flashcards";
+      comment = "Study and memorize anything using digital flashcards";
       categories = [
         "Office"
       ];
@@ -239,7 +239,7 @@ let
       package = pkgs.stellarium;
       exec = "stellarium";
       icon = "stellarium";
-      comment = "Desktop Planetarium";
+      comment = "Explore the night sky with a realistic planetarium on your computer";
       categories = [
         "Education"
         "Science"
@@ -250,7 +250,7 @@ let
       package = pkgs.celestia;
       exec = "celestia";
       icon = "celestia";
-      comment = "Real-time 3D visualization of space";
+      comment = "Travel through space in 3D and visit planets, stars, and galaxies";
       categories = [
         "Education"
         "Science"
@@ -261,7 +261,7 @@ let
       package = pkgs.kstars;
       exec = "kstars";
       icon = "kstars";
-      comment = "Desktop Planetarium";
+      comment = "Explore the stars, planets, and constellations from anywhere on Earth";
       categories = [
         "Education"
         "Science"
@@ -272,7 +272,7 @@ let
       package = pkgs.kdePackages.marble;
       exec = "marble";
       icon = "marble";
-      comment = "Virtual Globe and World Atlas";
+      comment = "Explore Earth with maps, satellite views, and geographic information";
       categories = [
         "Education"
         "Geography"
@@ -284,7 +284,7 @@ let
       package = pkgs.pinta;
       exec = "pinta";
       icon = "pinta";
-      comment = "Drawing";
+      comment = "Draw and edit images with simple painting tools";
       categories = [
         "Graphics"
       ];
@@ -293,7 +293,7 @@ let
       package = pkgs.shotcut;
       exec = "shotcut";
       icon = "shotcut";
-      comment = "Video editor";
+      comment = "Edit and create videos with cutting, effects, and transitions";
       categories = [
         "Video"
         "AudioVideo"
@@ -303,7 +303,7 @@ let
       package = pkgs-unstable.kdePackages.kwave;
       exec = "kwave";
       icon = "kwave";
-      comment = "Audio Editor";
+      comment = "Edit and modify audio recordings and sound files";
       categories = [
         "Utility"
         "AudioVideo"
@@ -313,7 +313,7 @@ let
       package = pkgs.rosegarden;
       exec = "rosegarden";
       icon = "rosegarden";
-      comment = "Audio composer";
+      comment = "Compose music with MIDI and sheet music notation";
       categories = [
         "Audio"
         "AudioVideo"
@@ -323,7 +323,7 @@ let
       package = pkgs.easyeffects;
       exec = "easyeffects";
       icon = "easyeffects";
-      comment = "Audio Effects";
+      comment = "Add effects like equalizers and filters to improve your audio";
       categories = [
         "Audio"
         "AudioVideo"
@@ -333,7 +333,7 @@ let
       package = pkgs.vlc;
       exec = "vlc";
       icon = "vlc";
-      comment = "AudioVideo Player";
+      comment = "Play videos and music in almost any format";
       categories = [
         "Utility"
         "AudioVideo"
@@ -343,7 +343,7 @@ let
       package = pkgs.helm;
       exec = "helm";
       icon = "helm";
-      comment = "Polyphonic Synthesizer";
+      comment = "Create electronic music sounds with a virtual synthesizer";
       categories = [
         "Audio"
         "AudioVideo"
@@ -353,7 +353,7 @@ let
       package = pkgs.lmms;
       exec = "lmms";
       icon = "lmms";
-      comment = "Digital Audio Workstation";
+      comment = "Create complete music tracks with instruments, beats, and effects";
       categories = [
         "Audio"
         "AudioVideo"
@@ -364,7 +364,7 @@ let
       package = pkgs.krita;
       exec = "krita";
       icon = "krita";
-      comment = "Digital Painting Application";
+      comment = "Paint digital artwork with professional brushes and tools";
       categories = [
         "Graphics"
         "2DGraphics"
@@ -375,7 +375,7 @@ let
       package = pkgs.tuxpaint;
       exec = "tuxpaint";
       icon = "tuxpaint";
-      comment = "Drawing Program for Children";
+      comment = "Draw and paint with fun tools, stamps, and special effects";
       categories = [
         "Graphics"
       ];
@@ -385,7 +385,7 @@ let
       package = pkgs.thonny;
       exec = "thonny";
       icon = "thonny";
-      comment = "Python Coding Environment";
+      comment = "Learn to code in Python with a beginner-friendly editor";
       categories = [
         "Development"
       ];
@@ -427,7 +427,7 @@ let
       };
       exec = "tttui";
       icon = "utilities-terminal";
-      comment = "Tic-Tac-Toe Game";
+      comment = "Play Tic-Tac-Toe in the terminal";
       categories = [
         "Game"
       ];
@@ -439,7 +439,7 @@ let
       # (e.g. from the system profile or another module).
       exec = "nmtui";
       icon = "network-workgroup";
-      comment = "Network Manager TUI";
+      comment = "Manage WiFi and network connections";
       categories = [
         "Network"
         "Settings"
@@ -450,7 +450,7 @@ let
       package = pkgs.glow;
       exec = "axiom-docs";
       icon = "glow";
-      comment = "Docs Reader";
+      comment = "Read system documentation and help files";
       categories = [
         "System"
       ];
@@ -461,7 +461,7 @@ let
       package = pkgs.dua;
       exec = "dua i";
       icon = "dua";
-      comment = "Disk Usage Analyzer";
+      comment = "See which files and folders are taking up space on your computer";
       categories = [
         "System"
         "FileManager"
@@ -472,7 +472,7 @@ let
       package = pkgs.xplr;
       exec = "xplr";
       icon = "xplr";
-      comment = "File Explorer";
+      comment = "Browse and manage files in the terminal";
       categories = [
         "System"
         "FileManager"
@@ -483,7 +483,7 @@ let
       package = pkgs.htop-vim;
       exec = "htop";
       icon = "htop";
-      comment = "Process Monitor";
+      comment = "See which programs are running and how much memory they use";
       categories = [
         "System"
       ];
@@ -493,7 +493,7 @@ let
       package = pkgs.television;
       exec = "tv";
       icon = "television";
-      comment = "Fuzzy Finder";
+      comment = "Quickly search and find files by typing part of their name";
       categories = [
         "System"
       ];
@@ -503,7 +503,7 @@ let
       package = pkgs.broot;
       exec = "broot";
       icon = "broot";
-      comment = "Tree based file explorer";
+      comment = "Navigate files in a tree structure to see folder organization";
       categories = [
         "System"
       ];
@@ -513,7 +513,7 @@ let
       package = pkgs.visidata;
       exec = "visidata";
       icon = "visidata";
-      comment = "Terminal Spreadsheet";
+      comment = "Work with spreadsheets and data tables in the terminal";
       categories = [
         "Office"
       ];
@@ -523,7 +523,7 @@ let
       package = pkgs.lazygit;
       exec = "lazygit";
       icon = "lazygit";
-      comment = "Git Terminal UI";
+      comment = "Manage code changes and version history with Git";
       categories = [
         "Development"
       ];
@@ -539,7 +539,7 @@ let
       '';
       exec = "play-launcher";
       icon = "play";
-      comment = "Command Practice Tool";
+      comment = "Practice terminal commands with interactive exercises";
       categories = [
         "Development"
       ];

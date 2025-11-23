@@ -25,7 +25,7 @@ in
       programs.firefox.enable = true;
       xdg.desktopEntries.firefox = {
         name = "Firefox";
-        comment = "Web Browser";
+        comment = "Browse websites and search the internet";
         exec = "firefox";
         icon = "firefox";
         categories = [
@@ -40,7 +40,7 @@ in
         Version=1.0
         Type=Application
         Name=firefox
-        Comment=Web Browser
+        Comment=Browse websites and search the internet
         Exec=firefox
         Icon=firefox
         Categories=Network;WebBrowser;RofiCustom;
@@ -52,7 +52,7 @@ in
         Version=1.0
         Type=Application
         Name=firefox
-        Comment=Web Browser
+        Comment=Browse websites and search the internet
         Exec=firefox
         Icon=firefox
         Categories=Network;WebBrowser;LauncherCustom;
@@ -64,7 +64,7 @@ in
       programs.chromium.enable = true;
       xdg.desktopEntries.chromium = {
         name = "Chromium";
-        comment = "Web Browser";
+        comment = "Browse websites and search the internet";
         exec = "chromium";
         icon = "chromium";
         categories = [
@@ -79,7 +79,7 @@ in
         Version=1.0
         Type=Application
         Name=chromium
-        Comment=Web Browser
+        Comment=Browse websites and search the internet
         Exec=chromium
         Icon=chromium
         Categories=Network;WebBrowser;RofiCustom;
@@ -91,7 +91,7 @@ in
         Version=1.0
         Type=Application
         Name=chromium
-        Comment=Web Browser
+        Comment=Browse websites and search the internet
         Exec=chromium
         Icon=chromium
         Categories=Network;WebBrowser;LauncherCustom;

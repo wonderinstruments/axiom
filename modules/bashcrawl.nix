@@ -51,7 +51,7 @@ in
     xdg.desktopEntries.bashcrawl = {
       name = "Bashcrawl";
       genericName = "Terminal Adventure Game";
-      comment = "Learn bash through a dungeon crawling adventure";
+      comment = "Learn terminal commands by exploring a text-based dungeon";
       exec = "${pkgs.kitty}/bin/kitty --hold ${bashcrawl-launcher}/bin/bashcrawl-launcher";
       icon = "bashcrawl";
       terminal = false;
@@ -68,7 +68,7 @@ in
         Version=1.0
         Type=Application
         Name=Bashcrawl
-        Comment=Learn bash through a dungeon crawling adventure
+        Comment=Learn terminal commands by exploring a text-based dungeon
         Exec=${pkgs.kitty}/bin/kitty --hold ${bashcrawl-launcher}/bin/bashcrawl-launcher
         Icon=bashcrawl
         Categories=Game;Education;RofiCustom;
@@ -82,7 +82,7 @@ in
         Version=1.0
         Type=Application
         Name=Bashcrawl
-        Comment=Learn bash through a dungeon crawling adventure
+        Comment=Learn terminal commands by exploring a text-based dungeon
         Exec=${bashcrawl-launcher}/bin/bashcrawl-launcher
         Icon=bashcrawl
         Categories=Development;
