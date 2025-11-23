@@ -431,6 +431,17 @@ let
       ];
       isTui = true;
     };
+    xplr = {
+      package = pkgs.xplr;
+      exec = "xplr";
+      icon = "utilities-terminal";
+      comment = "File Explorer";
+      categories = [
+        "System"
+        "FileManager"
+      ];
+      isTui = true;
+    };
     htop = {
       package = pkgs.htop-vim;
       exec = "htop";
