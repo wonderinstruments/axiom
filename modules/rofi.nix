@@ -7,8 +7,14 @@
 
 let
   inherit (config.lib.formats.rasi) mkLiteral;
+
+  new-workspace = pkgs.writeShellScriptBin "new-workspace" (
+    builtins.readFile ../scripts/new-workspace.sh
+  );
 in
 {
+  home.packages = [ new-workspace ];
+
   programs.rofi = {
     enable = true;
     terminal = "kitty";

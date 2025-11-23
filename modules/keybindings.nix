@@ -230,10 +230,7 @@ in
           {
             # Application shortcuts
             "${cfg.newTerminal}" = "exec kitty";
-            "${cfg.tuiLauncher}" =
-              "exec --no-startup-id ~/.local/bin/new-workspace ${pkgs.kitty}/bin/kitty -e ${
-                launcher.packages.${pkgs.system}.default
-              }/bin/launcher";
+            "${cfg.tuiLauncher}" = "exec --no-startup-id new-workspace kitty -e launcher";
             "${cfg.applicationLauncher}" = "exec ~/.local/bin/rofi-launcher";
             "${cfg.windowSwitcher}" = "exec ~/.local/bin/rofi-window-switcher";
 
