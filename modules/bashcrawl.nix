@@ -85,7 +85,7 @@ in
         Comment=Learn bash through a dungeon crawling adventure
         Exec=${bashcrawl-launcher}/bin/bashcrawl-launcher
         Icon=bashcrawl
-        Categories=Learn the Terminal;Game;Education;RofiCustom;
+        Categories=Development;
         Terminal=false
         StartupNotify=true
       '';

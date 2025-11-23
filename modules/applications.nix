@@ -18,7 +18,7 @@ let
       icon = "freeciv";
       comment = "Freeciv";
       categories = [
-        "Games"
+        "Game"
       ];
     };
     widelands = {
@@ -27,7 +27,7 @@ let
       icon = "widelands";
       comment = "Widelands";
       categories = [
-        "Games"
+        "Game"
       ];
     };
     the-powder-toy = {
@@ -36,7 +36,7 @@ let
       icon = "the-powder-toy";
       comment = "The Powder Toy";
       categories = [
-        "Games"
+        "Game"
       ];
     };
     luanti = {
@@ -45,7 +45,7 @@ let
       icon = "luanti";
       comment = "Luanti";
       categories = [
-        "Games"
+        "Game"
       ];
     };
     zeroad = {
@@ -54,7 +54,7 @@ let
       icon = "zeroad";
       comment = "0 A.D.";
       categories = [
-        "Games"
+        "Game"
       ];
     };
     openttd = {
@@ -63,7 +63,7 @@ let
       icon = "openttd";
       comment = "OpenTTD";
       categories = [
-        "Games"
+        "Game"
       ];
     };
     katomic = {
@@ -72,7 +72,7 @@ let
       icon = "katomic";
       comment = "KAtomic";
       categories = [
-        "Games"
+        "Game"
       ];
     };
     mindustry = {
@@ -81,7 +81,7 @@ let
       icon = "mindustry";
       comment = "Mindustry";
       categories = [
-        "Games"
+        "Game"
       ];
     };
     endless-sky = {
@@ -90,7 +90,7 @@ let
       icon = "endless-sky";
       comment = "Endless Sky";
       categories = [
-        "Games"
+        "Game"
       ];
     };
     pingus = {
@@ -99,7 +99,7 @@ let
       icon = "pingus";
       comment = "Lemmings-like puzzle game";
       categories = [
-        "Games"
+        "Game"
         "ArcadeGame"
       ];
     };
@@ -109,7 +109,7 @@ let
       icon = "tuxtype";
       comment = "Educational Typing Tutor Game";
       categories = [
-        "Games"
+        "Game"
         "Education"
       ];
     };
@@ -124,7 +124,7 @@ let
       icon = "warp";
       comment = "Warp Terminal";
       categories = [
-        "Programming"
+        "Development"
         "System"
         "TerminalEmulator"
       ];
@@ -136,7 +136,6 @@ let
       icon = "spotify";
       comment = "Music Streaming";
       categories = [
-        "Misc"
         "AudioVideo"
         "Audio"
       ];
@@ -148,7 +147,6 @@ let
       icon = "obsidian";
       comment = "Knowledge Base";
       categories = [
-        "Thinking"
         "Office"
       ];
       enableOption = true;
@@ -159,7 +157,6 @@ let
       icon = "slack";
       comment = "Team Communication";
       categories = [
-        "Communication"
         "Network"
         "InstantMessaging"
       ];
@@ -171,7 +168,7 @@ let
       icon = "discord";
       comment = "Voice and Text Chat";
       categories = [
-        "Communication"
+        "Network"
         "InstantMessaging"
       ];
       enableOption = true;
@@ -184,8 +181,8 @@ let
       icon = "vimiv";
       comment = "Image Viewer";
       categories = [
-        "File Openers"
-        "Office"
+        "Utility"
+        "Graphics"
       ];
     };
     zathura = {
@@ -194,7 +191,7 @@ let
       icon = "zathura";
       comment = "PDF Reader";
       categories = [
-        "File Openers"
+        "Utility"
         "Office"
       ];
     };
@@ -204,7 +201,6 @@ let
       icon = "ghostwriter";
       comment = "Markdown Editor";
       categories = [
-        "Thinking"
         "Office"
         "WordProcessor"
       ];
@@ -215,7 +211,7 @@ let
       icon = "freeplane";
       comment = "Mind Maps";
       categories = [
-        "Thinking"
+        "Office"
       ];
     };
 
@@ -226,7 +222,6 @@ let
       icon = "xiphos";
       comment = "Bible Study";
       categories = [
-        "World Knowledge"
         "Education"
       ];
       enableOption = true;
@@ -237,7 +232,7 @@ let
       icon = "anki";
       comment = "Flashcards";
       categories = [
-        "Thinking"
+        "Office"
       ];
     };
     stellarium = {
@@ -246,7 +241,7 @@ let
       icon = "stellarium";
       comment = "Desktop Planetarium";
       categories = [
-        "World Knowledge"
+        "Education"
         "Science"
         "Astronomy"
       ];
@@ -257,8 +252,6 @@ let
       icon = "celestia";
       comment = "Real-time 3D visualization of space";
       categories = [
-        "World Knowledge"
-        "Learning"
         "Education"
         "Science"
         "Astronomy"
@@ -270,8 +263,6 @@ let
       icon = "kstars";
       comment = "Desktop Planetarium";
       categories = [
-        "World Knowledge"
-        "Learning"
         "Education"
         "Science"
         "Astronomy"
@@ -283,8 +274,6 @@ let
       icon = "marble";
       comment = "Virtual Globe and World Atlas";
       categories = [
-        "World Knowledge"
-        "Learning"
         "Education"
         "Geography"
       ];
@@ -297,7 +286,6 @@ let
       icon = "pinta";
       comment = "Drawing";
       categories = [
-        "Art"
         "Graphics"
       ];
     };
@@ -307,9 +295,8 @@ let
       icon = "shotcut";
       comment = "Video editor";
       categories = [
-        "Video Editing"
-        "AudioVideo"
         "Video"
+        "AudioVideo"
       ];
     };
     kwave = {
@@ -318,9 +305,8 @@ let
       icon = "kwave";
       comment = "Audio Editor";
       categories = [
-        "File Openers"
+        "Utility"
         "AudioVideo"
-        "Audio"
       ];
     };
     rosegarden = {
@@ -329,9 +315,8 @@ let
       icon = "rosegarden";
       comment = "Audio composer";
       categories = [
-        "Music"
-        "AudioVideo"
         "Audio"
+        "AudioVideo"
       ];
     };
     easyeffects = {
@@ -340,9 +325,8 @@ let
       icon = "easyeffects";
       comment = "Audio Effects";
       categories = [
-        "Music"
-        "AudioVideo"
         "Audio"
+        "AudioVideo"
       ];
     };
     vlc = {
@@ -351,7 +335,7 @@ let
       icon = "vlc";
       comment = "AudioVideo Player";
       categories = [
-        "File Openers"
+        "Utility"
         "AudioVideo"
       ];
     };
@@ -361,9 +345,8 @@ let
       icon = "helm";
       comment = "Polyphonic Synthesizer";
       categories = [
-        "Music"
-        "AudioVideo"
         "Audio"
+        "AudioVideo"
       ];
     };
     lmms = {
@@ -372,9 +355,8 @@ let
       icon = "lmms";
       comment = "Digital Audio Workstation";
       categories = [
-        "Music"
-        "AudioVideo"
         "Audio"
+        "AudioVideo"
         "Sequencer"
       ];
     };
@@ -384,7 +366,6 @@ let
       icon = "krita";
       comment = "Digital Painting Application";
       categories = [
-        "Art"
         "Graphics"
         "2DGraphics"
         "RasterGraphics"
@@ -396,7 +377,6 @@ let
       icon = "tuxpaint";
       comment = "Drawing Program for Children";
       categories = [
-        "Art"
         "Graphics"
       ];
     };
@@ -407,7 +387,7 @@ let
       icon = "thonny";
       comment = "Python Coding Environment";
       categories = [
-        "Programming"
+        "Development"
       ];
     };
 
@@ -449,7 +429,7 @@ let
       icon = "utilities-terminal";
       comment = "Tic-Tac-Toe Game";
       categories = [
-        "Games"
+        "Game"
       ];
       isTui = true;
     };
@@ -500,8 +480,7 @@ let
       icon = "utilities-terminal";
       comment = "Terminal Spreadsheet";
       categories = [
-        "Data Analysis"
-        "Utility"
+        "Office"
       ];
       isTui = true;
     };
@@ -511,7 +490,7 @@ let
       icon = "git";
       comment = "Git Terminal UI";
       categories = [
-        "Programming"
+        "Development"
       ];
       isTui = true;
     };
@@ -526,7 +505,7 @@ let
       icon = "utilities-terminal";
       comment = "Command Practice Tool";
       categories = [
-        "Learn the Terminal"
+        "Development"
       ];
       isTui = true;
     };
