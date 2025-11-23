@@ -436,7 +436,7 @@ let
     xplr = {
       package = pkgs.xplr;
       exec = "xplr";
-      icon = "utilities-terminal";
+      icon = "xplr";
       comment = "File Explorer";
       categories = [
         "System"
@@ -447,7 +447,7 @@ let
     htop = {
       package = pkgs.htop-vim;
       exec = "htop";
-      icon = "utilities-terminal";
+      icon = "htop";
       comment = "Process Monitor";
       categories = [
         "System"
@@ -457,7 +457,7 @@ let
     television = {
       package = pkgs.television;
       exec = "tv";
-      icon = "utilities-terminal";
+      icon = "television";
       comment = "Fuzzy Finder";
       categories = [
         "System"
@@ -467,7 +467,7 @@ let
     broot = {
       package = pkgs.broot;
       exec = "broot";
-      icon = "utilities-terminal";
+      icon = "broot";
       comment = "Tree based file explorer";
       categories = [
         "System"
@@ -477,7 +477,7 @@ let
     visidata = {
       package = pkgs.visidata;
       exec = "visidata";
-      icon = "utilities-terminal";
+      icon = "visidata";
       comment = "Terminal Spreadsheet";
       categories = [
         "Office"
@@ -487,7 +487,7 @@ let
     lazygit = {
       package = pkgs.lazygit;
       exec = "lazygit";
-      icon = "git";
+      icon = "lazygit";
       comment = "Git Terminal UI";
       categories = [
         "Development"
@@ -502,7 +502,7 @@ let
         fi
       '';
       exec = "play-launcher";
-      icon = "utilities-terminal";
+      icon = "play";
       comment = "Command Practice Tool";
       categories = [
         "Development"
