@@ -6,63 +6,60 @@
 }:
 let
   cfg = config.axiom.docs;
-
-  # Documentation files from the docs directory
-  docTemplates = {
-    "docs/WELCOME.md" = builtins.readFile ../docs/WELCOME.md;
-
-    "docs/TERMINAL.md" = builtins.readFile ../docs/TERMINAL.md;
-
-    "docs/TEXT_EDITOR.md" = builtins.readFile ../docs/TEXT_EDITOR.md;
-
-    "docs/WINDOWS.md" = builtins.readFile ../docs/WINDOWS.md;
-  };
+  docsDir = ../docs;
+  entries = builtins.readDir docsDir;
+  docNames = builtins.attrNames entries;
+  mdDocs = builtins.filter (name: lib.hasSuffix ".md" name) docNames;
+  defaultCanonicalDir = ".local/share/axiom/docs";
+  docListForShell = lib.concatStringsSep " " mdDocs;
+  toSourcePath = name: builtins.toPath "${docsDir}/${name}";
+  mkCanonicalFile =
+    name:
+    lib.nameValuePair "${cfg.canonicalDir}/${name}" {
+      source = toSourcePath name;
+      force = true;
+    };
 in
 {
   options.axiom.docs = {
-    # Enable documentation deployment
     enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
       description = "Enable deployment of documentation files.";
     };
 
-    # Whether to overwrite existing docs
-    overwrite = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Whether to overwrite existing documentation files.";
+    userDir = lib.mkOption {
+      type = lib.types.str;
+      default = "docs";
+      description = "Relative path under $HOME where user-editable docs live.";
     };
 
-    # Custom documentation files (can override defaults)
-    customDocs = lib.mkOption {
-      type = lib.types.attrsOf lib.types.str;
-      default = { };
-      description = "Map of relative path -> file content for custom documentation files.";
+    canonicalDir = lib.mkOption {
+      type = lib.types.str;
+      default = defaultCanonicalDir;
+      description = "Relative path under $HOME for canonical doc copies (always overwritten).";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    # Deploy documentation files using home.file for direct file management
-    home.file =
-      let
-        # Merge default templates with custom docs
-        allDocs = docTemplates // cfg.customDocs;
-
-        # Create file entries with force option based on overwrite setting
-        createFileEntry =
-          name: content:
-          lib.nameValuePair name {
-            text = content;
-            force = cfg.overwrite;
-          };
-      in
-      (lib.mapAttrs' createFileEntry allDocs);
-
-    # Ensure the docs directory exists
-    home.activation.docsDirectory = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    # Ensure directories exist and populate missing user copies from canonical
+    home.activation.docsInit = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       set -eu
-      mkdir -p "$HOME/docs"
+      mkdir -p "$HOME/${cfg.userDir}"
+      mkdir -p "$HOME/${cfg.canonicalDir}"
+
+      echo "Checking for missing docs in ~/${cfg.userDir}..."
+      for f in ${docListForShell}; do
+        src="$HOME/${cfg.canonicalDir}/$f"
+        dest="$HOME/${cfg.userDir}/$f"
+        if [ ! -e "$dest" ] && [ -e "$src" ]; then
+          run cp -f "$src" "$dest"
+          echo "  Installed missing doc: $f"
+        fi
+      done
     '';
+
+    # Canonical copies from repository (always overwrite)
+    home.file = builtins.listToAttrs (map mkCanonicalFile mdDocs);
   };
 }
