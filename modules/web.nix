@@ -29,6 +29,7 @@ in
         exec = "firefox";
         icon = "firefox";
         categories = [
+          "Web"
           "Network"
           "WebBrowser"
         ];
@@ -55,7 +56,7 @@ in
         Comment=Web Browser
         Exec=firefox
         Icon=firefox
-        Categories=Network;WebBrowser;LauncherCustom;
+        Categories=Web;Network;WebBrowser;LauncherCustom;
         Terminal=false
         StartupNotify=true
       '';
@@ -94,7 +95,7 @@ in
         Comment=Web Browser
         Exec=chromium
         Icon=chromium
-        Categories=Network;WebBrowser;LauncherCustom;
+        Categories=Web;Network;WebBrowser;LauncherCustom;
         Terminal=false
         StartupNotify=true
       '';

@@ -76,6 +76,20 @@ in
         StartupNotify=true
       '';
     };
+    xdg.dataFile."applications/launcher-bashcrawl.desktop" = {
+      text = ''
+        [Desktop Entry]
+        Version=1.0
+        Type=Application
+        Name=Bashcrawl
+        Comment=Learn bash through a dungeon crawling adventure
+        Exec=${bashcrawl-launcher}/bin/bashcrawl-launcher
+        Icon=bashcrawl
+        Categories=Learn the Terminal;Game;Education;RofiCustom;
+        Terminal=false
+        StartupNotify=true
+      '';
+    };
 
     # Ensure directories exist and populate user copy from canonical if missing
     home.activation.bashcrawlInit = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

@@ -18,7 +18,7 @@ let
       icon = "freeciv";
       comment = "Freeciv";
       categories = [
-        "Game"
+        "Games"
       ];
     };
     widelands = {
@@ -27,7 +27,7 @@ let
       icon = "widelands";
       comment = "Widelands";
       categories = [
-        "Game"
+        "Games"
       ];
     };
     the-powder-toy = {
@@ -36,7 +36,7 @@ let
       icon = "the-powder-toy";
       comment = "The Powder Toy";
       categories = [
-        "Game"
+        "Games"
       ];
     };
     luanti = {
@@ -45,7 +45,7 @@ let
       icon = "luanti";
       comment = "Luanti";
       categories = [
-        "Game"
+        "Games"
       ];
     };
     zeroad = {
@@ -54,7 +54,7 @@ let
       icon = "zeroad";
       comment = "0 A.D.";
       categories = [
-        "Game"
+        "Games"
       ];
     };
     openttd = {
@@ -63,7 +63,7 @@ let
       icon = "openttd";
       comment = "OpenTTD";
       categories = [
-        "Game"
+        "Games"
       ];
     };
     katomic = {
@@ -72,7 +72,7 @@ let
       icon = "katomic";
       comment = "KAtomic";
       categories = [
-        "Game"
+        "Games"
       ];
     };
     mindustry = {
@@ -81,7 +81,7 @@ let
       icon = "mindustry";
       comment = "Mindustry";
       categories = [
-        "Game"
+        "Games"
       ];
     };
     endless-sky = {
@@ -90,7 +90,7 @@ let
       icon = "endless-sky";
       comment = "Endless Sky";
       categories = [
-        "Game"
+        "Games"
       ];
     };
     pingus = {
@@ -99,7 +99,7 @@ let
       icon = "pingus";
       comment = "Lemmings-like puzzle game";
       categories = [
-        "Game"
+        "Games"
         "ArcadeGame"
       ];
     };
@@ -109,8 +109,8 @@ let
       icon = "tuxtype";
       comment = "Educational Typing Tutor Game";
       categories = [
+        "Games"
         "Education"
-        "Game"
       ];
     };
   };
@@ -124,6 +124,7 @@ let
       icon = "warp";
       comment = "Warp Terminal";
       categories = [
+        "Programming"
         "System"
         "TerminalEmulator"
       ];
@@ -135,6 +136,7 @@ let
       icon = "spotify";
       comment = "Music Streaming";
       categories = [
+        "Misc"
         "AudioVideo"
         "Audio"
       ];
@@ -146,6 +148,7 @@ let
       icon = "obsidian";
       comment = "Knowledge Base";
       categories = [
+        "Thinking"
         "Office"
       ];
       enableOption = true;
@@ -156,6 +159,7 @@ let
       icon = "slack";
       comment = "Team Communication";
       categories = [
+        "Communication"
         "Network"
         "InstantMessaging"
       ];
@@ -167,7 +171,7 @@ let
       icon = "discord";
       comment = "Voice and Text Chat";
       categories = [
-        "Network"
+        "Communication"
         "InstantMessaging"
       ];
       enableOption = true;
@@ -180,6 +184,7 @@ let
       icon = "vimiv";
       comment = "Image Viewer";
       categories = [
+        "File Openers"
         "Office"
       ];
     };
@@ -189,6 +194,7 @@ let
       icon = "zathura";
       comment = "PDF Reader";
       categories = [
+        "File Openers"
         "Office"
       ];
     };
@@ -198,6 +204,7 @@ let
       icon = "ghostwriter";
       comment = "Markdown Editor";
       categories = [
+        "Thinking"
         "Office"
         "WordProcessor"
       ];
@@ -208,7 +215,7 @@ let
       icon = "freeplane";
       comment = "Mind Maps";
       categories = [
-        "Office"
+        "Thinking"
       ];
     };
 
@@ -219,6 +226,7 @@ let
       icon = "xiphos";
       comment = "Bible Study";
       categories = [
+        "World Knowledge"
         "Education"
       ];
       enableOption = true;
@@ -229,7 +237,7 @@ let
       icon = "anki";
       comment = "Flashcards";
       categories = [
-        "Education"
+        "Thinking"
       ];
     };
     stellarium = {
@@ -238,7 +246,7 @@ let
       icon = "stellarium";
       comment = "Desktop Planetarium";
       categories = [
-        "Education"
+        "World Knowledge"
         "Science"
         "Astronomy"
       ];
@@ -249,6 +257,8 @@ let
       icon = "celestia";
       comment = "Real-time 3D visualization of space";
       categories = [
+        "World Knowledge"
+        "Learning"
         "Education"
         "Science"
         "Astronomy"
@@ -260,6 +270,8 @@ let
       icon = "kstars";
       comment = "Desktop Planetarium";
       categories = [
+        "World Knowledge"
+        "Learning"
         "Education"
         "Science"
         "Astronomy"
@@ -271,6 +283,8 @@ let
       icon = "marble";
       comment = "Virtual Globe and World Atlas";
       categories = [
+        "World Knowledge"
+        "Learning"
         "Education"
         "Geography"
       ];
@@ -293,6 +307,7 @@ let
       icon = "shotcut";
       comment = "Video editor";
       categories = [
+        "Video Editing"
         "AudioVideo"
         "Video"
       ];
@@ -303,6 +318,7 @@ let
       icon = "kwave";
       comment = "Audio Editor";
       categories = [
+        "File Openers"
         "AudioVideo"
         "Audio"
       ];
@@ -313,6 +329,7 @@ let
       icon = "rosegarden";
       comment = "Audio composer";
       categories = [
+        "Music"
         "AudioVideo"
         "Audio"
       ];
@@ -323,6 +340,7 @@ let
       icon = "easyeffects";
       comment = "Audio Effects";
       categories = [
+        "Music"
         "AudioVideo"
         "Audio"
       ];
@@ -333,6 +351,7 @@ let
       icon = "vlc";
       comment = "AudioVideo Player";
       categories = [
+        "File Openers"
         "AudioVideo"
       ];
     };
@@ -342,6 +361,7 @@ let
       icon = "helm";
       comment = "Polyphonic Synthesizer";
       categories = [
+        "Music"
         "AudioVideo"
         "Audio"
       ];
@@ -352,6 +372,7 @@ let
       icon = "lmms";
       comment = "Digital Audio Workstation";
       categories = [
+        "Music"
         "AudioVideo"
         "Audio"
         "Sequencer"
@@ -363,6 +384,7 @@ let
       icon = "krita";
       comment = "Digital Painting Application";
       categories = [
+        "Art"
         "Graphics"
         "2DGraphics"
         "RasterGraphics"
@@ -374,7 +396,6 @@ let
       icon = "tuxpaint";
       comment = "Drawing Program for Children";
       categories = [
-        "Education"
         "Art"
         "Graphics"
       ];
@@ -385,7 +406,9 @@ let
       exec = "thonny";
       icon = "thonny";
       comment = "Python Coding Environment";
-      categories = [ ];
+      categories = [
+        "Programming"
+      ];
     };
 
     # TUI Applications
@@ -426,8 +449,7 @@ let
       icon = "utilities-terminal";
       comment = "Tic-Tac-Toe Game";
       categories = [
-        "Game"
-        "Utility"
+        "Games"
       ];
       isTui = true;
     };
@@ -449,7 +471,6 @@ let
       comment = "Process Monitor";
       categories = [
         "System"
-        "FileManager"
       ];
       isTui = true;
     };
@@ -460,18 +481,6 @@ let
       comment = "Fuzzy Finder";
       categories = [
         "System"
-        "FileManager"
-      ];
-      isTui = true;
-    };
-    ranger = {
-      package = pkgs.ranger;
-      exec = "ranger";
-      icon = "utilities-terminal";
-      comment = "File Manager";
-      categories = [
-        "System"
-        "FileManager"
       ];
       isTui = true;
     };
@@ -481,8 +490,7 @@ let
       icon = "utilities-terminal";
       comment = "Tree based file explorer";
       categories = [
-        "Office"
-        "Utility"
+        "System"
       ];
       isTui = true;
     };
@@ -492,7 +500,7 @@ let
       icon = "utilities-terminal";
       comment = "Terminal Spreadsheet";
       categories = [
-        "Office"
+        "Data Analysis"
         "Utility"
       ];
       isTui = true;
@@ -503,8 +511,7 @@ let
       icon = "git";
       comment = "Git Terminal UI";
       categories = [
-        "Development"
-        "Utility"
+        "Programming"
       ];
       isTui = true;
     };
@@ -519,8 +526,7 @@ let
       icon = "utilities-terminal";
       comment = "Command Practice Tool";
       categories = [
-        "Development"
-        "Utility"
+        "Learn the Terminal"
       ];
       isTui = true;
     };
