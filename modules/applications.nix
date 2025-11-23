@@ -448,7 +448,7 @@ let
     };
     glow = {
       package = pkgs.glow;
-      exec = "glow ~/docs";
+      exec = "axiom-docs";
       icon = "glow";
       comment = "Docs Reader";
       categories = [

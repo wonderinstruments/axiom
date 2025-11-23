@@ -97,6 +97,7 @@
               ./modules/clipboard-monitor.nix
               ./modules/micro.nix
               ./modules/custom-icons.nix
+              ./modules/system-commands.nix
               ./modules/tmux.nix
               ./modules/launcher.nix
             ];

@@ -6,6 +6,7 @@ Welcome to Axiom 1! Here are some helpful commands and shortcuts:
 - `Super + Shift + Enter` - Open application launcher
 - `Super + Enter` - Open a new terminal
 - `Super + Space` - Open alternate application launcher
+- `Super + Esc` - Browse through the system documentation
 - `Super + 1` - Navigate to the first workspace
 - `Super + q` - Close a window
 
