@@ -126,4 +126,9 @@ in
     source = ../scripts/rofi-launcher.sh;
     executable = true;
   };
+
+  home.file.".local/bin/new-workspace" = {
+    source = ../scripts/new-workspace.sh;
+    executable = true;
+  };
 }

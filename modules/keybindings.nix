@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  launcher,
   config,
   ...
 }:
@@ -230,7 +231,9 @@ in
             # Application shortcuts
             "${cfg.newTerminal}" = "exec kitty";
             "${cfg.tuiLauncher}" =
-              "exec --no-startup-id bash -c 'ws=$(i3-msg -t get_workspaces | jq -r \"if length==0 then 1 else ([.[].num]|max+1) end\"); i3-msg \"workspace number $ws; exec ${pkgs.kitty}/bin/kitty -e ${pkgs.launcher}/bin/launcher\"'";
+              "exec --no-startup-id ~/.local/bin/new-workspace ${pkgs.kitty}/bin/kitty -e ${
+                launcher.packages.${pkgs.system}.default
+              }/bin/launcher";
             "${cfg.applicationLauncher}" = "exec ~/.local/bin/rofi-launcher";
             "${cfg.windowSwitcher}" = "exec ~/.local/bin/rofi-window-switcher";
 
