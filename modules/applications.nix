@@ -371,6 +371,17 @@ let
         "RasterGraphics"
       ];
     };
+    inkscape = {
+      package = pkgs.inkscape;
+      exec = "inkscape";
+      icon = "inkscape";
+      comment = "Create and edit vector graphics like logos, diagrams, and illustrations";
+      categories = [
+        "Graphics"
+        "2DGraphics"
+        "VectorGraphics"
+      ];
+    };
     tuxpaint = {
       package = pkgs.tuxpaint;
       exec = "tuxpaint";

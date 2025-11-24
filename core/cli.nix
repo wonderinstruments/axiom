@@ -21,7 +21,6 @@
     tldr
     fd
     ffmpeg
-    inkscape
     fx
     play
     wthrr
