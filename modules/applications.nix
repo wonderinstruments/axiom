@@ -430,7 +430,7 @@ let
         '';
 
         meta = with pkgs.lib; {
-          description = "Tic-tac-toe terminal user interface";
+          description = "Typing test terminal user interface";
           homepage = "https://github.com/reidoboss/tttui";
           license = licenses.mit;
           platforms = platforms.linux;
@@ -438,7 +438,7 @@ let
       };
       exec = "tttui";
       icon = "utilities-terminal";
-      comment = "Play Tic-Tac-Toe in the terminal";
+      comment = "Test your typing speed";
       categories = [
         "Game"
       ];
@@ -456,6 +456,17 @@ let
         "Settings"
       ];
       isTui = true;
+    };
+    navi = {
+      package = pkgs.navi;
+      exec = "navi";
+      icon = "navi";
+      comment = "Search for example terminal commands";
+      categories = [
+        "System"
+      ];
+      isTui = true;
+      hideFromRofi = true;
     };
     glow = {
       package = pkgs.glow;
