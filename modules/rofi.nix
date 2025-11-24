@@ -129,7 +129,13 @@ in
   };
 
   home.file.".local/bin/rofi-launcher" = {
-    source = ../scripts/rofi-launcher.sh;
+    text = ''
+      #!/usr/bin/env bash
+      # Launch rofi in drun mode and open selected app in a new workspace
+
+      # Launch rofi with new-workspace as the run command
+      rofi -show drun -config ~/.config/rofi/app-launcher.rasi -run-command "new-workspace {cmd}"
+    '';
     executable = true;
   };
 
