@@ -15,6 +15,7 @@
     ./core/cli.nix
     ./core/theme.nix
     ./core/python.nix
+    ./core/mime.nix
   ];
   nix.settings.experimental-features = [
     "nix-command"
@@ -151,21 +152,6 @@
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
   # system.copySystemConfiguration = true;
-
-  # Set kitty as default terminal emulator
-  xdg.terminal-exec = {
-    enable = true;
-    settings = {
-      default = [ "kitty.desktop" ];
-    };
-  };
-
-  # Enable xdg-desktop-portal
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-    config.common.default = [ "gtk" ];
-  };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
