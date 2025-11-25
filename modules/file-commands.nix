@@ -39,6 +39,10 @@ let
       application/json)
         ${pkgs.fx}/bin/fx "$file"
         ;;
+      # CSV and tabular data
+      text/csv|application/vnd.ms-excel)
+        ${pkgs.visidata}/bin/vd "$file"
+        ;;
       # Text files - use bat for syntax highlighting
       text/*|application/xml|application/javascript)
         ${pkgs.bat}/bin/bat --paging=always "$file"
@@ -53,6 +57,42 @@ let
   '';
 
   # Play media files
+  # Show documents (PDFs, ebooks, text)
+  showScript = pkgs.writeShellScriptBin "show" ''
+    if [ $# -eq 0 ]; then
+      echo "Usage: read <file>"
+      echo "Read documents like PDFs, ebooks, and text files"
+      exit 1
+    fi
+
+    file="$1"
+    if [ ! -e "$file" ]; then
+      echo "File not found: $file"
+      exit 1
+    fi
+
+    mime=$(${pkgs.file}/bin/file --mime-type -b "$file")
+
+    case "$mime" in
+      # PDFs and ebooks
+      application/pdf|application/epub*)
+        ${pkgs.zathura}/bin/zathura "$file"
+        ;;
+      # JSON files
+      application/json)
+        ${pkgs.fx}/bin/fx "$file"
+        ;;
+      # Text files
+      text/*)
+        ${pkgs.bat}/bin/bat --paging=always "$file"
+        ;;
+      # Fallback to view
+      *)
+        ${viewScript}/bin/view "$file"
+        ;;
+    esac
+  '';
+
   playScript = pkgs.writeShellScriptBin "play" ''
     if [ $# -eq 0 ]; then
       echo "Usage: play <file>"
@@ -68,7 +108,15 @@ let
 
     mime=$(${pkgs.file}/bin/file --mime-type -b "$file")
 
+    # Check file extension for MIDI (mime detection is unreliable)
+    ext="''${file##*.}"
+    ext_lower=$(echo "$ext" | tr '[:upper:]' '[:lower:]')
+
     case "$mime" in
+      # MIDI files - use rosegarden for playback
+      audio/midi|audio/x-midi)
+        ${pkgs.rosegarden}/bin/rosegarden "$file"
+        ;;
       # Audio - use sox for quick terminal playback
       audio/*)
         ${pkgs.sox}/bin/play "$file"
@@ -77,10 +125,14 @@ let
       video/*)
         ${pkgs.vlc}/bin/vlc --play-and-exit "$file"
         ;;
-      # Fallback
+      # Fallback - check extension for MIDI
       *)
-        echo "Don't know how to play $mime files"
-        exit 1
+        if [ "$ext_lower" = "mid" ] || [ "$ext_lower" = "midi" ]; then
+          ${pkgs.rosegarden}/bin/rosegarden "$file"
+        else
+          echo "Don't know how to play $mime files"
+          exit 1
+        fi
         ;;
     esac
   '';
@@ -88,49 +140,65 @@ let
 in
 {
   options.axiom.fileCommands = {
-    enable = lib.mkEnableOption "semantic file commands (view, play, read)";
+    enable = lib.mkEnableOption "semantic file commands (view, play, show)";
   };
 
   config = lib.mkIf cfg.enable {
     home.packages = [
       viewScript
+      showScript
       playScript
     ];
 
     # Set up xdg-open defaults so 'open' uses sensible apps
     xdg.mimeApps.enable = true;
     xdg.mimeApps.defaultApplications = {
-      # PDFs
+      # PDFs and ebooks
       "application/pdf" = "zathura.desktop";
+      "application/epub+zip" = "zathura.desktop";
 
-      # Images
+      # Images - vimiv for raster, inkscape for vector editing
       "image/png" = "vimiv.desktop";
       "image/jpeg" = "vimiv.desktop";
       "image/gif" = "vimiv.desktop";
       "image/webp" = "vimiv.desktop";
-      "image/svg+xml" = "vimiv.desktop";
       "image/bmp" = "vimiv.desktop";
       "image/tiff" = "vimiv.desktop";
+      "image/svg+xml" = "inkscape.desktop";
 
-      # Audio - kwave for editing via open
+      # Audio - kwave for editing, rosegarden for MIDI
       "audio/mpeg" = "kwave.desktop";
       "audio/ogg" = "kwave.desktop";
       "audio/wav" = "kwave.desktop";
       "audio/flac" = "kwave.desktop";
       "audio/x-wav" = "kwave.desktop";
       "audio/mp4" = "kwave.desktop";
+      "audio/midi" = "rosegarden.desktop";
+      "audio/x-midi" = "rosegarden.desktop";
 
-      # Video - vlc for full playback/editing
+      # Video - vlc for playback
       "video/mp4" = "vlc.desktop";
       "video/webm" = "vlc.desktop";
       "video/x-matroska" = "vlc.desktop";
       "video/quicktime" = "vlc.desktop";
       "video/x-msvideo" = "vlc.desktop";
 
-      # Text - could use a GUI editor, or keep terminal-based
+      # Text and documents
       "text/plain" = "nvim.desktop";
-      "text/markdown" = "nvim.desktop";
+      "text/markdown" = "ghostwriter.desktop";
       "application/json" = "fx.desktop";
+
+      # Spreadsheets and data
+      "text/csv" = "visidata.desktop";
+      "application/vnd.ms-excel" = "visidata.desktop";
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "visidata.desktop";
+
+      # Mind maps
+      "application/x-freeplane" = "freeplane.desktop";
+
+      # Anki
+      "application/x-apkg" = "anki.desktop";
+      "application/x-anki" = "anki.desktop";
     };
 
     # Add 'open' alias for xdg-open
