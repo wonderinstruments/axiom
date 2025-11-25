@@ -41,7 +41,7 @@
         height = "32pt";
         radius = 0;
         bottom = true;
-        override-redirect = true;
+        override-redirect = false;
 
         background = "\${colors.background}";
         foreground = "\${colors.foreground}";
