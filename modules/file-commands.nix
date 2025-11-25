@@ -98,7 +98,7 @@ in
     ];
 
     # Set up xdg-open defaults so 'open' uses sensible apps
-    xdg.mimApps.enable = true;
+    xdg.mimeApps.enable = true;
     xdg.mimeApps.defaultApplications = {
       # PDFs
       "application/pdf" = "zathura.desktop";

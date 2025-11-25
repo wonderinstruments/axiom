@@ -1,6 +1,6 @@
 { ... }:
 {
-  axiom.docs = {
-    fileCommands.enable = true;
+  axiom.fileCommands = {
+    enable = true;
   };
 }
