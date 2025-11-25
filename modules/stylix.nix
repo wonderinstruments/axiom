@@ -30,6 +30,11 @@ in
       default = "tokyo-night-storm";
       description = "System theme colors";
     };
+    windows.gap.size = mkOption {
+      type = types.int;
+      default = 40;
+      description = "Gap size for window manager";
+    };
   };
   config = {
     stylix = {
