@@ -552,21 +552,21 @@ let
       isTui = true;
       hideFromRofi = true;
     };
-    play = {
-      package = pkgs.writeShellScriptBin "play-launcher" ''
-        CMD=$(echo -e "awk\ngrep\nsed\njq\nyq" | fzf --prompt="Select command: ")
-        if [ -n "$CMD" ]; then
-          play "$CMD"
-        fi
-      '';
-      exec = "play-launcher";
-      icon = "play";
-      comment = "Practice terminal commands with interactive exercises";
-      categories = [
-        "Development"
-      ];
-      isTui = true;
-    };
+    # play = {
+    #   package = pkgs.writeShellScriptBin "play-launcher" ''
+    #     CMD=$(echo -e "awk\ngrep\nsed\njq\nyq" | fzf --prompt="Select command: ")
+    #     if [ -n "$CMD" ]; then
+    #       play "$CMD"
+    #     fi
+    #   '';
+    #   exec = "play-launcher";
+    #   icon = "play";
+    #   comment = "Practice terminal commands with interactive exercises";
+    #   categories = [
+    #     "Development"
+    #   ];
+    #   isTui = true;
+    # };
   };
 
   # Separate applications into those with and without enable options

@@ -21,8 +21,9 @@
     tldr
     fd
     ffmpeg
+    sox
     fx
-    play
+    # play
     wthrr
     rip2
   ];

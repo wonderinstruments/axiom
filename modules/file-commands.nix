@@ -35,8 +35,12 @@ let
       application/epub*)
         ${pkgs.zathura}/bin/zathura "$file"
         ;;
+      # JSON files
+      application/json)
+        ${pkgs.fx}/bin/fx "$file"
+        ;;
       # Text files - use bat for syntax highlighting
-      text/*|application/json|application/xml|application/javascript)
+      text/*|application/xml|application/javascript)
         ${pkgs.bat}/bin/bat --paging=always "$file"
         ;;
       # Fallback
@@ -81,38 +85,6 @@ let
     esac
   '';
 
-  # Read documents (alias for view, but semantically for longer reading)
-  readScript = pkgs.writeShellScriptBin "read" ''
-    if [ $# -eq 0 ]; then
-      echo "Usage: read <file>"
-      echo "Read documents like PDFs, ebooks, and text files"
-      exit 1
-    fi
-
-    file="$1"
-    if [ ! -e "$file" ]; then
-      echo "File not found: $file"
-      exit 1
-    fi
-
-    mime=$(${pkgs.file}/bin/file --mime-type -b "$file")
-
-    case "$mime" in
-      # PDFs and ebooks
-      application/pdf|application/epub*)
-        ${pkgs.zathura}/bin/zathura "$file"
-        ;;
-      # Text files
-      text/*)
-        ${pkgs.bat}/bin/bat --paging=always "$file"
-        ;;
-      # Fallback to view
-      *)
-        ${viewScript}/bin/view "$file"
-        ;;
-    esac
-  '';
-
 in
 {
   options.axiom.fileCommands = {
@@ -123,13 +95,11 @@ in
     home.packages = [
       viewScript
       playScript
-      readScript
-      # Ensure dependencies are available
-      pkgs.sox
     ];
 
     # Set up xdg-open defaults so 'open' uses sensible apps
-    xdg.mime.defaultApplications = {
+    xdg.mimApps.enable = true;
+    xdg.mimeApps.defaultApplications = {
       # PDFs
       "application/pdf" = "zathura.desktop";
 
@@ -160,7 +130,7 @@ in
       # Text - could use a GUI editor, or keep terminal-based
       "text/plain" = "nvim.desktop";
       "text/markdown" = "nvim.desktop";
-      "application/json" = "nvim.desktop";
+      "application/json" = "fx.desktop";
     };
 
     # Add 'open' alias for xdg-open

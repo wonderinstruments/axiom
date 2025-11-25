@@ -113,6 +113,7 @@
                 ./templates/sounds.nix
                 ./templates/clipboard-monitor.nix
                 ./templates/screensaver.nix
+                ./templates/terminal.nix
               ];
             };
           }
