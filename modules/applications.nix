@@ -521,16 +521,16 @@ let
       ];
       isTui = true;
     };
-    broot = {
-      package = pkgs.broot;
-      exec = "broot";
-      icon = "broot";
-      comment = "Navigate files in a tree structure to see folder organization";
-      categories = [
-        "System"
-      ];
-      isTui = true;
-    };
+    # broot = {
+    #   package = pkgs.broot;
+    #   exec = "broot";
+    #   icon = "broot";
+    #   comment = "Navigate files in a tree structure to see folder organization";
+    #   categories = [
+    #     "System"
+    #   ];
+    #   isTui = true;
+    # };
     visidata = {
       package = pkgs.visidata;
       exec = "visidata";
@@ -538,6 +538,28 @@ let
       comment = "Work with spreadsheets and data tables in the terminal";
       categories = [
         "Office"
+      ];
+      isTui = true;
+    };
+    nvim = {
+      # No package - nixvim provides nvim on PATH
+      exec = "nvim";
+      icon = "nvim";
+      comment = "Edit text files and code with Neovim";
+      categories = [
+        "Utility"
+        "TextEditor"
+      ];
+      isTui = true;
+    };
+    fx = {
+      package = pkgs.fx;
+      exec = "fx";
+      icon = "utilities-terminal";
+      comment = "View and explore JSON files interactively";
+      categories = [
+        "Utility"
+        "Development"
       ];
       isTui = true;
     };

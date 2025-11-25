@@ -7,6 +7,16 @@
 let
   cfg = config.axiom.fileCommands;
 
+  # Wrapper for xplr that handles file:// URLs from exo-open
+  xplrOpen = pkgs.writeShellScriptBin "xplr-open" ''
+    path="$1"
+    # Strip file:// prefix if present
+    path="''${path#file://}"
+    # URL decode (handle %20 etc)
+    path=$(printf '%b' "''${path//%/\\x}")
+    exec ${pkgs.xplr}/bin/xplr "$path"
+  '';
+
   # Semantic file opener script - dispatches based on file type
   viewScript = pkgs.writeShellScriptBin "view" ''
     if [ $# -eq 0 ]; then
@@ -199,11 +209,32 @@ in
       # Anki
       "application/x-apkg" = "anki.desktop";
       "application/x-anki" = "anki.desktop";
+
+      # Directories
+      "inode/directory" = "xplr.desktop";
     };
 
     # Add 'open' alias for xdg-open
     programs.fish.shellAliases = {
       open = "xdg-open";
     };
+
+    # Configure XFCE to use xplr as file manager (via kitty)
+    xdg.configFile."xfce4/helpers.rc".text = ''
+      FileManager=xplr
+    '';
+
+    # XFCE helper definition for xplr
+    xdg.dataFile."xfce4/helpers/xplr.desktop".text = ''
+      [Desktop Entry]
+      Version=1.0
+      Icon=xplr
+      Type=X-XFCE-Helper
+      Name=xplr
+      X-XFCE-Binaries=xplr-open;
+      X-XFCE-Category=FileManager
+      X-XFCE-Commands=kitty -e xplr;
+      X-XFCE-CommandsWithParameter=kitty -e ${xplrOpen}/bin/xplr-open "%s";
+    '';
   };
 }
