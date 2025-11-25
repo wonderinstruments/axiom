@@ -96,6 +96,7 @@
               ./modules/sounds.nix
               ./modules/clipboard-monitor.nix
               ./modules/micro.nix
+              ./modules/thonny.nix
               ./modules/custom-icons.nix
               ./modules/system-commands.nix
               ./modules/tmux.nix

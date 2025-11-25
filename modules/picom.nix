@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   shadowSize = config.axiom.theme.windows.shadow.size;
   shadowEnabled = shadowSize > 0;
