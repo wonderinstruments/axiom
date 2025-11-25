@@ -21,8 +21,8 @@
   };
 
   # Set up xdg-open defaults
-  xdg.mimeApps.enable = true;
-  xdg.mimeApps.defaultApplications = {
+  xdg.mime.enable = true;
+  xdg.mime.defaultApplications = {
     # PDFs and ebooks
     "application/pdf" = "zathura.desktop";
     "application/epub+zip" = "zathura.desktop";
