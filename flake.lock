@@ -297,6 +297,26 @@
         "type": "github"
       }
     },
+    "launcher": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1763916475,
+        "narHash": "sha256-ipcbuJ3RDELtgnfIaQVM27BMU+2wmZrMCNV8u51vPqE=",
+        "ref": "refs/heads/trunk",
+        "rev": "d0bd4c84cbba08a6428e6b2cd37717822c955683",
+        "revCount": 12,
+        "type": "git",
+        "url": "file:///home/edmund/wonderinstruments/launcher"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/edmund/wonderinstruments/launcher"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1753345091,
@@ -444,6 +464,7 @@
         "guide": "guide",
         "home-manager": "home-manager",
         "kickstart": "kickstart",
+        "launcher": "launcher",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",

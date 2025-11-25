@@ -393,7 +393,7 @@ let
     };
     # coding
     thonny = {
-      package = pkgs.thonny;
+      # Package provided by modules/thonny.nix with Stylix theme
       exec = "thonny";
       icon = "thonny";
       comment = "Learn to code in Python with a beginner-friendly editor";
