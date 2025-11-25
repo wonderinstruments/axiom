@@ -10,31 +10,32 @@
 }:
 
 {
-  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+  ];
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"
-    "ahci"
     "nvme"
     "usb_storage"
-    "usbhid"
     "sd_mod"
+    "rtsx_pci_sdmmc"
   ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
+  boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/8c18891b-0ab3-407a-bbe6-f7d677680dec";
+    device = "/dev/disk/by-uuid/bc817b5a-4662-4d34-8e07-49eefd35d06b";
     fsType = "ext4";
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/24E6-7D7F";
+    device = "/dev/disk/by-uuid/C0DE-8CC4";
     fsType = "vfat";
     options = [
-      "fmask=0022"
-      "dmask=0022"
+      "fmask=0077"
+      "dmask=0077"
     ];
   };
 
@@ -45,49 +46,8 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp6s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp5s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
-  # nvidia
-  services.xserver.videoDrivers = [ "nvidia" ];
-
-  hardware.nvidia = {
-    # Enable modesetting
-    modesetting.enable = true;
-
-    # Enable power management (if you're on a laptop)
-    powerManagement.enable = true;
-
-    # Enable DRM kernel mode setting
-    open = true;
-
-    # Use the NVidia open source kernel module (newer alternative to nouveau)
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-
-    # Enable the NVIDIA settings menu
-    nvidiaSettings = true;
-  };
-
-  # Required hardware settings for Wayland
-  hardware.graphics = {
-    enable = true;
-  };
-
-  # Essential environment variables for Wayland + NVIDIA
-  environment.sessionVariables = {
-    LIBVA_DRIVER_NAME = "nvidia";
-    XDG_SESSION_TYPE = "x11";
-    GBM_BACKEND = "nvidia-drm";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    WLR_NO_HARDWARE_CURSORS = "1";
-  };
-
-  # Required kernel parameters
-  boot.kernelParams = [
-    "nvidia_drm.fbdev=1"
-    "nvidia-drm.modeset=1"
-  ];
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

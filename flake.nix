@@ -100,6 +100,7 @@
               ./modules/system-commands.nix
               ./modules/tmux.nix
               ./modules/launcher.nix
+              ./modules/file-commands.nix
             ];
             home-manager.users.edmund = {
               imports = [
