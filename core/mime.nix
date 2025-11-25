@@ -55,7 +55,7 @@
 
     # Text and documents
     "text/plain" = "nvim.desktop";
-    "text/markdown" = "ghostwriter.desktop";
+    "text/markdown" = "nvim.desktop";
     "application/json" = "fx.desktop";
 
     # Python files - open with Thonny
