@@ -1,6 +1,6 @@
 # Quick Reference Guide
 
-Welcome to Axiom 1! Here are some helpful commands and shortcuts:
+Welcome to Axiom! Here are some helpful commands and shortcuts:
 
 ## Shortcuts
 - `Super + Shift + Enter` - Open application launcher
@@ -13,15 +13,16 @@ Welcome to Axiom 1! Here are some helpful commands and shortcuts:
 ## Command Help
 - To run a command, type it into the terminal and then press Enter
 - `tldr <command>` - Get practical examples and help for any command
+- `navi` - Search commands
 - `? <question>` - Ask a question and get an AI-powered answer
 
 ## System Navigation
 - `eza` - List the files and directories in the current directory
-- `bat <filename>` - Read a text file. To exit bat, press `q`.
 - `z <directory>` - Navigate to a directory
+- `open <filename>` - Open a file with the default application for that file type
+- `bat <filename>` - Read a text file. To exit bat, press `q`.
 - `launcher` - Enter application launcher
 - `xplr` - Enter the file explorer
-- `navi` - Search commands
 
 ---
 
