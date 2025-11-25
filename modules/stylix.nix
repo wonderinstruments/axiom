@@ -30,6 +30,11 @@ in
       default = "tokyo-night-storm";
       description = "System theme colors";
     };
+    windows.shadow.size = mkOption {
+      type = types.int;
+      default = 50;
+      description = "Shadow size for window manager";
+    };
     windows.gap.size = mkOption {
       type = types.int;
       default = 40;
