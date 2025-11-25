@@ -422,4 +422,84 @@ let
 in
 {
   home.packages = [ thonnyWithStylix ];
+
+  # Set Stylix as default theme in Thonny config
+  home.file.".config/Thonny/configuration.ini".text = ''
+    [general]
+    configuration_creation_timestamp = 2025-01-01T00:00:00.000000
+    language = en_US
+    single_instance = True
+    event_logging = False
+    disable_notification_sound = False
+    debug_mode = False
+    ui_mode = regular
+    scaling = default
+    font_scaling_mode = default
+    environment = []
+
+    [view]
+    ui_theme = Stylix
+    syntax_theme = Stylix
+    full_screen = False
+    maximize_view = False
+    shellview.visible = True
+    assistantview.visible = True
+    astview.visible = False
+    stackview.visible = False
+    exceptionview.visible = False
+    filesview.visible = False
+    heapview.visible = False
+    helpview.visible = False
+    notesview.visible = False
+    objectinspector.visible = False
+    outlineview.visible = False
+    todoview.visible = False
+    variablesview.visible = False
+    show_program_arguments = False
+    show_plotter = False
+    name_highlighting = True
+    locals_highlighting = False
+    paren_highlighting = True
+    syntax_coloring = True
+    highlight_tabs = True
+    highlight_current_line = False
+    show_line_numbers = True
+    recommended_line_length = 0
+    editor_font_family = Atkinson Hyperlegible Mono
+    editor_font_size = 13
+    io_font_family = Atkinson Hyperlegible Mono
+    io_font_size = 13
+
+    [run]
+    backend_name = LocalCPython
+    allow_running_unnamed_programs = True
+    auto_cd = True
+    warn_module_shadowing = True
+
+    [edit]
+    automatic_calltips = False
+    automatic_completions = False
+    automatic_completion_details = True
+    indent_with_tabs = False
+
+    [debugger]
+    frames_in_separate_windows = True
+    automatic_stack_view = True
+    allow_stepping_into_libraries = False
+    preferred_debugger = nicer
+
+    [shell]
+    clear_for_new_process = True
+    tty_mode = True
+    max_lines = 1000
+    squeeze_threshold = 1000
+    auto_inspect_values = True
+
+    [assistance]
+    open_assistant_on_errors = True
+    open_assistant_on_warnings = False
+    use_pylint = True
+    use_mypy = True
+    disabled_checks = []
+  '';
 }
