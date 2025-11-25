@@ -101,6 +101,7 @@
               ./modules/tmux.nix
               ./modules/launcher.nix
               ./modules/file-commands.nix
+              ./modules/xplr.nix
             ];
             home-manager.users.edmund = {
               imports = [
