@@ -20,7 +20,8 @@ Welcome to Axiom 1! Here are some helpful commands and shortcuts:
 - `bat <filename>` - Read a text file. To exit bat, press `q`.
 - `z <directory>` - Navigate to a directory
 - `launcher` - Enter application launcher
-- `ranger` - Enter the file explorer
+- `xplr` - Enter the file explorer
+- `navi` - Search commands
 
 ---
 
