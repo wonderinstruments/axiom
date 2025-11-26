@@ -24,7 +24,8 @@ let
 
     installPhase = ''
       mkdir -p $out
-      cp -r * $out/
+      # Copy contents of 'Musopen DVD' folder directly to output
+      cp -r "Musopen DVD"/* $out/
     '';
   };
 
@@ -42,7 +43,7 @@ in
     };
 
     # Create the Music directory and symlink the Musopen content
-    home.activation.setupMusopen = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    home.activation.setupMusopen = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p ${config.home.homeDirectory}/Music
       $DRY_RUN_CMD ln -sf ${musopen-setup}/* ${config.home.homeDirectory}/Music/
     '';

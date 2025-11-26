@@ -26,6 +26,7 @@
     # play
     wthrr
     rip2
+    unzip
   ];
 
   programs.fish.enable = true;
