@@ -468,6 +468,17 @@ let
       ];
       isTui = true;
     };
+    wikiman = {
+      # Package provided by modules/wikiman.nix with NixOS symlink fix
+      exec = "wikiman";
+      icon = "wikiman";
+      comment = "Search or browse for explanations of terminal commands";
+      categories = [
+        "System"
+      ];
+      isTui = true;
+      hideFromRofi = true;
+    };
     navi = {
       package = pkgs.navi;
       exec = "navi";
