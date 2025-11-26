@@ -1,0 +1,104 @@
+% axiom, custom
+
+# Play audio or video file
+play <file>
+
+# View file in read-only mode (auto-detects type)
+view <file>
+
+# Show document (PDFs, ebooks, text)
+show <file>
+
+# Open file with default application
+open <file>
+
+# Launch a command in a new i3 workspace
+new-workspace <command>
+
+# Open TUI application launcher
+launcher
+
+# Ask AI-powered question (get terminal help)
+? <question>
+
+# Navigate to directory and list contents
+z <directory>
+
+# List files with icons
+eza
+
+# List files with details
+eza -l
+
+# List all files including hidden
+eza -a
+
+# List files as tree
+eza --tree
+
+# Read text file with syntax highlighting
+bat <file>
+
+# Search and select commands
+navi
+
+# Open file explorer
+xplr
+
+# Get practical command examples
+tldr <command>
+
+# Move files to trash (reversible delete)
+trash <file>
+
+# List trashed files
+trash list
+
+# Empty trash
+trash empty
+
+$ file: find . -type f -maxdepth 2
+$ command: echo ""
+$ question: echo ""
+$ directory: find . -type d -maxdepth 2
+
+% axiom, workspace
+
+# Switch to workspace 1
+i3-msg workspace number 1
+
+# Switch to workspace 2
+i3-msg workspace number 2
+
+# Switch to workspace 3
+i3-msg workspace number 3
+
+# Switch to workspace 4
+i3-msg workspace number 4
+
+# Switch to workspace 5
+i3-msg workspace number 5
+
+# Move window to workspace
+i3-msg move container to workspace number <workspace_number>
+
+# Show current workspace info
+i3-msg -t get_workspaces | jq '.[] | select(.focused==true)'
+
+$ workspace_number: seq 1 10
+
+% axiom, system
+
+# Show system documentation
+bat ~/docs/<doc_file>
+
+# List available documentation
+eza ~/docs
+
+# Show welcome guide
+bat ~/docs/WELCOME.md
+
+# Show terminal guide
+bat ~/docs/TERMINAL.md
+
+$ doc_file: ls ~/docs | grep -E '\.md$'

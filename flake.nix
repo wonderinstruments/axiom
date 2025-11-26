@@ -103,6 +103,7 @@
               ./modules/launcher.nix
               ./modules/file-commands.nix
               ./modules/xplr.nix
+              ./modules/navi.nix
               ./modules/musopen.nix
             ];
             home-manager.users.edmund = {
