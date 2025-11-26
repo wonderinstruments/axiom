@@ -130,6 +130,17 @@ let
       ];
       enableOption = true;
     };
+    termusic = {
+      package = pkgs.termusic;
+      exec = "termusic";
+      icon = "termusic";
+      comment = "Listen to music";
+      categories = [
+        "AudioVideo"
+        "Audio"
+      ];
+      enableOption = true;
+    };
     spotify = {
       package = pkgs.spotify;
       exec = "spotify";
