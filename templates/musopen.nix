@@ -1,0 +1,3 @@
+{
+  axiom.musopen.enable = true;
+}

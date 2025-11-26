@@ -103,6 +103,7 @@
               ./modules/launcher.nix
               ./modules/file-commands.nix
               ./modules/xplr.nix
+              ./modules/musopen.nix
             ];
             home-manager.users.edmund = {
               imports = [
@@ -116,6 +117,7 @@
                 ./templates/clipboard-monitor.nix
                 ./templates/screensaver.nix
                 ./templates/terminal.nix
+                ./templates/musopen.nix
               ];
             };
           }

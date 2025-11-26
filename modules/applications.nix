@@ -135,11 +135,11 @@ let
       exec = "termusic";
       icon = "termusic";
       comment = "Listen to music";
+      isTui = true;
       categories = [
         "AudioVideo"
         "Audio"
       ];
-      enableOption = true;
     };
     spotify = {
       package = pkgs.spotify;
