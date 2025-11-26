@@ -468,6 +468,17 @@ let
       ];
       isTui = true;
     };
+    lazyjournal = {
+      package = pkgs.lazyjournal;
+      exec = "lazyjournal";
+      icon = "lazyjournal";
+      comment = "Explore system logs";
+      categories = [
+        "System"
+      ];
+      isTui = true;
+      hideFromRofi = true;
+    };
     navi = {
       package = pkgs.navi;
       exec = "navi";
