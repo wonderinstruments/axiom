@@ -105,7 +105,6 @@
               ./modules/xplr.nix
               ./modules/navi.nix
               ./modules/musopen.nix
-              ./modules/wikiman.nix
             ];
             home-manager.users.edmund = {
               imports = [
