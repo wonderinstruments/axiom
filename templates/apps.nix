@@ -1,0 +1,3 @@
+{
+  axiom.gittype.enable = true;
+}

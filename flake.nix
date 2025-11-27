@@ -105,6 +105,7 @@
               ./modules/xplr.nix
               ./modules/navi.nix
               ./modules/musopen.nix
+              ./modules/gittype.nix
             ];
             home-manager.users.edmund = {
               imports = [
@@ -118,6 +119,7 @@
                 ./templates/clipboard-monitor.nix
                 ./templates/screensaver.nix
                 ./templates/terminal.nix
+                ./templates/apps.nix
                 ./templates/musopen.nix
               ];
             };
