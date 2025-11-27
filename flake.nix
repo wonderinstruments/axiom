@@ -29,6 +29,9 @@
       url = "git+file:///home/edmund/wonderinstruments/launcher";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    gittype = {
+      url = "github:unhappychoice/gittype";
+    };
   };
 
   outputs =
@@ -43,6 +46,7 @@
       nixvim,
       parental-controls,
       launcher,
+      gittype,
       ...
     }:
     {
@@ -67,7 +71,7 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = {
-              inherit kickstart launcher;
+              inherit kickstart launcher gittype;
               pkgs-unstable = import nixpkgs-unstable {
                 system = "x86_64-linux";
                 config.allowUnfree = true;
