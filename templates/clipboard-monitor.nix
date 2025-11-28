@@ -1,3 +1,0 @@
-{
-  axiom.clipboardMonitor.enable = true;
-}

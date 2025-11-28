@@ -1,0 +1,74 @@
+# Axiom Admin Configuration
+# This file controls administrator-only settings (requires root to modify).
+# Located at /etc/axiom/admin.toml
+# Run `sudo nixos-rebuild switch --flake /etc/nixos#axiom` to apply changes.
+
+# =============================================================================
+# WEB BROWSERS
+# =============================================================================
+[web.firefox]
+enable = true
+
+[web.chromium]
+enable = true
+
+# =============================================================================
+# GAMES
+# =============================================================================
+# Set enable = true for games you want to install
+
+[games.endless-sky]
+enable = true
+
+[games.widelands]
+enable = true
+
+[games.freeciv]
+enable = true
+
+[games.the-powder-toy]
+enable = true
+
+[games.zeroad]
+enable = true
+
+[games.openttd]
+enable = true
+
+[games.katomic]
+enable = true
+
+[games.mindustry]
+enable = true
+
+[games.luanti]
+enable = true
+
+[games.pingus]
+enable = true
+
+[games.tuxtype]
+enable = true
+
+# =============================================================================
+# APPLICATIONS
+# =============================================================================
+# These are optional applications that require explicit enabling
+
+[applications.xiphos]
+enable = true
+
+[applications.warp-terminal]
+enable = true
+
+[applications.spotify]
+enable = true
+
+[applications.obsidian]
+enable = true
+
+[applications.slack]
+enable = true
+
+[applications.discord]
+enable = true

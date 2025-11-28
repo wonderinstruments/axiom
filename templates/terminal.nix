@@ -1,6 +1,0 @@
-{ ... }:
-{
-  axiom.fileCommands = {
-    enable = true;
-  };
-}

@@ -63,6 +63,7 @@
             ];
           }
           ./configuration.nix
+          ./modules/admin-config-loader.nix
           stylix.nixosModules.stylix
           guide.nixosModules.default
           home-manager.nixosModules.home-manager
@@ -110,22 +111,12 @@
               ./modules/navi.nix
               ./modules/musopen.nix
               ./modules/gittype.nix
+              ./modules/user-config-loader.nix
+              ./modules/admin-config-loader-hm.nix
             ];
             home-manager.users.edmund = {
-              imports = [
-                ./templates/theme.nix
-                ./templates/neovim.nix
-                ./templates/admin.nix
-                ./templates/keybindings.nix
-                ./templates/docs.nix
-                ./templates/fractal-wallpaper.nix
-                ./templates/sounds.nix
-                ./templates/clipboard-monitor.nix
-                ./templates/screensaver.nix
-                ./templates/terminal.nix
-                ./templates/apps.nix
-                ./templates/musopen.nix
-              ];
+              # User-specific config is now loaded from ~/.config/axiom/config.toml
+              # by the user-config-loader module
             };
           }
         ];

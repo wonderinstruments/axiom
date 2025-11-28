@@ -1,3 +1,0 @@
-{
-  axiom.sounds.enable = true;
-}
