@@ -455,6 +455,18 @@ let
       ];
       isTui = true;
     };
+    gittype = {
+      # No package specified: we only create desktop entries and do not
+      # add anything to home.packages. Assumes gittype is available on PATH
+      # (e.g. from the system profile or another module).
+      exec = "gittype ${config.home.homeDirectory}/scripts";
+      icon = "gittype";
+      comment = "Typing challenges to improve typing speed";
+      categories = [
+        "Game"
+      ];
+      isTui = true;
+    };
     nmtui = {
       # No package specified: we only create desktop entries and do not
       # add anything to home.packages. Assumes nmtui is available on PATH
@@ -477,7 +489,6 @@ let
         "System"
       ];
       isTui = true;
-      hideFromRofi = true;
     };
     navi = {
       package = pkgs.navi;
@@ -488,7 +499,6 @@ let
         "System"
       ];
       isTui = true;
-      hideFromRofi = true;
     };
     glow = {
       package = pkgs.glow;
@@ -499,7 +509,6 @@ let
         "System"
       ];
       isTui = true;
-      hideFromRofi = true;
     };
     dua = {
       package = pkgs.dua;
@@ -594,23 +603,7 @@ let
         "Development"
       ];
       isTui = true;
-      hideFromRofi = true;
     };
-    # play = {
-    #   package = pkgs.writeShellScriptBin "play-launcher" ''
-    #     CMD=$(echo -e "awk\ngrep\nsed\njq\nyq" | fzf --prompt="Select command: ")
-    #     if [ -n "$CMD" ]; then
-    #       play "$CMD"
-    #     fi
-    #   '';
-    #   exec = "play-launcher";
-    #   icon = "play";
-    #   comment = "Practice terminal commands with interactive exercises";
-    #   categories = [
-    #     "Development"
-    #   ];
-    #   isTui = true;
-    # };
   };
 
   # Separate applications into those with and without enable options
