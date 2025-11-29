@@ -120,6 +120,19 @@
     axiom-rebuild
   ];
 
+  # Allow users in wheel to run axiom-rebuild without password
+  security.sudo.extraRules = [
+    {
+      groups = [ "wheel" ];
+      commands = [
+        {
+          command = "${pkgs.axiom-rebuild}/bin/axiom-rebuild";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

@@ -24,11 +24,11 @@ struct Args {
     #[arg(long)]
     user: Option<String>,
 
-    /// Path to user config file (default: ~/.config/axiom/config.conf)
+    /// Path to user config file (default: ~/config/axiom/config.conf)
     #[arg(long)]
     config: Option<PathBuf>,
 
-    /// Path to admin config file (default: ~/.config/axiom/admin.conf)
+    /// Path to admin config file (default: /etc/axiom/<username>.conf)
     #[arg(long)]
     admin_config: Option<PathBuf>,
 
@@ -44,15 +44,38 @@ struct Args {
 fn main() -> Result<()> {
     let args = Args::parse();
 
+    // Check if running as root - if not, re-exec with sudo (passwordless via sudoers rule)
+    let is_root = unsafe { libc::geteuid() } == 0;
+    if !is_root {
+        let exe = std::env::current_exe().context("Failed to get current executable")?;
+        let status = Command::new("sudo")
+            .arg("--non-interactive")
+            .arg(&exe)
+            .args(std::env::args().skip(1))
+            .status()
+            .context("Failed to run with sudo. Make sure axiom-rebuild is in sudoers.")?;
+        std::process::exit(status.code().unwrap_or(1));
+    }
+
+    // Get the real user even when running under sudo
     let username = args.user.unwrap_or_else(|| {
-        std::env::var("USER").expect("Could not determine current user")
+        std::env::var("SUDO_USER")
+            .or_else(|_| std::env::var("USER"))
+            .expect("Could not determine current user")
     });
 
-    let home_dir = std::env::var("HOME").expect("Could not determine home directory");
-    let config_dir = PathBuf::from(&home_dir).join(".config/axiom");
+    // Get the real user's home directory, not root's when using sudo
+    let home_dir = if let Ok(sudo_user) = std::env::var("SUDO_USER") {
+        // Running under sudo - get the original user's home
+        format!("/home/{}", sudo_user)
+    } else {
+        std::env::var("HOME").expect("Could not determine home directory")
+    };
+    let config_dir = PathBuf::from(&home_dir).join("config/axiom");
 
     let user_config_path = args.config.unwrap_or_else(|| config_dir.join("config.conf"));
-    let admin_config_path = args.admin_config.unwrap_or_else(|| config_dir.join("admin.conf"));
+    // Admin config lives in /etc/axiom/ and requires sudo to edit
+    let admin_config_path = args.admin_config.unwrap_or_else(|| PathBuf::from("/etc/axiom").join(format!("{}.conf", username)));
 
     let template_dir = args.flake_dir.join("templates");
     let output_dir = args.flake_dir.join("config/users");
@@ -106,8 +129,9 @@ fn main() -> Result<()> {
     if !args.no_rebuild {
         println!("{}", "Rebuilding system...".blue());
 
-        let status = Command::new("sudo")
-            .args(["nixos-rebuild", "switch", "--flake", &format!("{}#axiom", args.flake_dir.display())])
+        // Already running as root via sudo
+        let status = Command::new("nixos-rebuild")
+            .args(["switch", "--flake", &format!("{}#axiom", args.flake_dir.display())])
             .status()
             .context("Failed to run nixos-rebuild")?;
 
@@ -130,8 +154,16 @@ fn init_configs(
     template_dir: &Path,
     force: bool,
 ) -> Result<()> {
+    // Create user config directory
     fs::create_dir_all(config_dir)
         .with_context(|| format!("Failed to create config directory: {}", config_dir.display()))?;
+
+    // Create admin config directory (/etc/axiom/) - requires sudo
+    let admin_config_dir = admin_config_path.parent().unwrap_or(Path::new("/etc/axiom"));
+    if !admin_config_dir.exists() {
+        fs::create_dir_all(admin_config_dir)
+            .with_context(|| format!("Failed to create admin config directory: {} (try running with sudo)", admin_config_dir.display()))?;
+    }
 
     let user_template = template_dir.join("user-config.conf");
     let admin_template = template_dir.join("admin-config.conf");
@@ -148,7 +180,14 @@ fn init_configs(
     if force || !admin_config_path.exists() {
         if admin_template.exists() {
             fs::copy(&admin_template, admin_config_path)?;
-            println!("  {} {}", "Created:".green(), admin_config_path.display());
+            // Set admin config to be owned by root and not world-writable
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                let perms = std::fs::Permissions::from_mode(0o644);
+                fs::set_permissions(admin_config_path, perms)?;
+            }
+            println!("  {} {} (requires sudo to edit)", "Created:".green(), admin_config_path.display());
         } else {
             println!("  {} Admin template not found: {}", "Warning:".yellow(), admin_template.display());
         }

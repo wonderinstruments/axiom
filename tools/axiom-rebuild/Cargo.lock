@@ -84,6 +84,7 @@ dependencies = [
  "clap",
  "colored",
  "hocon",
+ "libc",
  "serde",
 ]
 
