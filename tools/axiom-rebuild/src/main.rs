@@ -6,6 +6,9 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use uuid::Uuid;
+
+const REPO_URL: &str = "https://github.com/wonderinstruments/nix-config.git";
 
 /// Axiom configuration manager
 /// Converts HOCON configs to Nix and rebuilds the system
@@ -39,6 +42,11 @@ struct Args {
     /// Reset config files to template defaults
     #[arg(long)]
     reset: bool,
+
+    /// Update to a specific version. Use without value for latest release,
+    /// specify a version (e.g. v1.2.3), or 'unstable' for latest commit.
+    #[arg(long, value_name = "VERSION")]
+    update: Option<Option<String>>,
 }
 
 fn main() -> Result<()> {
@@ -57,8 +65,13 @@ fn main() -> Result<()> {
         std::process::exit(status.code().unwrap_or(1));
     }
 
+    // Handle --update if specified
+    if let Some(version_opt) = &args.update {
+        return handle_update(version_opt.clone(), &args);
+    }
+
     // Get the real user even when running under sudo
-    let username = args.user.unwrap_or_else(|| {
+    let username = args.user.clone().unwrap_or_else(|| {
         std::env::var("SUDO_USER")
             .or_else(|_| std::env::var("USER"))
             .expect("Could not determine current user")
@@ -429,6 +442,279 @@ fn commit_config_changes(config_dir: &Path, config_path: &Path, username: &str) 
         println!("  {} {}", "Committed:".green(), commit_msg);
     }
     // If commit fails (e.g., nothing to commit), that's okay
+
+    Ok(())
+}
+
+/// Handle the --update flag
+fn handle_update(version: Option<String>, args: &Args) -> Result<()> {
+    let flake_dir = &args.flake_dir;
+    let backup_id = Uuid::new_v4();
+    let backup_dir = PathBuf::from(format!("/tmp/nixos-backup-{}", backup_id));
+
+    // Determine what version/ref to fetch
+    let target_ref = match &version {
+        None => {
+            // No version specified - get latest release tag
+            println!("{}", "Fetching latest release...".blue());
+            get_latest_release_tag()?
+        }
+        Some(v) if v == "unstable" => {
+            println!("{}", "Fetching latest commit (unstable)...".blue());
+            "HEAD".to_string()
+        }
+        Some(v) => {
+            // Specific version requested
+            println!("{} {}", "Fetching version:".blue(), v);
+            v.clone()
+        }
+    };
+
+    println!("  {} {}", "Target:".green(), target_ref);
+
+    // Create temporary directory for cloning
+    let temp_dir = tempfile::tempdir().context("Failed to create temp directory")?;
+    let clone_path = temp_dir.path();
+
+    // Clone the repo
+    println!("{}", "Cloning repository...".blue());
+    let clone_status = Command::new("git")
+        .args(["clone", "--depth", "1", "--branch", &target_ref, REPO_URL])
+        .arg(clone_path)
+        .status();
+
+    // If --branch fails (e.g., for HEAD), try clone + checkout
+    let clone_success = match clone_status {
+        Ok(status) if status.success() => true,
+        _ => {
+            // Fallback: full clone then checkout
+            println!("  {} {}", "Retrying with full clone...".yellow(), target_ref);
+            let status = Command::new("git")
+                .args(["clone", REPO_URL])
+                .arg(clone_path)
+                .status()
+                .context("Failed to clone repository")?;
+
+            if !status.success() {
+                bail!("Failed to clone repository");
+            }
+
+            // Checkout the specific ref
+            if target_ref != "HEAD" {
+                let status = Command::new("git")
+                    .args(["checkout", &target_ref])
+                    .current_dir(clone_path)
+                    .status()
+                    .context("Failed to checkout ref")?;
+
+                if !status.success() {
+                    bail!("Failed to checkout {}", target_ref);
+                }
+            }
+            true
+        }
+    };
+
+    if !clone_success {
+        bail!("Failed to clone repository");
+    }
+
+    // Create backup of current /etc/nixos
+    println!("{}", "Creating backup of current configuration...".blue());
+    if flake_dir.exists() {
+        let status = Command::new("cp")
+            .args(["-a"])
+            .arg(flake_dir)
+            .arg(&backup_dir)
+            .status()
+            .context("Failed to create backup")?;
+
+        if !status.success() {
+            bail!("Failed to create backup of {}", flake_dir.display());
+        }
+        println!("  {} {}", "Backup created:".green(), backup_dir.display());
+    }
+
+    // Copy new config to /etc/nixos, preserving hardware-configuration.nix
+    println!("{}", "Installing new configuration...".blue());
+
+    // Use rsync to copy, excluding hardware-configuration.nix and .git
+    let status = Command::new("rsync")
+        .args([
+            "-av",
+            "--delete",
+            "--exclude",
+            "hardware-configuration.nix",
+            "--exclude",
+            ".git",
+        ])
+        .arg(format!("{}/", clone_path.display()))
+        .arg(format!("{}/", flake_dir.display()))
+        .status()
+        .context("Failed to copy new configuration")?;
+
+    if !status.success() {
+        // Restore from backup
+        println!("{}", "Copy failed, restoring from backup...".red());
+        restore_from_backup(&backup_dir, flake_dir)?;
+        bail!("Failed to install new configuration");
+    }
+
+    // Initialize git in /etc/nixos for flake support
+    // Flakes require the directory to be a git repo
+    println!("{}", "Initializing git for flake support...".blue());
+    if !flake_dir.join(".git").exists() {
+        let status = Command::new("git")
+            .arg("init")
+            .current_dir(flake_dir)
+            .status()
+            .context("Failed to init git")?;
+
+        if !status.success() {
+            println!("{}", "Warning: git init failed, flake may not work correctly".yellow());
+        }
+    }
+
+    // Stage all files so flake can see them
+    let status = Command::new("git")
+        .args(["add", "-A"])
+        .current_dir(flake_dir)
+        .status()
+        .context("Failed to stage files")?;
+
+    if !status.success() {
+        println!("{}", "Warning: git add failed".yellow());
+    }
+
+    // Now proceed with normal rebuild
+    println!("{}", "Proceeding with rebuild...".blue());
+
+    // Re-run axiom-rebuild without --update to do the actual rebuild
+    let exe = std::env::current_exe().context("Failed to get current executable")?;
+    let mut rebuild_args: Vec<String> = vec![];
+
+    if args.no_rebuild {
+        rebuild_args.push("--no-rebuild".to_string());
+    }
+    rebuild_args.push("--flake-dir".to_string());
+    rebuild_args.push(flake_dir.to_string_lossy().to_string());
+
+    if let Some(user) = &args.user {
+        rebuild_args.push("--user".to_string());
+        rebuild_args.push(user.clone());
+    }
+    if let Some(config) = &args.config {
+        rebuild_args.push("--config".to_string());
+        rebuild_args.push(config.to_string_lossy().to_string());
+    }
+    if let Some(admin_config) = &args.admin_config {
+        rebuild_args.push("--admin-config".to_string());
+        rebuild_args.push(admin_config.to_string_lossy().to_string());
+    }
+    if args.init {
+        rebuild_args.push("--init".to_string());
+    }
+    if args.reset {
+        rebuild_args.push("--reset".to_string());
+    }
+
+    let status = Command::new(&exe)
+        .args(&rebuild_args)
+        .status()
+        .context("Failed to run rebuild")?;
+
+    if !status.success() {
+        // Rebuild failed - restore from backup
+        println!("\n{}", "Rebuild failed! Restoring from backup...".red().bold());
+        restore_from_backup(&backup_dir, flake_dir)?;
+
+        // Re-init git after restore
+        if !flake_dir.join(".git").exists() {
+            let _ = Command::new("git")
+                .arg("init")
+                .current_dir(flake_dir)
+                .status();
+        }
+        let _ = Command::new("git")
+            .args(["add", "-A"])
+            .current_dir(flake_dir)
+            .status();
+
+        println!("{}", "Previous configuration restored.".green());
+        bail!("Rebuild failed, rolled back to previous configuration");
+    }
+
+    // Success - clean up backup
+    println!("{}", "Cleaning up...".blue());
+    if backup_dir.exists() {
+        fs::remove_dir_all(&backup_dir).ok();
+    }
+
+    println!("\n{} {}", "Successfully updated to:".green().bold(), target_ref);
+    Ok(())
+}
+
+/// Get the latest release tag from the remote repository
+fn get_latest_release_tag() -> Result<String> {
+    let output = Command::new("git")
+        .args(["ls-remote", "--tags", "--sort=-v:refname", REPO_URL])
+        .output()
+        .context("Failed to fetch tags from remote")?;
+
+    if !output.status.success() {
+        bail!("Failed to fetch tags from remote");
+    }
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+
+    // Parse the output to find the latest semver tag
+    // Format: <sha>\trefs/tags/<tag>
+    for line in stdout.lines() {
+        if let Some(tag_ref) = line.split('\t').nth(1) {
+            let tag = tag_ref.trim_start_matches("refs/tags/");
+            // Skip tags ending with ^{} (annotated tag derefs)
+            if tag.ends_with("^{}") {
+                continue;
+            }
+            // Check if it looks like a semver tag (v1.2.3 or 1.2.3)
+            let version_part = tag.trim_start_matches('v');
+            if version_part.split('.').count() >= 2
+                && version_part.chars().next().map(|c| c.is_ascii_digit()).unwrap_or(false)
+            {
+                return Ok(tag.to_string());
+            }
+        }
+    }
+
+    bail!("No release tags found. Use --update unstable for latest commit.")
+}
+
+/// Restore /etc/nixos from backup
+fn restore_from_backup(backup_dir: &Path, flake_dir: &Path) -> Result<()> {
+    if !backup_dir.exists() {
+        bail!("Backup directory does not exist: {}", backup_dir.display());
+    }
+
+    // Remove current flake_dir contents (except hardware-configuration.nix)
+    // Then copy from backup
+    let status = Command::new("rsync")
+        .args([
+            "-av",
+            "--delete",
+            "--exclude",
+            "hardware-configuration.nix",
+        ])
+        .arg(format!("{}/", backup_dir.display()))
+        .arg(format!("{}/", flake_dir.display()))
+        .status()
+        .context("Failed to restore from backup")?;
+
+    if !status.success() {
+        bail!("Failed to restore from backup");
+    }
+
+    // Clean up backup after successful restore
+    fs::remove_dir_all(backup_dir).ok();
 
     Ok(())
 }
