@@ -45,11 +45,19 @@ case "$BUMP_TYPE" in
 esac
 
 NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+
+# Update VERSION file
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "$NEW_VERSION" > "$SCRIPT_DIR/VERSION"
+git add "$SCRIPT_DIR/VERSION"
+git commit -m "Bump version to $NEW_TAG"
 
 echo "Creating tag: $NEW_TAG (was: $LATEST_TAG)"
 git tag -a "$NEW_TAG" -m "Release $NEW_TAG"
 
-echo "Pushing tag..."
+echo "Pushing commits and tag..."
+git push origin HEAD
 git push origin "$NEW_TAG"
 
 echo "Released $NEW_TAG"

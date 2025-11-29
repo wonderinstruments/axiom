@@ -4,6 +4,7 @@ use colored::Colorize;
 use hocon::HoconLoader;
 use std::collections::HashMap;
 use std::fs;
+use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use uuid::Uuid;
@@ -47,6 +48,10 @@ struct Args {
     /// specify a version (e.g. v1.2.3), or 'unstable' for latest commit.
     #[arg(long, value_name = "VERSION")]
     update: Option<Option<String>>,
+
+    /// Skip the update check
+    #[arg(long)]
+    no_update_check: bool,
 }
 
 fn main() -> Result<()> {
@@ -68,6 +73,11 @@ fn main() -> Result<()> {
     // Handle --update if specified
     if let Some(version_opt) = &args.update {
         return handle_update(version_opt.clone(), &args);
+    }
+
+    // Check for updates (unless disabled)
+    if !args.no_update_check {
+        check_for_updates(&args.flake_dir)?;
     }
 
     // Get the real user even when running under sudo
@@ -370,6 +380,155 @@ fn escape_nix_string(s: &str) -> String {
         .replace("${", "\\${")
 }
 
+/// Represents the installed version info
+#[derive(Debug)]
+struct VersionInfo {
+    version: String,
+    commit: Option<String>,
+    is_release: bool,
+}
+
+impl std::fmt::Display for VersionInfo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.is_release {
+            write!(f, "v{}", self.version)
+        } else if let Some(commit) = &self.commit {
+            write!(f, "unstable ({})", &commit[..7.min(commit.len())])
+        } else {
+            write!(f, "{}", self.version)
+        }
+    }
+}
+
+/// Read the current installed version from VERSION file
+fn read_installed_version(flake_dir: &Path) -> Result<VersionInfo> {
+    let version_file = flake_dir.join("VERSION");
+    
+    if !version_file.exists() {
+        return Ok(VersionInfo {
+            version: "0.0.0".to_string(),
+            commit: None,
+            is_release: false,
+        });
+    }
+    
+    let content = fs::read_to_string(&version_file)
+        .context("Failed to read VERSION file")?;
+    let version = content.trim().to_string();
+    
+    // Check if we're on a release by looking at the git state in /etc/nixos
+    // If VERSION matches a tag pattern and there's no COMMIT file, it's a release
+    let commit_file = flake_dir.join("COMMIT");
+    let commit = if commit_file.exists() {
+        Some(fs::read_to_string(&commit_file)
+            .unwrap_or_default()
+            .trim()
+            .to_string())
+    } else {
+        None
+    };
+    
+    // It's a release if VERSION looks like semver and there's no COMMIT file
+    let is_release = commit.is_none() && 
+        version.split('.').count() >= 2 &&
+        version.chars().next().map(|c| c.is_ascii_digit()).unwrap_or(false);
+    
+    Ok(VersionInfo {
+        version,
+        commit,
+        is_release,
+    })
+}
+
+/// Compare semver versions, returns true if remote is newer
+fn is_newer_version(local: &str, remote: &str) -> bool {
+    let parse_version = |v: &str| -> (u32, u32, u32) {
+        let v = v.trim_start_matches('v');
+        let parts: Vec<u32> = v.split('.')
+            .filter_map(|p| p.parse().ok())
+            .collect();
+        (
+            parts.first().copied().unwrap_or(0),
+            parts.get(1).copied().unwrap_or(0),
+            parts.get(2).copied().unwrap_or(0),
+        )
+    };
+    
+    let local_v = parse_version(local);
+    let remote_v = parse_version(remote);
+    
+    remote_v > local_v
+}
+
+/// Check for updates and prompt the user
+fn check_for_updates(flake_dir: &Path) -> Result<()> {
+    let installed = read_installed_version(flake_dir)?;
+    
+    // Try to get latest release tag (silently fail if no network)
+    let latest_tag = match get_latest_release_tag() {
+        Ok(tag) => tag,
+        Err(_) => return Ok(()), // Can't check, continue silently
+    };
+    
+    let latest_version = latest_tag.trim_start_matches('v');
+    
+    // Check if update is available
+    let update_available = if installed.is_release {
+        is_newer_version(&installed.version, latest_version)
+    } else {
+        // On unstable - always offer to go to latest release
+        true
+    };
+    
+    if !update_available {
+        return Ok(());
+    }
+    
+    // Show update prompt
+    println!();
+    println!("{}", "━".repeat(50).dimmed());
+    if installed.is_release {
+        println!(
+            "{}  {} → {}",
+            "Update available:".yellow().bold(),
+            format!("v{}", installed.version).dimmed(),
+            format!("v{}", latest_version).green().bold()
+        );
+    } else {
+        println!(
+            "{}  {} → {}",
+            "Release available:".yellow().bold(),
+            installed.to_string().dimmed(),
+            format!("v{}", latest_version).green().bold()
+        );
+    }
+    println!("{}", "━".repeat(50).dimmed());
+    
+    print!("Would you like to update now? [y/N] ");
+    io::stdout().flush()?;
+    
+    let mut input = String::new();
+    io::stdin().read_line(&mut input)?;
+    
+    if input.trim().eq_ignore_ascii_case("y") {
+        // Re-exec with --update flag
+        let exe = std::env::current_exe().context("Failed to get current executable")?;
+        let status = Command::new(&exe)
+            .arg("--update")
+            .status()
+            .context("Failed to run update")?;
+        
+        if status.success() {
+            std::process::exit(0);
+        } else {
+            bail!("Update failed");
+        }
+    }
+    
+    println!();
+    Ok(())
+}
+
 fn commit_config_changes(config_dir: &Path, config_path: &Path, username: &str) -> Result<()> {
     // Helper to run git commands as the original user (not root)
     // This avoids "dubious ownership" errors when the user later runs git
@@ -453,6 +612,7 @@ fn handle_update(version: Option<String>, args: &Args) -> Result<()> {
     let backup_dir = PathBuf::from(format!("/tmp/nixos-backup-{}", backup_id));
 
     // Determine what version/ref to fetch
+    let is_unstable = matches!(&version, Some(v) if v == "unstable");
     let target_ref = match &version {
         None => {
             // No version specified - get latest release tag
@@ -519,6 +679,15 @@ fn handle_update(version: Option<String>, args: &Args) -> Result<()> {
         bail!("Failed to clone repository");
     }
 
+    // Get the commit hash for tracking (especially for unstable)
+    let commit_hash = Command::new("git")
+        .args(["rev-parse", "HEAD"])
+        .current_dir(clone_path)
+        .output()
+        .ok()
+        .and_then(|o| String::from_utf8(o.stdout).ok())
+        .map(|s| s.trim().to_string());
+
     // Create backup of current /etc/nixos
     println!("{}", "Creating backup of current configuration...".blue());
     if flake_dir.exists() {
@@ -558,6 +727,19 @@ fn handle_update(version: Option<String>, args: &Args) -> Result<()> {
         println!("{}", "Copy failed, restoring from backup...".red());
         restore_from_backup(&backup_dir, flake_dir)?;
         bail!("Failed to install new configuration");
+    }
+
+    // Write COMMIT file for unstable builds, remove it for releases
+    let commit_file = flake_dir.join("COMMIT");
+    if is_unstable {
+        if let Some(hash) = &commit_hash {
+            fs::write(&commit_file, hash).ok();
+        }
+    } else {
+        // Remove COMMIT file for release builds
+        if commit_file.exists() {
+            fs::remove_file(&commit_file).ok();
+        }
     }
 
     // Initialize git in /etc/nixos for flake support
