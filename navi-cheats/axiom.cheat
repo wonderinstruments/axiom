@@ -102,3 +102,29 @@ bat ~/docs/WELCOME.md
 bat ~/docs/TERMINAL.md
 
 $ doc_file: ls ~/docs | grep -E '\.md$'
+
+% axiom, configuration
+
+# Edit system configuration (user settings)
+micro ~/config/axiom/config.conf
+
+# Edit configuration with nvim
+nvim ~/config/axiom/config.conf
+
+# View current configuration
+cat ~/config/axiom/config.conf
+
+# Apply configuration changes and rebuild system
+axiom-rebuild
+
+# Generate config without rebuilding (preview changes)
+axiom-rebuild --no-rebuild
+
+# Initialize configuration file from template
+axiom-rebuild --init
+
+# Reset configuration to defaults
+axiom-rebuild --reset
+
+# Show configuration documentation
+bat ~/docs/CONFIGURATION.md
