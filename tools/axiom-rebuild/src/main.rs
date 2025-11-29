@@ -2,6 +2,7 @@ use anyhow::{Context, Result, bail};
 use clap::Parser;
 use colored::Colorize;
 use hocon::HoconLoader;
+use similar::{ChangeTag, TextDiff};
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -96,6 +97,17 @@ fn main() -> Result<()> {
         bail!("Config file not found");
     }
 
+    // Auto-copy admin template if it doesn't exist
+    if !admin_config_path.exists() {
+        let admin_template = template_dir.join("admin-config.conf");
+        if admin_template.exists() {
+            fs::create_dir_all(admin_config_path.parent().unwrap_or(Path::new("/etc/axiom")))?;
+            fs::copy(&admin_template, &admin_config_path)
+                .with_context(|| format!("Failed to copy admin template to {}", admin_config_path.display()))?;
+            println!("  {} {}", "Created admin config:".green(), admin_config_path.display());
+        }
+    }
+
     // Parse configs
     println!("{}", "Parsing configuration...".blue());
 
@@ -120,10 +132,29 @@ fn main() -> Result<()> {
         .with_context(|| format!("Failed to create output directory: {}", output_dir.display()))?;
 
     let output_path = output_dir.join(format!("{}.nix", username));
+    
+    // Show diff if file already exists
+    let show_diff = output_path.exists();
+    let old_content = if show_diff {
+        fs::read_to_string(&output_path).ok()
+    } else {
+        None
+    };
+    
     fs::write(&output_path, &nix_content)
         .with_context(|| format!("Failed to write Nix config: {}", output_path.display()))?;
 
     println!("  {} {}", "Generated:".green(), output_path.display());
+    
+    // Display diff if there was a previous version
+    if let Some(old) = old_content {
+        if old != nix_content {
+            println!("\n{}", "Changes:".blue().bold());
+            print_diff(&old, &nix_content);
+        } else {
+            println!("  {}", "(no changes)".dimmed());
+        }
+    }
 
     // Rebuild if requested
     if !args.no_rebuild {
@@ -340,4 +371,31 @@ fn escape_nix_string(s: &str) -> String {
         .replace('\n', "\\n")
         .replace('\t', "\\t")
         .replace("${", "\\${")
+}
+
+fn print_diff(old: &str, new: &str) {
+    let diff = TextDiff::from_lines(old, new);
+    let mut changes_shown = 0;
+    const MAX_CHANGES: usize = 30;
+    
+    for change in diff.iter_all_changes() {
+        if changes_shown >= MAX_CHANGES {
+            println!("  {} (more changes not shown...)", "...".dimmed());
+            break;
+        }
+        
+        match change.tag() {
+            ChangeTag::Delete => {
+                print!("  {} {}", "-".red(), change.value().dimmed());
+                changes_shown += 1;
+            }
+            ChangeTag::Insert => {
+                print!("  {} {}", "+".green(), change.value());
+                changes_shown += 1;
+            }
+            ChangeTag::Equal => {
+                // Skip unchanged lines to reduce noise
+            }
+        }
+    }
 }
