@@ -6,8 +6,14 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -21,10 +27,12 @@
 
           src = pkgs.lib.cleanSourceWith {
             src = ./.;
-            filter = path: type:
-              let baseName = baseNameOf path;
-              in baseName == "build" || 
-                 pkgs.lib.hasPrefix (toString ./build) path;
+            filter =
+              path: type:
+              let
+                baseName = baseNameOf path;
+              in
+              baseName == "build" || pkgs.lib.hasPrefix (toString ./build) path;
           };
 
           nativeBuildInputs = with pkgs; [
@@ -69,8 +77,7 @@
             nodejs_24
           ];
 
-          shellHook = ''
-          '';
+          shellHook = '''';
         };
       }
     );

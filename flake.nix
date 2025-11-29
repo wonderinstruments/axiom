@@ -22,7 +22,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     parental-controls = {
-      url = "git+file:///home/edmund/wonderinstruments/parental-controls";
+      url = "path:./tools/parental-controls";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     launcher = {

@@ -1,4 +1,6 @@
-{ pkgs ? import <nixpkgs> { config.allowUnfree = true; } }:
+{
+  pkgs ? import <nixpkgs> { config.allowUnfree = true; },
+}:
 
 pkgs.mkShell {
   buildInputs = [
@@ -10,6 +12,5 @@ pkgs.mkShell {
     pkgs.nodejs_24
   ];
 
-  shellHook = ''
-  '';
+  shellHook = '''';
 }

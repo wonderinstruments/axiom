@@ -497,18 +497,14 @@
         ]
       },
       "locked": {
-        "lastModified": 1763332420,
-        "narHash": "sha256-ED16lGF1NdSMRXc8o971pLwBMBtX65FxvcNgvC9K/Rg=",
-        "ref": "refs/heads/trunk",
-        "rev": "c440da7d5b77271e1888eeba6a8ef7cd1ca4c034",
-        "revCount": 12,
-        "type": "git",
-        "url": "file:///home/edmund/wonderinstruments/parental-controls"
+        "path": "./tools/parental-controls",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/edmund/wonderinstruments/parental-controls"
-      }
+        "path": "./tools/parental-controls",
+        "type": "path"
+      },
+      "parent": []
     },
     "root": {
       "inputs": {
