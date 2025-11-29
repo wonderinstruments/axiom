@@ -198,7 +198,7 @@ func (a *App) SaveNixConfig(config map[string]interface{}) error {
 	println("[SaveNixConfig] Running axiom-rebuild (this may take a while)...")
 	runtime.EventsEmit(a.ctx, "rebuild-output", "Running axiom-rebuild...")
 
-	cmd = exec.Command("sudo", "-S", "axiom-rebuild")
+	cmd = exec.Command("sudo", "-S", "axiom-rebuild", "--no-update-check")
 	cmd.Stdin = strings.NewReader(a.sudoPassword + "\n")
 
 	// Create pipes for stdout and stderr
