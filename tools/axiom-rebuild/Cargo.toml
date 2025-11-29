@@ -1,0 +1,12 @@
+[package]
+name = "axiom-rebuild"
+version = "0.1.0"
+edition = "2021"
+description = "Axiom configuration manager - converts HOCON configs to Nix and rebuilds"
+
+[dependencies]
+hocon = "0.9"
+serde = { version = "1.0", features = ["derive"] }
+clap = { version = "4.0", features = ["derive"] }
+anyhow = "1.0"
+colored = "2.0"

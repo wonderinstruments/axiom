@@ -117,6 +117,7 @@
     xclip
     cmatrix
     parental-controls
+    axiom-rebuild
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

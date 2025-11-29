@@ -6,7 +6,9 @@
 }:
 
 let
-  axiom-reset-config = pkgs.writeShellScriptBin "axiom-reset-config" (builtins.readFile ../scripts/axiom-reset-config.sh);
+  axiom-reset-config = pkgs.writeShellScriptBin "axiom-reset-config" (
+    builtins.readFile ../scripts/axiom-reset-config.sh
+  );
 in
 {
   config = {
