@@ -150,8 +150,8 @@ fn main() -> Result<()> {
         if status.success() {
             println!("{}", "Rebuild complete!".green().bold());
             
-            // Commit config changes to git
-            commit_config_changes(&config_dir, &user_config_path)?;
+            // Commit config changes to git (run as original user to avoid ownership issues)
+            commit_config_changes(&config_dir, &user_config_path, &username)?;
         } else {
             bail!("nixos-rebuild failed with exit code: {:?}", status.code());
         }
@@ -357,49 +357,48 @@ fn escape_nix_string(s: &str) -> String {
         .replace("${", "\\${")
 }
 
-fn commit_config_changes(config_dir: &Path, config_path: &Path) -> Result<()> {
+fn commit_config_changes(config_dir: &Path, config_path: &Path, username: &str) -> Result<()> {
+    // Helper to run git commands as the original user (not root)
+    // This avoids "dubious ownership" errors when the user later runs git
+    let git_as_user = |args: &[&str]| -> std::io::Result<std::process::Output> {
+        Command::new("sudo")
+            .args(["-u", username, "git"])
+            .args(args)
+            .current_dir(config_dir)
+            .output()
+    };
+    
+    let git_as_user_status = |args: &[&str]| -> Result<bool> {
+        let status = Command::new("sudo")
+            .args(["-u", username, "git"])
+            .args(args)
+            .current_dir(config_dir)
+            .status()
+            .context("Failed to run git command")?;
+        Ok(status.success())
+    };
+
     // Initialize git repo if it doesn't exist
     let git_dir = config_dir.join(".git");
     if !git_dir.exists() {
         println!("{}", "Initializing git repository for config...".blue());
-        let status = Command::new("git")
-            .args(["init"])
-            .current_dir(config_dir)
-            .status()
-            .context("Failed to initialize git repository")?;
-        if !status.success() {
+        if !git_as_user_status(&["init"])? {
             bail!("git init failed");
         }
         
         // Set local git config for this repo
-        Command::new("git")
-            .args(["config", "user.email", "axiom@localhost"])
-            .current_dir(config_dir)
-            .status()
-            .context("Failed to set git user.email")?;
-        Command::new("git")
-            .args(["config", "user.name", "axiom-rebuild"])
-            .current_dir(config_dir)
-            .status()
-            .context("Failed to set git user.name")?;
+        git_as_user_status(&["config", "user.email", "axiom@localhost"])?;
+        git_as_user_status(&["config", "user.name", "axiom-rebuild"])?;
     }
 
     // Check if there are any changes to commit
-    let diff_output = Command::new("git")
-        .args(["diff", "--color=always", "--"])
-        .arg(config_path.file_name().unwrap_or_default())
-        .current_dir(config_dir)
-        .output()
+    let diff_output = git_as_user(&["diff", "--color=always", "--", config_path.file_name().unwrap_or_default().to_str().unwrap_or("")])
         .context("Failed to run git diff")?;
 
     let diff_str = String::from_utf8_lossy(&diff_output.stdout);
     
     // Also check for untracked files
-    let status_output = Command::new("git")
-        .args(["status", "--porcelain", "--"])
-        .arg(config_path.file_name().unwrap_or_default())
-        .current_dir(config_dir)
-        .output()
+    let status_output = git_as_user(&["status", "--porcelain", "--", config_path.file_name().unwrap_or_default().to_str().unwrap_or("")])
         .context("Failed to run git status")?;
 
     let status_str = String::from_utf8_lossy(&status_output.stdout);
@@ -418,13 +417,7 @@ fn commit_config_changes(config_dir: &Path, config_path: &Path) -> Result<()> {
     }
 
     // Stage the config file
-    let status = Command::new("git")
-        .args(["add", "--"])
-        .arg(config_path.file_name().unwrap_or_default())
-        .current_dir(config_dir)
-        .status()
-        .context("Failed to stage config file")?;
-    if !status.success() {
+    if !git_as_user_status(&["add", "--", config_path.file_name().unwrap_or_default().to_str().unwrap_or("")])? {
         bail!("git add failed");
     }
 
@@ -432,13 +425,7 @@ fn commit_config_changes(config_dir: &Path, config_path: &Path) -> Result<()> {
     let timestamp = chrono::Local::now().format("%Y-%m-%d %H:%M:%S");
     let commit_msg = format!("axiom-rebuild: {}", timestamp);
     
-    let status = Command::new("git")
-        .args(["commit", "-m", &commit_msg])
-        .current_dir(config_dir)
-        .status()
-        .context("Failed to commit config changes")?;
-    
-    if status.success() {
+    if git_as_user_status(&["commit", "-m", &commit_msg])? {
         println!("  {} {}", "Committed:".green(), commit_msg);
     }
     // If commit fails (e.g., nothing to commit), that's okay
