@@ -370,6 +370,18 @@ fn commit_config_changes(config_dir: &Path, config_path: &Path) -> Result<()> {
         if !status.success() {
             bail!("git init failed");
         }
+        
+        // Set local git config for this repo
+        Command::new("git")
+            .args(["config", "user.email", "axiom@localhost"])
+            .current_dir(config_dir)
+            .status()
+            .context("Failed to set git user.email")?;
+        Command::new("git")
+            .args(["config", "user.name", "axiom-rebuild"])
+            .current_dir(config_dir)
+            .status()
+            .context("Failed to set git user.name")?;
     }
 
     // Check if there are any changes to commit
