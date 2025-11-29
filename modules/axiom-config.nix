@@ -17,13 +17,11 @@ let
 
   configFiles = [
     "config.conf"
-    "admin.conf"
   ];
 
   # Map template names to their source paths
   templateSources = {
     "config.conf" = "${templateDir}/user-config.conf";
-    "admin.conf" = "${templateDir}/admin-config.conf";
   };
 
   # Create canonical file entries (always overwritten by Nix)
