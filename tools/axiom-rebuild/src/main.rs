@@ -2,7 +2,6 @@ use anyhow::{Context, Result, bail};
 use clap::Parser;
 use colored::Colorize;
 use hocon::HoconLoader;
-use similar::{ChangeTag, TextDiff};
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -133,28 +132,10 @@ fn main() -> Result<()> {
 
     let output_path = output_dir.join(format!("{}.nix", username));
     
-    // Show diff if file already exists
-    let show_diff = output_path.exists();
-    let old_content = if show_diff {
-        fs::read_to_string(&output_path).ok()
-    } else {
-        None
-    };
-    
     fs::write(&output_path, &nix_content)
         .with_context(|| format!("Failed to write Nix config: {}", output_path.display()))?;
 
     println!("  {} {}", "Generated:".green(), output_path.display());
-    
-    // Display diff if there was a previous version
-    if let Some(old) = old_content {
-        if old != nix_content {
-            println!("\n{}", "Changes:".blue().bold());
-            print_diff(&old, &nix_content);
-        } else {
-            println!("  {}", "(no changes)".dimmed());
-        }
-    }
 
     // Rebuild if requested
     if !args.no_rebuild {
@@ -168,6 +149,9 @@ fn main() -> Result<()> {
 
         if status.success() {
             println!("{}", "Rebuild complete!".green().bold());
+            
+            // Commit config changes to git
+            commit_config_changes(&config_dir, &user_config_path)?;
         } else {
             bail!("nixos-rebuild failed with exit code: {:?}", status.code());
         }
@@ -373,29 +357,79 @@ fn escape_nix_string(s: &str) -> String {
         .replace("${", "\\${")
 }
 
-fn print_diff(old: &str, new: &str) {
-    let diff = TextDiff::from_lines(old, new);
-    let mut changes_shown = 0;
-    const MAX_CHANGES: usize = 30;
-    
-    for change in diff.iter_all_changes() {
-        if changes_shown >= MAX_CHANGES {
-            println!("  {} (more changes not shown...)", "...".dimmed());
-            break;
-        }
-        
-        match change.tag() {
-            ChangeTag::Delete => {
-                print!("  {} {}", "-".red(), change.value().dimmed());
-                changes_shown += 1;
-            }
-            ChangeTag::Insert => {
-                print!("  {} {}", "+".green(), change.value());
-                changes_shown += 1;
-            }
-            ChangeTag::Equal => {
-                // Skip unchanged lines to reduce noise
-            }
+fn commit_config_changes(config_dir: &Path, config_path: &Path) -> Result<()> {
+    // Initialize git repo if it doesn't exist
+    let git_dir = config_dir.join(".git");
+    if !git_dir.exists() {
+        println!("{}", "Initializing git repository for config...".blue());
+        let status = Command::new("git")
+            .args(["init"])
+            .current_dir(config_dir)
+            .status()
+            .context("Failed to initialize git repository")?;
+        if !status.success() {
+            bail!("git init failed");
         }
     }
+
+    // Check if there are any changes to commit
+    let diff_output = Command::new("git")
+        .args(["diff", "--color=always", "--"])
+        .arg(config_path.file_name().unwrap_or_default())
+        .current_dir(config_dir)
+        .output()
+        .context("Failed to run git diff")?;
+
+    let diff_str = String::from_utf8_lossy(&diff_output.stdout);
+    
+    // Also check for untracked files
+    let status_output = Command::new("git")
+        .args(["status", "--porcelain", "--"])
+        .arg(config_path.file_name().unwrap_or_default())
+        .current_dir(config_dir)
+        .output()
+        .context("Failed to run git status")?;
+
+    let status_str = String::from_utf8_lossy(&status_output.stdout);
+    
+    if diff_str.is_empty() && status_str.is_empty() {
+        println!("  {}", "(no config changes to commit)".dimmed());
+        return Ok(());
+    }
+
+    // Print the diff
+    if !diff_str.is_empty() {
+        println!("\n{}", "Config changes:".blue().bold());
+        println!("{}", diff_str);
+    } else if !status_str.is_empty() {
+        println!("\n{}", "New config file:".blue().bold());
+    }
+
+    // Stage the config file
+    let status = Command::new("git")
+        .args(["add", "--"])
+        .arg(config_path.file_name().unwrap_or_default())
+        .current_dir(config_dir)
+        .status()
+        .context("Failed to stage config file")?;
+    if !status.success() {
+        bail!("git add failed");
+    }
+
+    // Commit with a timestamp
+    let timestamp = chrono::Local::now().format("%Y-%m-%d %H:%M:%S");
+    let commit_msg = format!("axiom-rebuild: {}", timestamp);
+    
+    let status = Command::new("git")
+        .args(["commit", "-m", &commit_msg])
+        .current_dir(config_dir)
+        .status()
+        .context("Failed to commit config changes")?;
+    
+    if status.success() {
+        println!("  {} {}", "Committed:".green(), commit_msg);
+    }
+    // If commit fails (e.g., nothing to commit), that's okay
+
+    Ok(())
 }
