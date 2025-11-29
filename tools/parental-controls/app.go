@@ -194,11 +194,11 @@ func (a *App) SaveNixConfig(config map[string]interface{}) error {
 	}
 	println("[SaveNixConfig] File copied successfully")
 
-	// Run nixos-rebuild
-	println("[SaveNixConfig] Running nixos-rebuild switch (this may take a while)...")
-	runtime.EventsEmit(a.ctx, "rebuild-output", "Running nixos-rebuild switch...")
+	// Run axiom-rebuild (converts HOCON to Nix and rebuilds)
+	println("[SaveNixConfig] Running axiom-rebuild (this may take a while)...")
+	runtime.EventsEmit(a.ctx, "rebuild-output", "Running axiom-rebuild...")
 
-	cmd = exec.Command("sudo", "-S", "nixos-rebuild", "switch")
+	cmd = exec.Command("sudo", "-S", "axiom-rebuild")
 	cmd.Stdin = strings.NewReader(a.sudoPassword + "\n")
 
 	// Create pipes for stdout and stderr
@@ -212,7 +212,7 @@ func (a *App) SaveNixConfig(config map[string]interface{}) error {
 	}
 
 	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("failed to start nixos-rebuild: %v", err)
+		return fmt.Errorf("failed to start axiom-rebuild: %v", err)
 	}
 
 	// Read stdout in goroutine
@@ -236,11 +236,11 @@ func (a *App) SaveNixConfig(config map[string]interface{}) error {
 	}()
 
 	if err := cmd.Wait(); err != nil {
-		return fmt.Errorf("nixos-rebuild failed: %v", err)
+		return fmt.Errorf("axiom-rebuild failed: %v", err)
 	}
 
-	runtime.EventsEmit(a.ctx, "rebuild-output", "nixos-rebuild completed successfully")
-	println("[SaveNixConfig] nixos-rebuild completed successfully")
+	runtime.EventsEmit(a.ctx, "rebuild-output", "axiom-rebuild completed successfully")
+	println("[SaveNixConfig] axiom-rebuild completed successfully")
 
 	return nil
 }
