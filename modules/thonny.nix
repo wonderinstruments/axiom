@@ -11,6 +11,8 @@ let
   thonnyWithStylix = pkgs.python3.pkgs.buildPythonApplication rec {
     pname = "thonny";
     version = "4.1.7";
+    pyproject = true;
+    build-system = with pkgs.python3.pkgs; [ setuptools ];
 
     src = pkgs.fetchFromGitHub {
       owner = "thonny";
