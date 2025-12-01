@@ -488,7 +488,7 @@ let
       categories = [
         "Development"
       ];
-      isTue = true;
+      isTui = true;
     };
     lazyjournal = {
       package = pkgs.lazyjournal;
