@@ -481,7 +481,7 @@ let
       isTui = true;
     };
     euporie = {
-      package = pkgs.python313packages.euporie;
+      package = pkgs.python313Packages.euporie;
       exec = "euporie notebook";
       icon = "euporie";
       comment = "Run python code in interactive notebooks";
