@@ -116,7 +116,6 @@
     wget
     xclip
     cmatrix
-    parental-controls
     axiom-rebuild
   ];
 

@@ -2,15 +2,15 @@
   description = "Axiom System Flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
+    home-manager.url = "github:nix-community/home-manager/release-25.11";
     kickstart = {
       url = "github:nvim-lua/kickstart.nvim";
       flake = false;
     };
     stylix = {
-      url = "github:nix-community/stylix/release-25.05";
+      url = "github:nix-community/stylix/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     guide = {
@@ -18,11 +18,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    parental-controls = {
-      url = "path:./tools/parental-controls";
+      url = "github:nix-community/nixvim/nixos-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     launcher = {
@@ -44,7 +40,6 @@
       stylix,
       guide,
       nixvim,
-      parental-controls,
       launcher,
       gittype,
       ...
@@ -75,7 +70,6 @@
             nixpkgs.overlays = [
               guide.overlays.default
               (final: prev: {
-                parental-controls = parental-controls.packages.${prev.system}.default;
                 launcher = launcher.packages.${prev.system}.default;
                 axiom-rebuild = axiom-rebuild;
               })
