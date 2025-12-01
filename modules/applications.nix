@@ -480,6 +480,16 @@ let
       ];
       isTui = true;
     };
+    euporie = {
+      package = pkgs.python313packages.euporie;
+      exec = "euporie notebook";
+      icon = "euporie";
+      comment = "Run python code in interactive notebooks";
+      categories = [
+        "Development"
+      ];
+      isTue = true;
+    };
     lazyjournal = {
       package = pkgs.lazyjournal;
       exec = "lazyjournal";
