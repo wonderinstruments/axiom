@@ -1,0 +1,38 @@
+[Unit]
+Description=Guide llama-server
+Documentation=https://github.com/wonderinstruments/guide
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=edmundm
+Group=edmundm
+WorkingDirectory=/home/edmundm/wonderinstruments/guide
+
+# Environment variables
+Environment="OMP_NUM_THREADS=8"
+
+# Main service command
+ExecStart=/usr/local/bin/guide-llama-launcher
+
+# Restart policy
+Restart=always
+RestartSec=2s
+
+# Resource limits
+LimitNOFILE=65536
+
+# Security hardening (tune or relax as needed)
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=true
+
+# Standard output/error logging
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

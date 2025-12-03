@@ -13,16 +13,8 @@
       url = "github:nix-community/stylix/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    guide = {
-      url = "git+file:///home/edmund/wonderinstruments/guide";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixvim = {
       url = "github:nix-community/nixvim/nixos-25.11";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    launcher = {
-      url = "git+file:///home/edmund/wonderinstruments/launcher";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gittype = {
@@ -38,9 +30,7 @@
       home-manager,
       kickstart,
       stylix,
-      guide,
       nixvim,
-      launcher,
       gittype,
       ...
     }:
@@ -55,6 +45,43 @@
         src = ./tools/axiom-rebuild;
         cargoLock.lockFile = ./tools/axiom-rebuild/Cargo.lock;
       };
+
+      # Build launcher from local source
+      launcher = pkgs.rustPlatform.buildRustPackage {
+        pname = "launcher";
+        version = "0.1.0";
+        src = ./tools/launcher;
+        cargoLock.lockFile = ./tools/launcher/Cargo.lock;
+      };
+
+      # Build guide packages from local source
+      guidePackages = rec {
+        guide = pkgs.buildGoModule {
+          pname = "guide";
+          version = "0.1.0";
+          src = ./tools/guide;
+          vendorHash = "sha256-asGtQIKm05mQHXU8vRKhcNAFzZh0R0z27aReCcHszeo=";
+          subPackages = [ "cmd/guide" ];
+          nativeBuildInputs = with pkgs; [ pkg-config ];
+          ldflags = [ "-s" "-w" ];
+        };
+        
+        guide-llama-launcher = pkgs.buildGoModule {
+          pname = "guide-llama-launcher";
+          version = "0.1.0";
+          src = ./tools/guide;
+          vendorHash = guide.vendorHash;
+          subPackages = [ "cmd/guide-llama-launcher" ];
+          nativeBuildInputs = with pkgs; [ pkg-config ];
+          ldflags = [ "-s" "-w" ];
+        };
+      };
+
+      # Guide overlay
+      guideOverlay = final: prev: guidePackages;
+
+      # Guide NixOS module
+      guideModule = import ./tools/guide/nixos-module.nix;
     in
     {
       # Export axiom-rebuild package
@@ -68,23 +95,24 @@
         modules = [
           {
             nixpkgs.overlays = [
-              guide.overlays.default
+              guideOverlay
               (final: prev: {
-                launcher = launcher.packages.${prev.system}.default;
+                launcher = launcher;
                 axiom-rebuild = axiom-rebuild;
               })
             ];
           }
           ./configuration.nix
           stylix.nixosModules.stylix
-          guide.nixosModules.default
+          guideModule
           home-manager.nixosModules.home-manager
           {
             # home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = {
-              inherit kickstart launcher gittype;
+              inherit kickstart gittype;
+              launcher = launcher;
               pkgs-unstable = import nixpkgs-unstable {
                 system = "x86_64-linux";
                 config.allowUnfree = true;
