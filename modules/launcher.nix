@@ -7,8 +7,8 @@
 }:
 
 {
-  # Install the launcher package from the flake
-  home.packages = [ launcher.packages.${pkgs.system}.default ];
+  # Install the launcher package
+  home.packages = [ launcher ];
 
   # Create a desktop entry for the launcher
   xdg.desktopEntries.launcher = {

@@ -63,9 +63,12 @@
           vendorHash = "sha256-asGtQIKm05mQHXU8vRKhcNAFzZh0R0z27aReCcHszeo=";
           subPackages = [ "cmd/guide" ];
           nativeBuildInputs = with pkgs; [ pkg-config ];
-          ldflags = [ "-s" "-w" ];
+          ldflags = [
+            "-s"
+            "-w"
+          ];
         };
-        
+
         guide-llama-launcher = pkgs.buildGoModule {
           pname = "guide-llama-launcher";
           version = "0.1.0";
@@ -73,7 +76,10 @@
           vendorHash = guide.vendorHash;
           subPackages = [ "cmd/guide-llama-launcher" ];
           nativeBuildInputs = with pkgs; [ pkg-config ];
-          ldflags = [ "-s" "-w" ];
+          ldflags = [
+            "-s"
+            "-w"
+          ];
         };
       };
 
