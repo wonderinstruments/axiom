@@ -183,7 +183,7 @@ let
       ];
       enableOption = true;
     };
-    mullvad-browswer = {
+    mullvad-browser = {
       package = pkgs.mullvad-browser;
       exec = "mullvad-browser";
       icon = "mullvad-browser";

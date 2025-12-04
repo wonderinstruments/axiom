@@ -143,6 +143,8 @@ in
 
     services.xidlehook = {
       enable = true;
+      not-when-fullscreen = true;
+      not-when-audio = true;
       timers = [
         {
           delay = cfg.sleepAfterMinutes * 60;
