@@ -173,6 +173,26 @@ let
       ];
       enableOption = true;
     };
+    librewolf = {
+      package = pkgs.librewolf;
+      exec = "librewolf";
+      icon = "librewolf";
+      comment = "A privacy oriented web browser";
+      categories = [
+        "Network"
+      ];
+      enableOption = true;
+    };
+    mullvad-browswer = {
+      package = pkgs.mullvad-browser;
+      exec = "mullvad-browser";
+      icon = "mullvad-browser";
+      comment = "A very privacy oriented web browser";
+      categories = [
+        "Network"
+      ];
+      enableOption = true;
+    };
     discord = {
       package = pkgs.discord;
       exec = "discord";
