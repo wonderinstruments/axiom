@@ -61,25 +61,19 @@
 
         src = pkgs.fetchurl {
           url = "https://github.com/BeaconBay/ck/releases/download/${version}/ck-${version}-x86_64-unknown-linux-gnu.tar.gz";
-          sha256 = "sha256-0i6zwqiy9f2cfg6inrawxsxfv192ixp38i433iyspc61w79nhgkk";
+          sha256 = "sha256-Bmt/PnRIYI4215JhWhfNwajszmXb2LURYhyVlNQ7jPE=";
         };
+
+        sourceRoot = ".";
 
         nativeBuildInputs = [
           pkgs.autoPatchelfHook
-          pkgs.findutils
         ];
         buildInputs = [ pkgs.stdenv.cc.cc.lib ];
 
         installPhase = ''
-          set -eu
           mkdir -p "$out/bin"
-          # Locate the ck binary inside the extracted tarball
-          bin_path=$(find . -maxdepth 3 -type f -name ck -perm -u+x | head -n1)
-          if [ -z "$bin_path" ]; then
-            echo "ck binary not found in release archive" >&2
-            exit 1
-          fi
-          install -Dm755 "$bin_path" "$out/bin/ck"
+          install -Dm755 ck "$out/bin/ck"
         '';
       };
 
