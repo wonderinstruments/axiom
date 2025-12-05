@@ -68,22 +68,6 @@
         "type": "github"
       }
     },
-    "ck": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1762288863,
-        "narHash": "sha256-JL6P1YdeoesdHbWO59r8TzF0lUMd91WJsHvLRhSm2FM=",
-        "owner": "BeaconBay",
-        "repo": "ck",
-        "rev": "15c35d940c52220f421ecc3a46b1889064da6cd7",
-        "type": "github"
-      },
-      "original": {
-        "owner": "BeaconBay",
-        "repo": "ck",
-        "type": "github"
-      }
-    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -431,7 +415,6 @@
     },
     "root": {
       "inputs": {
-        "ck": "ck",
         "gittype": "gittype",
         "home-manager": "home-manager",
         "kickstart": "kickstart",

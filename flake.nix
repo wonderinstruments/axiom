@@ -20,10 +20,6 @@
     gittype = {
       url = "github:unhappychoice/gittype";
     };
-    ck = {
-      url = "github:BeaconBay/ck";
-      flake = false;
-    };
   };
 
   outputs =
@@ -36,7 +32,6 @@
       stylix,
       nixvim,
       gittype,
-      ck,
       ...
     }:
     let
@@ -59,13 +54,33 @@
         cargoLock.lockFile = ./tools/launcher/Cargo.lock;
       };
 
-      # Build ck from GitHub source
-      ck-pkg = pkgs.rustPlatform.buildRustPackage {
+      # Install ck from prebuilt binary
+      ck-pkg = pkgs.stdenv.mkDerivation rec {
         pname = "ck";
-        version = "0.1.0";
-        src = ck;
-        cargoLock.lockFile = "${ck}/Cargo.lock";
-        buildAndTestSubdir = "ck-cli";
+        version = "0.7.0";
+
+        src = pkgs.fetchurl {
+          url = "https://github.com/BeaconBay/ck/releases/download/${version}/ck-${version}-x86_64-unknown-linux-gnu.tar.gz";
+          sha256 = "sha256-0i6zwqiy9f2cfg6inrawxsxfv192ixp38i433iyspc61w79nhgkk";
+        };
+
+        nativeBuildInputs = [
+          pkgs.autoPatchelfHook
+          pkgs.findutils
+        ];
+        buildInputs = [ pkgs.stdenv.cc.cc.lib ];
+
+        installPhase = ''
+          set -eu
+          mkdir -p "$out/bin"
+          # Locate the ck binary inside the extracted tarball
+          bin_path=$(find . -maxdepth 3 -type f -name ck -perm -u+x | head -n1)
+          if [ -z "$bin_path" ]; then
+            echo "ck binary not found in release archive" >&2
+            exit 1
+          fi
+          install -Dm755 "$bin_path" "$out/bin/ck"
+        '';
       };
 
       # Build guide packages from local source

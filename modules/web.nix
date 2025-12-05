@@ -9,11 +9,16 @@ let
 
   # Determine default browser (priority order)
   defaultBrowser =
-    if cfg.firefox.enable then "firefox.desktop"
-    else if cfg.chromium.enable then "chromium-browser.desktop"
-    else if cfg.librewolf.enable then "librewolf.desktop"
-    else if cfg.mullvad-browser.enable then "mullvad-browser.desktop"
-    else null;
+    if cfg.librewolf.enable then
+      "librewolf.desktop"
+    else if cfg.mullvad-browser.enable then
+      "mullvad-browser.desktop"
+    else if cfg.firefox.enable then
+      "firefox.desktop"
+    else if cfg.chromium.enable then
+      "chromium-browser.desktop"
+    else
+      null;
 
   browserMimeTypes = lib.optionalAttrs (defaultBrowser != null) {
     "text/html" = defaultBrowser;
@@ -200,6 +205,6 @@ in
       '';
     })
     # Set default browser MIME types
-    { xdg.mime.defaultApplications = browserMimeTypes; }
+    { xdg.mimeApps.defaultApplications = browserMimeTypes; }
   ];
 }
