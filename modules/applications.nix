@@ -634,6 +634,17 @@ let
       ];
       isTui = true;
     };
+    seek = {
+      # No package - ck is provided by core/cli.nix
+      exec = "ck --tui";
+      icon = "utilities-terminal";
+      comment = "Search code by meaning with semantic search";
+      categories = [
+        "Development"
+        "Utility"
+      ];
+      isTui = true;
+    };
   };
 
   # Separate applications into those with and without enable options

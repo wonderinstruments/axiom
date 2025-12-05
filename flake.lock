@@ -68,6 +68,22 @@
         "type": "github"
       }
     },
+    "ck": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1762288863,
+        "narHash": "sha256-JL6P1YdeoesdHbWO59r8TzF0lUMd91WJsHvLRhSm2FM=",
+        "owner": "BeaconBay",
+        "repo": "ck",
+        "rev": "15c35d940c52220f421ecc3a46b1889064da6cd7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "BeaconBay",
+        "repo": "ck",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -203,11 +219,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1764776959,
-        "narHash": "sha256-d+5CGloq7Lo1u2SkzhF8oiOdUc6Z5emh22nTXUB9CFA=",
+        "lastModified": 1764866045,
+        "narHash": "sha256-0GsEtXV9OquDQ1VclQfP16cU5VZh7NEVIOjSH4UaJuM=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "e1680d594a9281651cbf7d126941a8c8e2396183",
+        "rev": "f63d0fe9d81d36e5fc95497217a72e02b8b7bcab",
         "type": "github"
       },
       "original": {
@@ -327,11 +343,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1764677808,
-        "narHash": "sha256-H3lC7knbXOBrHI9hITQ7modLuX20mYJVhZORL5ioms0=",
+        "lastModified": 1764831616,
+        "narHash": "sha256-OtzF5wBvO0jgW1WW1rQU9cMGx7zuvkF7CAVJ1ypzkxA=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "1aab89277eb2d87823d5b69bae631a2496cff57a",
+        "rev": "c97c47f2bac4fa59e2cbdeba289686ae615f8ed4",
         "type": "github"
       },
       "original": {
@@ -415,6 +431,7 @@
     },
     "root": {
       "inputs": {
+        "ck": "ck",
         "gittype": "gittype",
         "home-manager": "home-manager",
         "kickstart": "kickstart",

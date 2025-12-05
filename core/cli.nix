@@ -27,6 +27,7 @@
     wthrr
     rip2
     unzip
+    ck
   ];
 
   programs.fish.enable = true;

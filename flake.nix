@@ -20,6 +20,10 @@
     gittype = {
       url = "github:unhappychoice/gittype";
     };
+    ck = {
+      url = "github:BeaconBay/ck";
+      flake = false;
+    };
   };
 
   outputs =
@@ -32,6 +36,7 @@
       stylix,
       nixvim,
       gittype,
+      ck,
       ...
     }:
     let
@@ -52,6 +57,15 @@
         version = "0.1.0";
         src = ./tools/launcher;
         cargoLock.lockFile = ./tools/launcher/Cargo.lock;
+      };
+
+      # Build ck from GitHub source
+      ck-pkg = pkgs.rustPlatform.buildRustPackage {
+        pname = "ck";
+        version = "0.1.0";
+        src = ck;
+        cargoLock.lockFile = "${ck}/Cargo.lock";
+        buildAndTestSubdir = "ck-cli";
       };
 
       # Build guide packages from local source
@@ -105,6 +119,7 @@
               (final: prev: {
                 launcher = launcher;
                 axiom-rebuild = axiom-rebuild;
+                ck = ck-pkg;
               })
             ];
           }
