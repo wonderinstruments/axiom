@@ -401,7 +401,14 @@ fn setup_user_config(username: &str, template_dir: &Path, output_dir: &Path) -> 
         parse_hocon(&user_config_file)
             .with_context(|| format!("Failed to parse user config for {}: {}", username, user_config_file.display()))?
     } else {
-        HashMap::new() // Empty config if file doesn't exist yet
+        // User config doesn't exist yet (new user) - use template defaults
+        let user_template = template_dir.join("user-config.conf");
+        if user_template.exists() {
+            parse_hocon(&user_template)
+                .with_context(|| format!("Failed to parse user config template: {}", user_template.display()))?
+        } else {
+            HashMap::new() // Fallback to empty if template missing
+        }
     };
 
     let admin_config_data = if user_admin_config.exists() {
