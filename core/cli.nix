@@ -23,8 +23,6 @@
     ffmpeg
     sox
     fx
-    # play
-    wthrr
     rip2
     unzip
     ck

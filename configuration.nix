@@ -8,7 +8,6 @@
   pkgs,
   ...
 }:
-
 {
   imports = [
     ./hardware-configuration.nix
@@ -18,6 +17,7 @@
     ./core/mime.nix
     ./core/users.nix
     ./core/system.nix
+    ./core/desktop.nix
   ];
   nix.settings.experimental-features = [
     "nix-command"
@@ -50,25 +50,6 @@
   # };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  services.xserver.desktopManager = {
-    xterm.enable = false;
-    xfce = {
-      enable = true;
-      noDesktop = true;
-      enableXfwm = false;
-      enableScreensaver = false;
-    };
-  };
-  services.xserver.windowManager.i3 = {
-    enable = true;
-    extraPackages = with pkgs; [
-      dmenu
-      i3status
-      pasystray
-    ];
-  };
-  services.displayManager.defaultSession = "xfce+i3";
   powerManagement.enable = false;
 
   # Configure keymap in X11
@@ -99,7 +80,6 @@
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     xclip
-    cmatrix
     axiom-rebuild
   ];
 
