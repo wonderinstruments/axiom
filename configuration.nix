@@ -16,6 +16,8 @@
     ./core/theme.nix
     ./core/python.nix
     ./core/mime.nix
+    ./core/users.nix
+    ./core/system.nix
   ];
   nix.settings.experimental-features = [
     "nix-command"
@@ -89,18 +91,7 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  networking.hostName = "axiom";
-  users.users.edmund = {
-    isNormalUser = true;
-    extraGroups = [
-      "wheel"
-      "networkmanager"
-    ]; # Enable ‘sudo’ for the user.
-    packages = with pkgs; [
-      tree
-    ];
-  };
+  # Note: hostname, timezone, locale are configured via /etc/axiom/system.conf
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
@@ -112,18 +103,7 @@
     axiom-rebuild
   ];
 
-  # Allow users in wheel to run axiom-rebuild without password
-  security.sudo.extraRules = [
-    {
-      groups = [ "wheel" ];
-      commands = [
-        {
-          command = "${pkgs.axiom-rebuild}/bin/axiom-rebuild";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-  ];
+  # Note: User definitions and sudo rules are in modules/users.nix
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
