@@ -20,9 +20,7 @@ let
     description = userData.displayName or username;
     extraGroups = [ "networkmanager" ]
       ++ lib.optionals (userData.hasRootPermissions or false) [ "wheel" ];
-    hashedPassword = if userData.hashedPassword or null == null
-      then null
-      else userData.hashedPassword;
+    hashedPassword = userData.hashedPassword or "";
   };
 
   # Create user definitions for all users from the data file

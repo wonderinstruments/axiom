@@ -570,7 +570,7 @@ fn generate_users_data(users_config_path: &Path) -> Result<String> {
         }
         match curator.get("hashedPassword") {
             Some(HoconValue::String(s)) => curator_fields.push(format!("  hashedPassword = \"{}\";", escape_nix_string(s))),
-            Some(HoconValue::Null) => curator_fields.push("  hashedPassword = null;".to_string()),
+            Some(HoconValue::Null) => curator_fields.push("  hashedPassword = \"\";".to_string()),
             _ => (),
         }
     }
@@ -598,8 +598,8 @@ fn generate_users_data(users_config_path: &Path) -> Result<String> {
 
                 let hashed_password = match user_data.get("hashedPassword") {
                     Some(HoconValue::String(s)) => format!("\"{}\"", escape_nix_string(s)),
-                    Some(HoconValue::Null) => "null".to_string(),
-                    _ => "null".to_string(),
+                    Some(HoconValue::Null) => "\"\"".to_string(),  // Empty string = passwordless login
+                    _ => "\"\"".to_string(),  // Default to passwordless
                 };
 
                 user_defs.push(format!(

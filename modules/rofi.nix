@@ -80,7 +80,6 @@ in
       application-fallback-icon = "";
       refilter-timeout-limit = 8192;
       xserver-i300f-workaround = false;
-      pid = "/run/user/1000/rofi.pid";
 
       # Display names (empty to use defaults)
       display-window = "";
