@@ -78,22 +78,41 @@ fn main() -> Result<()> {
         std::process::exit(status.code().unwrap_or(1));
     }
 
-    // Handle --update if specified
-    if let Some(version_opt) = &args.update {
-        return handle_update(version_opt.clone(), &args);
-    }
-
-    // Check for updates (unless disabled)
-    if !args.no_update_check {
-        check_for_updates(&args.flake_dir)?;
-    }
-
     // Get the real user even when running under sudo
     let current_username = args.user.clone().unwrap_or_else(|| {
         std::env::var("SUDO_USER")
             .or_else(|_| std::env::var("USER"))
             .expect("Could not determine current user")
     });
+
+    // Check if the original user is in the wheel group
+    let is_wheel_user = is_user_in_wheel(&current_username);
+
+    // Restrict non-wheel users
+    if !is_wheel_user {
+        if args.update.is_some() {
+            bail!("Only administrators can update the system. Run without --update to rebuild your config.");
+        }
+        if args.all_users {
+            bail!("Only administrators can use --all-users.");
+        }
+        if args.users.is_some() {
+            bail!("Only administrators can use --users.");
+        }
+        if args.user.is_some() && args.user.as_ref() != Some(&current_username) {
+            bail!("Only administrators can generate configs for other users.");
+        }
+    }
+
+    // Handle --update if specified (wheel users only, checked above)
+    if let Some(version_opt) = &args.update {
+        return handle_update(version_opt.clone(), &args);
+    }
+
+    // Check for updates (unless disabled) - only for wheel users
+    if !args.no_update_check && is_wheel_user {
+        check_for_updates(&args.flake_dir)?;
+    }
 
     // Get the real user's home directory
     let current_home_dir = if let Ok(sudo_user) = std::env::var("SUDO_USER") {
@@ -196,6 +215,12 @@ fn main() -> Result<()> {
         setup_user_config(user, &template_dir, &output_dir)?;
     }
 
+    // Stage all config/users/*.nix files so flakes can see them
+    // (flakes only see files tracked by git)
+    let _ = Command::new("git")
+        .args(["-C", args.flake_dir.to_str().unwrap_or("/etc/nixos"), "add", "config/users", "config/system"])
+        .status();
+
     // Generate users-data.nix from users.conf
     let users_data_path = system_output_dir.join("users-data.nix");
     let users_data_content = generate_users_data(&users_config_path)?;
@@ -288,6 +313,17 @@ fn init_configs(
     }
 
     Ok(())
+}
+
+/// Check if a user is in the wheel group (has admin privileges)
+fn is_user_in_wheel(username: &str) -> bool {
+    // Use `id` command to get groups for the user
+    if let Ok(output) = Command::new("id").args(["-Gn", username]).output() {
+        if let Ok(groups) = String::from_utf8(output.stdout) {
+            return groups.split_whitespace().any(|g| g == "wheel");
+        }
+    }
+    false
 }
 
 /// Get list of all usernames from users.conf (curator is always included)

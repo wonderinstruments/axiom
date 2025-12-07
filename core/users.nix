@@ -52,10 +52,11 @@ in
     # All users including curator
     users.users = allUsers;
 
-    # Allow wheel users to run axiom-rebuild without password
+    # Allow all users to run axiom-rebuild without password
+    # (axiom-rebuild itself restricts non-wheel users to their own config)
     security.sudo.extraRules = [
       {
-        groups = [ "wheel" ];
+        groups = [ "users" ];
         commands = [
           {
             command = "${pkgs.axiom-rebuild}/bin/axiom-rebuild";
