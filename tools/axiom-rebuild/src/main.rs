@@ -52,6 +52,14 @@ struct Args {
     /// Skip the update check
     #[arg(long)]
     no_update_check: bool,
+
+    /// Regenerate configs for all users (not just current user)
+    #[arg(long)]
+    all_users: bool,
+
+    /// Regenerate configs for specific users (comma-separated)
+    #[arg(long, value_delimiter = ',')]
+    users: Option<Vec<String>>,
 }
 
 fn main() -> Result<()> {
@@ -81,24 +89,22 @@ fn main() -> Result<()> {
     }
 
     // Get the real user even when running under sudo
-    let username = args.user.clone().unwrap_or_else(|| {
+    let current_username = args.user.clone().unwrap_or_else(|| {
         std::env::var("SUDO_USER")
             .or_else(|_| std::env::var("USER"))
             .expect("Could not determine current user")
     });
 
-    // Get the real user's home directory, not root's when using sudo
-    let home_dir = if let Ok(sudo_user) = std::env::var("SUDO_USER") {
-        // Running under sudo - get the original user's home
+    // Get the real user's home directory
+    let current_home_dir = if let Ok(sudo_user) = std::env::var("SUDO_USER") {
         format!("/home/{}", sudo_user)
     } else {
         std::env::var("HOME").expect("Could not determine home directory")
     };
-    let config_dir = PathBuf::from(&home_dir).join("config/axiom");
+    let current_config_dir = PathBuf::from(&current_home_dir).join("config/axiom");
 
-    let user_config_path = args.config.unwrap_or_else(|| config_dir.join("config.conf"));
-    // Admin config lives in /etc/axiom/ and requires sudo to edit
-    let admin_config_path = args.admin_config.unwrap_or_else(|| PathBuf::from("/etc/axiom").join(format!("{}.conf", username)));
+    let current_user_config_path = args.config.clone().unwrap_or_else(|| current_config_dir.join("config.conf"));
+    let current_admin_config_path = args.admin_config.clone().unwrap_or_else(|| PathBuf::from("/etc/axiom").join(format!("{}.conf", current_username)));
 
     let template_dir = args.flake_dir.join("templates");
     let output_dir = args.flake_dir.join("config/users");
@@ -106,30 +112,12 @@ fn main() -> Result<()> {
     let users_config_path = PathBuf::from("/etc/axiom/users.conf");
     let system_config_path = PathBuf::from("/etc/axiom/system.conf");
 
-    // Handle --init or --reset
+    // Handle --init or --reset (for current user only)
     if args.init || args.reset {
-        init_configs(&config_dir, &user_config_path, &admin_config_path, &template_dir, args.reset)?;
+        init_configs(&current_config_dir, &current_user_config_path, &current_admin_config_path, &template_dir, args.reset)?;
         if args.init && !args.reset {
             println!("{}", "Config files initialized. Edit them and run axiom-rebuild again.".green());
             return Ok(());
-        }
-    }
-
-    // Check if config files exist
-    if !user_config_path.exists() {
-        println!("{}", "User config not found. Run with --init to create from template.".yellow());
-        println!("  Expected: {}", user_config_path.display());
-        bail!("Config file not found");
-    }
-
-    // Auto-copy admin template if it doesn't exist
-    if !admin_config_path.exists() {
-        let admin_template = template_dir.join("admin-config.conf");
-        if admin_template.exists() {
-            fs::create_dir_all(admin_config_path.parent().unwrap_or(Path::new("/etc/axiom")))?;
-            fs::copy(&admin_template, &admin_config_path)
-                .with_context(|| format!("Failed to copy admin template to {}", admin_config_path.display()))?;
-            println!("  {} {}", "Created admin config:".green(), admin_config_path.display());
         }
     }
 
@@ -167,37 +155,46 @@ fn main() -> Result<()> {
         }
     }
 
-    // Parse configs
-    println!("{}", "Parsing configuration...".blue());
-
-    let user_config = parse_hocon(&user_config_path)
-        .with_context(|| format!("Failed to parse user config: {}", user_config_path.display()))?;
-
-    let admin_config = if admin_config_path.exists() {
-        Some(parse_hocon(&admin_config_path)
-            .with_context(|| format!("Failed to parse admin config: {}", admin_config_path.display()))?)
-    } else {
-        println!("{}", "No admin config found, using defaults.".yellow());
-        None
-    };
-
-    // Generate Nix file for user preferences
-    println!("{}", "Generating Nix configuration...".blue());
-
-    let nix_content = generate_nix(&username, &user_config, admin_config.as_ref())?;
-
     // Ensure output directories exist
     fs::create_dir_all(&output_dir)
         .with_context(|| format!("Failed to create output directory: {}", output_dir.display()))?;
     fs::create_dir_all(&system_output_dir)
         .with_context(|| format!("Failed to create system output directory: {}", system_output_dir.display()))?;
 
-    let output_path = output_dir.join(format!("{}.nix", username));
-    
-    fs::write(&output_path, &nix_content)
-        .with_context(|| format!("Failed to write Nix config: {}", output_path.display()))?;
+    // Parse configs
+    println!("{}", "Parsing configuration...".blue());
 
-    println!("  {} {}", "Generated:".green(), output_path.display());
+    // Get list of all users from users.conf (curator is always included)
+    let all_usernames = get_all_usernames(&users_config_path)?;
+
+    // Determine which users to regenerate configs for
+    let users_to_update: Vec<String> = if args.all_users {
+        // --all-users: regenerate for everyone
+        all_usernames.clone()
+    } else if let Some(ref specified_users) = args.users {
+        // --users=alice,bob: regenerate for specific users
+        specified_users.clone()
+    } else {
+        // Default: just the current user
+        vec![current_username.clone()]
+    };
+
+    // For users NOT in our update list, create their .nix if it doesn't exist
+    // (handles new users added to users.conf)
+    for user in &all_usernames {
+        let user_nix_path = output_dir.join(format!("{}.nix", user));
+        if !user_nix_path.exists() && !users_to_update.contains(user) {
+            // New user - generate their config with defaults
+            println!("  {} new user: {}", "Setting up".blue(), user);
+            setup_user_config(user, &template_dir, &output_dir)?;
+        }
+    }
+
+    // Generate Nix configuration for users we're updating
+    println!("{}", "Generating Nix configuration...".blue());
+    for user in &users_to_update {
+        setup_user_config(user, &template_dir, &output_dir)?;
+    }
 
     // Generate users-data.nix from users.conf
     let users_data_path = system_output_dir.join("users-data.nix");
@@ -217,6 +214,12 @@ fn main() -> Result<()> {
     if !args.no_rebuild {
         println!("{}", "Rebuilding system...".blue());
 
+        // Add flake directory to git safe.directory to avoid ownership errors
+        // (we're running as root but /etc/nixos may be owned by root)
+        let _ = Command::new("git")
+            .args(["config", "--global", "--add", "safe.directory", args.flake_dir.to_str().unwrap_or("/etc/nixos")])
+            .status();
+
         // Already running as root via sudo
         let status = Command::new("nixos-rebuild")
             .args(["switch", "--flake", &format!("{}#axiom", args.flake_dir.display())])
@@ -227,7 +230,7 @@ fn main() -> Result<()> {
             println!("{}", "Rebuild complete!".green().bold());
             
             // Commit config changes to git (run as original user to avoid ownership issues)
-            commit_config_changes(&config_dir, &user_config_path, &username)?;
+            commit_config_changes(&current_config_dir, &current_user_config_path, &current_username)?;
         } else {
             bail!("nixos-rebuild failed with exit code: {:?}", status.code());
         }
@@ -284,6 +287,101 @@ fn init_configs(
         }
     }
 
+    Ok(())
+}
+
+/// Get list of all usernames from users.conf (curator is always included)
+fn get_all_usernames(users_config_path: &Path) -> Result<Vec<String>> {
+    let mut usernames = vec!["curator".to_string()];
+
+    if users_config_path.exists() {
+        let users_config = parse_hocon(users_config_path)?;
+        if let Some(HoconValue::Object(users_obj)) = users_config.get("users") {
+            for (key, value) in users_obj {
+                // Each user entry should be an object (not the curator string key)
+                if matches!(value, HoconValue::Object(_)) {
+                    usernames.push(key.clone());
+                }
+            }
+        }
+    }
+
+    Ok(usernames)
+}
+
+/// Set up config files and generate nix for a user
+fn setup_user_config(username: &str, template_dir: &Path, output_dir: &Path) -> Result<()> {
+    let user_home = format!("/home/{}", username);
+    let user_config_dir = PathBuf::from(&user_home).join("config/axiom");
+    let user_config_file = user_config_dir.join("config.conf");
+    let user_admin_config = PathBuf::from("/etc/axiom").join(format!("{}.conf", username));
+
+    // Create user config directory if it doesn't exist
+    if !user_config_dir.exists() {
+        fs::create_dir_all(&user_config_dir).ok(); // May fail if user home doesn't exist yet
+    }
+
+    // Copy user config template if missing
+    if !user_config_file.exists() {
+        let user_template = template_dir.join("user-config.conf");
+        if user_template.exists() && user_config_dir.exists() {
+            fs::copy(&user_template, &user_config_file).ok();
+            // Set ownership to user (we're running as root)
+            #[cfg(unix)]
+            {
+                if let Ok(output) = Command::new("id").args(["-u", username]).output() {
+                    if let Ok(uid_str) = String::from_utf8(output.stdout) {
+                        if let Ok(uid) = uid_str.trim().parse::<u32>() {
+                            let _ = Command::new("chown")
+                                .args(["-R", &format!("{}:{}", uid, uid), user_config_dir.to_str().unwrap_or("")])
+                                .status();
+                        }
+                    }
+                }
+            }
+            println!("  {} {} for {}", "Created user config:".green(), user_config_file.display(), username);
+        }
+    }
+
+    // Copy admin config template if missing
+    if !user_admin_config.exists() {
+        let admin_template = template_dir.join("admin-config.conf");
+        if admin_template.exists() {
+            fs::create_dir_all(user_admin_config.parent().unwrap_or(Path::new("/etc/axiom")))?;
+            fs::copy(&admin_template, &user_admin_config)
+                .with_context(|| format!("Failed to copy admin template for {}", username))?;
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                let perms = std::fs::Permissions::from_mode(0o644);
+                fs::set_permissions(&user_admin_config, perms)?;
+            }
+            println!("  {} {} for {}", "Created admin config:".green(), user_admin_config.display(), username);
+        }
+    }
+
+    // Parse user's configs and generate nix
+    let user_config_data = if user_config_file.exists() {
+        parse_hocon(&user_config_file)
+            .with_context(|| format!("Failed to parse user config for {}: {}", username, user_config_file.display()))?
+    } else {
+        HashMap::new() // Empty config if file doesn't exist yet
+    };
+
+    let admin_config_data = if user_admin_config.exists() {
+        Some(parse_hocon(&user_admin_config)
+            .with_context(|| format!("Failed to parse admin config for {}: {}", username, user_admin_config.display()))?)
+    } else {
+        None
+    };
+
+    let nix_content = generate_nix(username, &user_config_data, admin_config_data.as_ref())?;
+    let output_path = output_dir.join(format!("{}.nix", username));
+    
+    fs::write(&output_path, &nix_content)
+        .with_context(|| format!("Failed to write Nix config for {}: {}", username, output_path.display()))?;
+
+    println!("  {} {}", "Generated:".green(), output_path.display());
     Ok(())
 }
 

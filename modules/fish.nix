@@ -14,6 +14,9 @@ in
   };
 
   config = {
+    # Required for sound feedback in shell commands
+    home.packages = [ pkgs.libcanberra-gtk3 ];
+
     programs.command-not-found.enable = false;
     programs.eza.enable = true;
     programs.eza.icons = "always";

@@ -24,7 +24,16 @@ if [ ! -d /etc/nixos/.git ]; then
 fi
 sudo git -C /etc/nixos add -A
 
+# Add /etc/nixos to git safe.directory to avoid ownership errors
+sudo git config --global --add safe.directory /etc/nixos
+
 echo "Rebuilding system..."
 sudo nixos-rebuild switch --flake /etc/nixos#axiom
+
+# Run axiom-rebuild to apply template defaults and generate proper configs
+# This ensures the system uses values from the HOCON templates rather than
+# Nix module defaults, and creates any missing config files
+echo "Applying configuration templates..."
+sudo /run/current-system/sw/bin/axiom-rebuild --no-update-check
 
 echo "Done!"
