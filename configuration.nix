@@ -15,6 +15,7 @@
     ./core/users.nix
     ./core/system.nix
     ./core/desktop.nix
+    ./core/guide.nix
   ];
 
   # Nix configuration
@@ -26,16 +27,6 @@
     axiom-rebuild
   ];
 
-  # Guide LLM service
-  # TODO: Make user configurable (currently hardcoded)
-  services.guide = {
-    enable = true;
-    user = "edmund";
-    group = "users";
-    package = pkgs.guide;
-    launcherPackage = pkgs.guide-llama-launcher;
-  };
-
-  # Do not change - tracks NixOS version for state compatibility
+  # Do not change
   system.stateVersion = "25.05";
 }
