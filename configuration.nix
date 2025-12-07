@@ -23,8 +23,6 @@
 
   # Base system packages
   environment.systemPackages = with pkgs; [
-    vim
-    wget
     axiom-rebuild
   ];
 
