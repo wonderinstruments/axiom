@@ -1051,7 +1051,7 @@ fn handle_update(version: Option<String>, args: &Args) -> Result<()> {
     // Use rsync to copy, excluding hardware-configuration.nix and .git
     let status = Command::new("rsync")
         .args([
-            "-av",
+            "-aq",
             "--delete",
             "--exclude",
             "hardware-configuration.nix",
@@ -1222,7 +1222,7 @@ fn restore_from_backup(backup_dir: &Path, flake_dir: &Path) -> Result<()> {
     // Then copy from backup
     let status = Command::new("rsync")
         .args([
-            "-av",
+            "-aq",
             "--delete",
             "--exclude",
             "hardware-configuration.nix",

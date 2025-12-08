@@ -11,7 +11,7 @@ treefmt
 
 echo "Copying to /etc/nixos (preserving hardware-configuration.nix)..."
 # Use rsync to copy everything except hardware-configuration.nix
-sudo rsync -av --delete \
+sudo rsync -aq --delete \
     --exclude 'hardware-configuration.nix' \
     --exclude '.git' \
     "$SCRIPT_DIR/" /etc/nixos/
