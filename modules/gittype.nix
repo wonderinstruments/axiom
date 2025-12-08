@@ -15,7 +15,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ gittype.packages.${pkgs.system}.default ];
+    home.packages = [ gittype.packages.${pkgs.stdenv.hostPlatform.system}.default ];
 
     home.file.".gittype/config.json".text = builtins.toJSON {
       theme = {

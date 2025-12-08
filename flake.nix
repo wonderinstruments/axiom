@@ -146,7 +146,7 @@
     in
     {
       # Export axiom-rebuild package
-      packages.${system} = {
+      packages.${stdenv.hostPlatform.system} = {
         axiom-rebuild = axiom-rebuild;
         default = axiom-rebuild;
       };
@@ -169,7 +169,6 @@
           guideModule
           home-manager.nixosModules.home-manager
           {
-            # home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = {
