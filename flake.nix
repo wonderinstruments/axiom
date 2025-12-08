@@ -121,15 +121,18 @@
         stylix.homeModules.stylix
         nixvim.homeModules.nixvim
         ./home.nix
-      ] ++ (import ./modules);
+      ]
+      ++ (import ./modules);
 
       # Helper to create home-manager config for a user
       # Imports per-user config if it exists, otherwise uses empty config
       # Note: sharedHomeModules are applied via home-manager.sharedModules
       mkUserHomeConfig = username: {
-        imports = 
-          let configPath = ./config/users + "/${username}.nix";
-          in if builtins.pathExists configPath then [ configPath ] else [];
+        imports =
+          let
+            configPath = ./config/users + "/${username}.nix";
+          in
+          if builtins.pathExists configPath then [ configPath ] else [ ];
       };
 
       # Generate home-manager.users attrset for all users (curator + others)

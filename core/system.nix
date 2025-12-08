@@ -3,7 +3,12 @@
 # Applies global system settings from /etc/axiom/system.conf.
 # Settings are read from the generated system-data.nix file.
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   # Import the generated system data

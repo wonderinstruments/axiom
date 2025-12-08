@@ -107,7 +107,10 @@ in
           '';
         };
       };
-      shellAliases = { };
+      shellAliases = {
+        logout = "xfce4-session-logout";
+        seek = "ck";
+      };
     };
   };
 }

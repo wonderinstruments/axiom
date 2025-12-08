@@ -3,11 +3,11 @@
 
 {
   # Curator config (optional overrides)
-  curator = {};
+  curator = { };
 
   # List of usernames (excluding curator)
-  usernames = [];
+  usernames = [ ];
 
   # User details keyed by username
-  users = {};
+  users = { };
 }
