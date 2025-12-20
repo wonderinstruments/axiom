@@ -118,18 +118,6 @@ let
   # Map of Ansible applications to Nix packages where available
   nixApplications = {
     # Admin Applications
-    warp-terminal = {
-      package = pkgs.warp-terminal;
-      exec = "warp-terminal";
-      icon = "warp";
-      comment = "Modern terminal for typing commands to control your computer";
-      categories = [
-        "Development"
-        "System"
-        "TerminalEmulator"
-      ];
-      enableOption = true;
-    };
     termusic = {
       package = pkgs.termusic;
       exec = "termusic";

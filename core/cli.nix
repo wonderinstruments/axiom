@@ -28,6 +28,7 @@
     rip2
     unzip
     ck
+    claude-code
   ];
 
   programs.fish.enable = true;

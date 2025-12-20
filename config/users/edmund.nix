@@ -81,7 +81,6 @@
   axiom.admin.games.pingus.enable = true;
   axiom.admin.games.tuxtype.enable = true;
   axiom.admin.applications.xiphos.enable = true;
-  axiom.admin.applications.warp-terminal.enable = true;
   axiom.admin.applications.spotify.enable = true;
   axiom.admin.applications.obsidian.enable = true;
   axiom.admin.applications.slack.enable = true;
