@@ -184,6 +184,7 @@
             home-manager.extraSpecialArgs = {
               inherit kickstart gittype;
               launcher = launcher;
+              axiom-connect = axiom-connect;
               pkgs-unstable = import nixpkgs-unstable {
                 system = "x86_64-linux";
                 config.allowUnfree = true;
