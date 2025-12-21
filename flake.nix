@@ -20,6 +20,10 @@
     gittype = {
       url = "github:unhappychoice/gittype";
     };
+    axiom-connect = {
+      url = "github:wonderinstruments/AxiomConnect";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -32,6 +36,7 @@
       stylix,
       nixvim,
       gittype,
+      axiom-connect,
       ...
     }:
     let
@@ -157,6 +162,7 @@
           {
             nixpkgs.overlays = [
               guideOverlay
+              axiom-connect.overlays.default
               (final: prev: {
                 launcher = launcher;
                 axiom-rebuild = axiom-rebuild;
@@ -167,13 +173,14 @@
           ./configuration.nix
           stylix.nixosModules.stylix
           guideModule
+          axiom-connect.nixosModules.axiom-connect
           home-manager.nixosModules.home-manager
           {
             # home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = {
-              inherit kickstart gittype;
+              inherit kickstart gittype axiom-connect;
               launcher = launcher;
               pkgs-unstable = import nixpkgs-unstable {
                 system = "x86_64-linux";
