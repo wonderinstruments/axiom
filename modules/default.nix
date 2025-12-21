@@ -32,5 +32,4 @@
   ./musopen.nix
   ./gittype.nix
   ./axiom-config.nix
-  ./axiom-connect.nix
 ]
