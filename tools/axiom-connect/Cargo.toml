@@ -1,0 +1,68 @@
+[package]
+name = "axiom-connect"
+version = "0.1.0"
+edition = "2021"
+description = "CLI tool for syncing Axiom configs with a central server"
+authors = ["Wonder Instruments"]
+
+[[bin]]
+name = "axiom-connect"
+path = "src/main.rs"
+
+[dependencies]
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# HTTP client (blocking for CLI, async features for agent)
+# Use rustls for static musl builds (no OpenSSL dependency)
+reqwest = { version = "0.12", default-features = false, features = ["json", "blocking", "rustls-tls"] }
+
+# JSON serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# HOCON parsing
+hocon = "0.9"
+
+# Error handling
+anyhow = "1"
+thiserror = "1"
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# Config file
+toml = "0.8"
+
+# Colored output
+colored = "2"
+
+# Home directory
+dirs = "5"
+
+# Hostname detection
+hostname = "0.4"
+
+# UUID generation
+uuid = { version = "1", features = ["v4"] }
+
+# URL encoding
+urlencoding = "2"
+
+# Async runtime (for agent mode)
+tokio = { version = "1", features = ["full", "signal"] }
+
+# WebSocket client
+# Use rustls for static musl builds (no OpenSSL dependency)
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+futures-util = "0.3"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Signal handling
+ctrlc = "3"
+
+# Password input without echo
+rpassword = "7"

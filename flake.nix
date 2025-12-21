@@ -20,10 +20,6 @@
     gittype = {
       url = "github:unhappychoice/gittype";
     };
-    axiom-connect = {
-      url = "github:wonderinstruments/AxiomConnect";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -36,7 +32,6 @@
       stylix,
       nixvim,
       gittype,
-      axiom-connect,
       ...
     }:
     let
@@ -49,6 +44,14 @@
         version = "0.1.0";
         src = ./tools/axiom-rebuild;
         cargoLock.lockFile = ./tools/axiom-rebuild/Cargo.lock;
+      };
+
+      # Build axiom-connect from local source
+      axiom-connect = pkgs.rustPlatform.buildRustPackage {
+        pname = "axiom-connect";
+        version = "0.1.0";
+        src = ./tools/axiom-connect;
+        cargoLock.lockFile = ./tools/axiom-connect/Cargo.lock;
       };
 
       # Build launcher from local source
@@ -162,10 +165,10 @@
           {
             nixpkgs.overlays = [
               guideOverlay
-              axiom-connect.overlays.default
               (final: prev: {
                 launcher = launcher;
                 axiom-rebuild = axiom-rebuild;
+                axiom-connect = axiom-connect;
                 ck = ck-pkg;
               })
             ];
@@ -173,14 +176,13 @@
           ./configuration.nix
           stylix.nixosModules.stylix
           guideModule
-          axiom-connect.nixosModules.axiom-connect
           home-manager.nixosModules.home-manager
           {
             # home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = {
-              inherit kickstart gittype axiom-connect;
+              inherit kickstart gittype;
               launcher = launcher;
               pkgs-unstable = import nixpkgs-unstable {
                 system = "x86_64-linux";

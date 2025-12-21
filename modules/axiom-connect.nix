@@ -2,7 +2,6 @@
   lib,
   pkgs,
   config,
-  axiom-connect,
   ...
 }:
 let
@@ -19,6 +18,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ axiom-connect.packages.${pkgs.system}.axiom-connect ];
+    home.packages = [ pkgs.axiom-connect ];
   };
 }

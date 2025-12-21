@@ -1,0 +1,357 @@
+use anyhow::{Context, Result, bail};
+use colored::Colorize;
+use futures_util::{SinkExt, StreamExt};
+use serde::{Deserialize, Serialize};
+use std::process::Command;
+use std::time::Duration;
+use tokio::time::{interval, timeout};
+use tokio_tungstenite::{
+    connect_async, tungstenite::protocol::Message,
+};
+use tracing::{error, info, warn};
+
+use crate::config::AppConfig;
+use crate::api::ApiClient;
+
+/// Messages sent from agent to server
+#[derive(Debug, Clone, Serialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum AgentMessage {
+    Connect { device_token: String },
+    Heartbeat { device_token: String },
+    CommandResult {
+        command_id: String,
+        success: bool,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        error: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        output: Option<String>,
+    },
+}
+
+/// Commands received from server
+#[derive(Debug, Clone, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum ServerCommand {
+    PullConfig {
+        command_id: String,
+        #[serde(default)]
+        users: Option<Vec<String>>,
+    },
+    Rebuild {
+        command_id: String,
+        #[serde(default)]
+        users: Option<Vec<String>>,
+    },
+    Ping {
+        #[serde(default = "default_ping_id")]
+        command_id: String,
+    },
+}
+
+fn default_ping_id() -> String {
+    "ping".to_string()
+}
+
+/// Run the agent daemon
+pub async fn run_agent(config: &AppConfig) -> Result<()> {
+    let device_token = config.device_token.as_ref()
+        .context("No device token configured. Run 'axiom-connect device register' first.")?;
+    
+    info!("Starting axiom-connect agent for device: {}", device_token);
+    println!("{} {}", "Starting agent for device:".green(), device_token);
+    
+    // Set up global ctrl+c handler
+    let shutdown = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
+    let shutdown_clone = shutdown.clone();
+    
+    ctrlc::set_handler(move || {
+        println!("\n{}", "Shutting down...".yellow());
+        shutdown_clone.store(true, std::sync::atomic::Ordering::SeqCst);
+    }).context("Failed to set ctrl+c handler")?;
+    
+    // Connect with automatic reconnection
+    loop {
+        if shutdown.load(std::sync::atomic::Ordering::SeqCst) {
+            info!("Shutdown requested");
+            return Ok(());
+        }
+        
+        match connect_and_run(config, device_token, shutdown.clone()).await {
+            Ok(_) => {
+                if shutdown.load(std::sync::atomic::Ordering::SeqCst) {
+                    return Ok(());
+                }
+                info!("WebSocket connection closed normally");
+                println!("{}", "Connection closed. Reconnecting...".yellow());
+            }
+            Err(e) => {
+                error!("WebSocket error: {}", e);
+                println!("{} {}", "Connection error:".red(), e);
+            }
+        }
+        
+        // Exponential backoff starting at 1 second, max 60 seconds
+        static mut BACKOFF: u64 = 1;
+        let delay = unsafe {
+            let d = BACKOFF;
+            BACKOFF = std::cmp::min(BACKOFF * 2, 60);
+            d
+        };
+        
+        println!("{} {} seconds...", "Reconnecting in".yellow(), delay);
+        tokio::time::sleep(Duration::from_secs(delay)).await;
+    }
+}
+
+async fn connect_and_run(
+    config: &AppConfig,
+    device_token: &str,
+    shutdown: std::sync::Arc<std::sync::atomic::AtomicBool>,
+) -> Result<()> {
+    // Build WebSocket URL
+    let ws_url = build_ws_url(&config.server_url)?;
+    info!("Connecting to {}", ws_url);
+    println!("{} {}", "Connecting to:".blue(), ws_url);
+    
+    // Connect with timeout
+    let (ws_stream, _response) = timeout(
+        Duration::from_secs(30),
+        connect_async(&ws_url)
+    )
+    .await
+    .context("Connection timeout")?
+    .context("Failed to connect to WebSocket")?;
+    
+    // Reset backoff on successful connection
+    unsafe { crate::agent::BACKOFF = 1; }
+    
+    println!("{}", "Connected!".green().bold());
+    info!("WebSocket connected");
+    
+    let (mut write, mut read) = ws_stream.split();
+    
+    // Send connect message
+    let connect_msg = AgentMessage::Connect {
+        device_token: device_token.to_string(),
+    };
+    let msg_text = serde_json::to_string(&connect_msg)?;
+    write.send(Message::Text(msg_text.into())).await?;
+    info!("Sent connect message");
+    
+    // Set up heartbeat interval (every 30 seconds)
+    let mut heartbeat_interval = interval(Duration::from_secs(30));
+    
+    // Clone values for async move
+    let device_token_owned = device_token.to_string();
+    let server_url = config.server_url.clone();
+    let auth_token = config.auth_token.clone();
+    
+    loop {
+        tokio::select! {
+            // Handle incoming messages
+            msg = read.next() => {
+                match msg {
+                    Some(Ok(Message::Text(text))) => {
+                        match serde_json::from_str::<ServerCommand>(&text) {
+                            Ok(cmd) => {
+                                info!("Received command: {:?}", cmd);
+                                let result = handle_command(&cmd, &server_url, &device_token_owned, auth_token.as_deref()).await;
+                                
+                                // Send result back
+                                let result_msg = match result {
+                                    Ok(output) => AgentMessage::CommandResult {
+                                        command_id: get_command_id(&cmd),
+                                        success: true,
+                                        error: None,
+                                        output: Some(output),
+                                    },
+                                    Err(e) => AgentMessage::CommandResult {
+                                        command_id: get_command_id(&cmd),
+                                        success: false,
+                                        error: Some(e.to_string()),
+                                        output: None,
+                                    },
+                                };
+                                
+                                let msg_text = serde_json::to_string(&result_msg)?;
+                                write.send(Message::Text(msg_text.into())).await?;
+                            }
+                            Err(e) => {
+                                warn!("Failed to parse command: {} - {}", text, e);
+                            }
+                        }
+                    }
+                    Some(Ok(Message::Ping(data))) => {
+                        write.send(Message::Pong(data)).await?;
+                    }
+                    Some(Ok(Message::Close(_))) => {
+                        info!("Server closed connection");
+                        break;
+                    }
+                    Some(Err(e)) => {
+                        error!("WebSocket error: {}", e);
+                        break;
+                    }
+                    None => {
+                        info!("WebSocket stream ended");
+                        break;
+                    }
+                    _ => {}
+                }
+            }
+            
+            // Send heartbeat
+            _ = heartbeat_interval.tick() => {
+                let heartbeat = AgentMessage::Heartbeat {
+                    device_token: device_token_owned.clone(),
+                };
+                let msg_text = serde_json::to_string(&heartbeat)?;
+                if let Err(e) = write.send(Message::Text(msg_text.into())).await {
+                    error!("Failed to send heartbeat: {}", e);
+                    break;
+                }
+                info!("Sent heartbeat");
+            }
+            
+            // Check for shutdown
+            _ = tokio::time::sleep(Duration::from_millis(100)) => {
+                if shutdown.load(std::sync::atomic::Ordering::SeqCst) {
+                    info!("Received shutdown signal");
+                    write.send(Message::Close(None)).await.ok();
+                    return Ok(());
+                }
+            }
+        }
+    }
+    
+    Ok(())
+}
+
+fn build_ws_url(server_url: &str) -> Result<String> {
+    let base = server_url.trim_end_matches('/');
+    
+    // Convert http:// to ws:// and https:// to wss://
+    let ws_base = if base.starts_with("https://") {
+        base.replace("https://", "wss://")
+    } else if base.starts_with("http://") {
+        base.replace("http://", "ws://")
+    } else {
+        format!("ws://{}", base)
+    };
+    
+    Ok(format!("{}/api/v1/ws/agent", ws_base))
+}
+
+fn get_command_id(cmd: &ServerCommand) -> String {
+    match cmd {
+        ServerCommand::PullConfig { command_id, .. } => command_id.clone(),
+        ServerCommand::Rebuild { command_id, .. } => command_id.clone(),
+        ServerCommand::Ping { command_id } => command_id.clone(),
+    }
+}
+
+async fn handle_command(cmd: &ServerCommand, server_url: &str, device_token: &str, auth_token: Option<&str>) -> Result<String> {
+    match cmd {
+        ServerCommand::PullConfig { users, .. } => {
+            println!("{}", "Received pull_config command".cyan());
+            handle_pull_config(server_url, device_token, users.as_deref(), auth_token).await
+        }
+        ServerCommand::Rebuild { users, .. } => {
+            println!("{}", "Received rebuild command".cyan());
+            handle_rebuild(users.as_deref()).await
+        }
+        ServerCommand::Ping { .. } => {
+            Ok("pong".to_string())
+        }
+    }
+}
+
+async fn handle_pull_config(
+    server_url: &str,
+    device_token: &str,
+    users: Option<&[String]>,
+    auth_token: Option<&str>,
+) -> Result<String> {
+    println!("  {} configs from server...", "Pulling".blue());
+
+    // Clone values for the blocking task
+    let server_url = server_url.to_string();
+    let device_token = device_token.to_string();
+    let users = users.map(|u| u.to_vec());
+    let auth_token = auth_token.map(|s| s.to_string());
+
+    // Run blocking API call in a separate thread
+    let result = tokio::task::spawn_blocking(move || {
+        let client = ApiClient::new(&server_url, auth_token.as_deref());
+        
+        // Use the existing pull logic
+        let user_filter = users.as_ref().and_then(|u| u.first().map(|s| s.as_str()));
+        
+        // Pull configs from server
+        let server_bundle = client.get_configs(&device_token)
+            .context("Failed to get configs from server")?;
+        
+        // Filter by user if specified
+        let configs: Vec<_> = server_bundle.configs.iter()
+            .filter(|c| {
+                match user_filter {
+                    Some(u) => c.username.as_deref() == Some(u),
+                    None => true,
+                }
+            })
+            .cloned()
+            .collect();
+        
+        // Write configs locally
+        for config in &configs {
+            crate::local::write_local_config(config)
+                .with_context(|| format!("Failed to write {:?} config", config.config_type))?;
+        }
+        
+        Ok::<_, anyhow::Error>(configs.len())
+    })
+    .await
+    .context("Blocking task panicked")??;
+    
+    let msg = format!("Pulled {} configs", result);
+    println!("  {} {}", "✓".green(), msg);
+    Ok(msg)
+}
+
+async fn handle_rebuild(users: Option<&[String]>) -> Result<String> {
+    println!("  {} system...", "Rebuilding".blue());
+    
+    // Build axiom-rebuild command
+    let mut cmd = Command::new("axiom-rebuild");
+    
+    // Add user flags if specified
+    if let Some(users) = users {
+        if users.len() == 1 {
+            cmd.arg("--user").arg(&users[0]);
+        } else if !users.is_empty() {
+            cmd.arg("--users").arg(users.join(","));
+        }
+    }
+    
+    // Run the command
+    let output = cmd
+        .output()
+        .context("Failed to execute axiom-rebuild. Is it installed?")?;
+    
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    
+    if output.status.success() {
+        let msg = format!("Rebuild completed successfully");
+        println!("  {} {}", "✓".green(), msg);
+        Ok(format!("{}\n{}", msg, stdout))
+    } else {
+        let msg = format!("Rebuild failed: {}", stderr);
+        println!("  {} {}", "✗".red(), msg);
+        bail!("{}\nstdout: {}\nstderr: {}", msg, stdout, stderr)
+    }
+}
+
+// Mutable static for backoff (safe because we only access it from single-threaded context)
+static mut BACKOFF: u64 = 1;
