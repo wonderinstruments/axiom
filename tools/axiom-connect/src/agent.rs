@@ -1,8 +1,10 @@
 use anyhow::{Context, Result, bail};
 use colored::Colorize;
 use futures_util::{SinkExt, StreamExt};
+use notify::{RecommendedWatcher, RecursiveMode, Watcher, Event};
 use serde::{Deserialize, Serialize};
 use std::process::Command;
+use std::sync::mpsc;
 use std::time::Duration;
 use tokio::time::{interval, timeout};
 use tokio_tungstenite::{
@@ -10,7 +12,7 @@ use tokio_tungstenite::{
 };
 use tracing::{error, info, warn};
 
-use crate::config::AppConfig;
+use crate::config::{AppConfig, SystemConfig};
 use crate::api::ApiClient;
 
 /// Messages sent from agent to server
@@ -53,31 +55,99 @@ fn default_ping_id() -> String {
     "ping".to_string()
 }
 
-/// Run the agent daemon
-pub async fn run_agent(config: &AppConfig) -> Result<()> {
+/// Run the agent daemon using system-wide configuration
+/// This is meant to be run as a system service, not per-user
+pub async fn run_agent(_config: &AppConfig) -> Result<()> {
+    // Load system config (ignore user config for system-wide agent)
+    let config = AppConfig::load_for_agent()?;
+
     let device_token = config.device_token.as_ref()
         .context("No device token configured. Run 'axiom-connect device register' first.")?;
-    
+
     info!("Starting axiom-connect agent for device: {}", device_token);
     println!("{} {}", "Starting agent for device:".green(), device_token);
-    
+    println!("  Using system config: {}", SystemConfig::system_config_path().display());
+
     // Set up global ctrl+c handler
     let shutdown = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
     let shutdown_clone = shutdown.clone();
-    
+
     ctrlc::set_handler(move || {
         println!("\n{}", "Shutting down...".yellow());
         shutdown_clone.store(true, std::sync::atomic::Ordering::SeqCst);
     }).context("Failed to set ctrl+c handler")?;
-    
+
+    // Set up config file watcher
+    let config_reload = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
+    let config_reload_clone = config_reload.clone();
+
+    let (tx, rx) = mpsc::channel();
+    let mut watcher: RecommendedWatcher = Watcher::new(
+        move |res: Result<Event, notify::Error>| {
+            if let Ok(event) = res {
+                if event.kind.is_modify() || event.kind.is_create() {
+                    let _ = tx.send(());
+                }
+            }
+        },
+        notify::Config::default().with_poll_interval(Duration::from_secs(2)),
+    )?;
+
+    // Watch the system config directory
+    let config_path = SystemConfig::system_config_path();
+    if let Some(parent) = config_path.parent() {
+        if parent.exists() {
+            watcher.watch(parent, RecursiveMode::NonRecursive)?;
+            info!("Watching config directory: {}", parent.display());
+        }
+    }
+
+    // Spawn a task to handle config reload signals
+    let config_reload_for_task = config_reload.clone();
+    std::thread::spawn(move || {
+        while rx.recv().is_ok() {
+            info!("Config file changed, will reload on next reconnect");
+            config_reload_for_task.store(true, std::sync::atomic::Ordering::SeqCst);
+        }
+    });
+
     // Connect with automatic reconnection
+    let mut current_config = config;
     loop {
         if shutdown.load(std::sync::atomic::Ordering::SeqCst) {
             info!("Shutdown requested");
             return Ok(());
         }
-        
-        match connect_and_run(config, device_token, shutdown.clone()).await {
+
+        // Check if we need to reload config
+        if config_reload_clone.load(std::sync::atomic::Ordering::SeqCst) {
+            config_reload_clone.store(false, std::sync::atomic::Ordering::SeqCst);
+            println!("{}", "Config changed, reloading...".cyan());
+
+            match AppConfig::load_for_agent() {
+                Ok(new_config) => {
+                    if new_config.device_token != current_config.device_token ||
+                       new_config.server_url != current_config.server_url {
+                        println!("  {} Device token or server URL changed", "!".yellow());
+                        current_config = new_config;
+                    }
+                }
+                Err(e) => {
+                    warn!("Failed to reload config: {}", e);
+                }
+            }
+        }
+
+        let device_token = match current_config.device_token.as_ref() {
+            Some(t) => t,
+            None => {
+                println!("{}", "No device token configured, waiting...".yellow());
+                tokio::time::sleep(Duration::from_secs(10)).await;
+                continue;
+            }
+        };
+
+        match connect_and_run(&current_config, device_token, shutdown.clone()).await {
             Ok(_) => {
                 if shutdown.load(std::sync::atomic::Ordering::SeqCst) {
                     return Ok(());
@@ -90,7 +160,7 @@ pub async fn run_agent(config: &AppConfig) -> Result<()> {
                 println!("{} {}", "Connection error:".red(), e);
             }
         }
-        
+
         // Exponential backoff starting at 1 second, max 60 seconds
         static mut BACKOFF: u64 = 1;
         let delay = unsafe {
@@ -98,7 +168,7 @@ pub async fn run_agent(config: &AppConfig) -> Result<()> {
             BACKOFF = std::cmp::min(BACKOFF * 2, 60);
             d
         };
-        
+
         println!("{} {} seconds...", "Reconnecting in".yellow(), delay);
         tokio::time::sleep(Duration::from_secs(delay)).await;
     }

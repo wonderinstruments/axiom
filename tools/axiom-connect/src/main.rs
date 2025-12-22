@@ -205,6 +205,54 @@ fn handle_auth_command(command: AuthCommands, config: &mut AppConfig) -> Result<
                     config.auth_token = Some(response.token);
                     config.save()?;
                     println!("  Session saved to: {}", AppConfig::config_path()?.display());
+
+                    // Auto-register device if not already registered
+                    if config.device_token.is_none() {
+                        println!();
+                        println!("Registering device...");
+
+                        let device_token = hostname::get()
+                            .map(|h| h.to_string_lossy().to_string())
+                            .unwrap_or_else(|_| format!("device-{}", uuid::Uuid::new_v4()));
+
+                        // Create a new client with the auth token we just received
+                        let authed_client = ApiClient::new(&config.server_url, config.auth_token.as_deref());
+                        let secret = "placeholder-secret-for-development-only";
+
+                        match authed_client.register_device(&device_token, secret) {
+                            Ok(reg_response) => {
+                                println!("{}", "✓ Device registered".green());
+                                println!("  Token: {}", reg_response.device_token);
+
+                                config.device_token = Some(device_token.clone());
+
+                                // Try to save to system config (may fail without root)
+                                if let Err(e) = config.save_device_to_system() {
+                                    println!("  {} Could not save to system config: {}", "!".yellow(), e);
+                                    println!("  Saving to user config instead...");
+                                    config.save()?;
+                                } else {
+                                    println!("  Device saved to: {}", config::SystemConfig::system_config_path().display());
+                                }
+                            }
+                            Err(e) => {
+                                if e.to_string().contains("already_exists") {
+                                    println!("{}", "Device already registered, saving token...".yellow());
+                                    config.device_token = Some(device_token.clone());
+
+                                    if let Err(save_err) = config.save_device_to_system() {
+                                        println!("  {} Could not save to system config: {}", "!".yellow(), save_err);
+                                        config.save()?;
+                                    } else {
+                                        println!("  Device saved to: {}", config::SystemConfig::system_config_path().display());
+                                    }
+                                } else {
+                                    println!("{} Failed to register device: {}", "!".yellow(), e);
+                                    println!("  You can register manually with: axiom-connect device register");
+                                }
+                            }
+                        }
+                    }
                 }
                 Err(e) => {
                     println!("{} {}", "✗".red(), e);
@@ -310,6 +358,8 @@ fn handle_device_command(command: DeviceCommands, config: &mut AppConfig) -> Res
 
     match command {
         DeviceCommands::Register { token } => {
+            use colored::Colorize;
+
             let device_token = token.unwrap_or_else(|| {
                 // Generate a token from hostname
                 hostname::get()
@@ -321,23 +371,35 @@ fn handle_device_command(command: DeviceCommands, config: &mut AppConfig) -> Res
 
             // For now, use a placeholder secret since auth is disabled
             let secret = "placeholder-secret-for-development-only";
-            
+
             match client.register_device(&device_token, secret) {
                 Ok(response) => {
-                    println!("✓ Device registered successfully");
+                    println!("{}", "✓ Device registered successfully".green());
                     println!("  Token: {}", response.device_token);
                     println!("  Created: {}", response.created_at);
 
-                    // Save token to config
-                    config.device_token = Some(device_token);
-                    config.save()?;
-                    println!("  Config saved to: {}", AppConfig::config_path()?.display());
+                    // Save token to system config (try system first, then user)
+                    config.device_token = Some(device_token.clone());
+                    if let Err(e) = config.save_device_to_system() {
+                        println!("  {} Could not save to system config: {}", "!".yellow(), e);
+                        println!("  Saving to user config instead...");
+                        config.save()?;
+                        println!("  Config saved to: {}", AppConfig::config_path()?.display());
+                    } else {
+                        println!("  Config saved to: {}", config::SystemConfig::system_config_path().display());
+                    }
                 }
                 Err(e) => {
                     if e.to_string().contains("already_exists") {
-                        println!("Device already registered. Saving token to config...");
-                        config.device_token = Some(device_token);
-                        config.save()?;
+                        println!("{}", "Device already registered. Saving token to config...".yellow());
+                        config.device_token = Some(device_token.clone());
+                        if let Err(save_err) = config.save_device_to_system() {
+                            println!("  {} Could not save to system config: {}", "!".yellow(), save_err);
+                            config.save()?;
+                            println!("  Config saved to: {}", AppConfig::config_path()?.display());
+                        } else {
+                            println!("  Config saved to: {}", config::SystemConfig::system_config_path().display());
+                        }
                     } else {
                         return Err(e);
                     }

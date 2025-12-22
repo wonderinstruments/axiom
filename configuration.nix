@@ -16,6 +16,7 @@
     ./core/system.nix
     ./core/desktop.nix
     ./core/guide.nix
+    ./core/axiom-connect.nix
   ];
 
   # Nix configuration
