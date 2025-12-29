@@ -164,6 +164,33 @@ fn main() -> Result<()> {
     }
 }
 
+fn check_can_write_config() -> bool {
+    let config_path = config::SystemConfig::system_config_path();
+
+    // If the file exists, check if we can write to it
+    if config_path.exists() {
+        return std::fs::OpenOptions::new()
+            .write(true)
+            .open(&config_path)
+            .is_ok();
+    }
+
+    // If the file doesn't exist, check if we can create the parent directory
+    if let Some(parent) = config_path.parent() {
+        if parent.exists() {
+            // Try to check write permission on the directory
+            return std::fs::metadata(parent)
+                .map(|m| !m.permissions().readonly())
+                .unwrap_or(false);
+        } else {
+            // Need to create /etc/axiom-connect - requires root
+            return std::fs::create_dir_all(parent).is_ok();
+        }
+    }
+
+    false
+}
+
 fn handle_auth_command(command: AuthCommands, config: &mut AppConfig) -> Result<()> {
     use colored::Colorize;
     use std::io::{self, Write};
@@ -172,6 +199,14 @@ fn handle_auth_command(command: AuthCommands, config: &mut AppConfig) -> Result<
 
     match command {
         AuthCommands::Login { email, password } => {
+            // Check if we can write to the config file before proceeding
+            if !check_can_write_config() {
+                println!("{}", "✗ Cannot write to config file".red());
+                println!("  Config is stored at: {}", config::SystemConfig::system_config_path().display());
+                println!("  Run with sudo: sudo axiom-connect auth login");
+                std::process::exit(1);
+            }
+
             // Get email if not provided
             let email = match email {
                 Some(e) => e,
@@ -204,7 +239,39 @@ fn handle_auth_command(command: AuthCommands, config: &mut AppConfig) -> Result<
                     // Save token to config
                     config.auth_token = Some(response.token);
                     config.save()?;
-                    println!("  Session saved to: {}", AppConfig::config_path()?.display());
+                    println!("  Session saved to: {}", AppConfig::config_path().display());
+
+                    // Auto-register device if not already registered
+                    if config.device_token.is_none() {
+                        println!();
+                        println!("Registering device...");
+
+                        let device_token = hostname::get()
+                            .map(|h| h.to_string_lossy().to_string())
+                            .unwrap_or_else(|_| format!("device-{}", uuid::Uuid::new_v4()));
+
+                        // Create a new client with the auth token we just received
+                        let authed_client = ApiClient::new(&config.server_url, config.auth_token.as_deref());
+                        // Generate a secure 32+ char secret using UUID v4 (36 chars)
+                        let secret = uuid::Uuid::new_v4().to_string();
+
+                        match authed_client.register_device(&device_token, &secret) {
+                            Ok(reg_response) => {
+                                println!("{}", "✓ Device registered".green());
+                                println!("  Token: {}", reg_response.device_token);
+
+                                config.device_token = Some(device_token.clone());
+                                config.device_secret = Some(secret);
+
+                                config.save()?;
+                                println!("  Device saved to: {}", config::SystemConfig::system_config_path().display());
+                            }
+                            Err(e) => {
+                                println!("{} Failed to register device: {}", "!".yellow(), e);
+                                println!("  You can register manually with: axiom-connect device register");
+                            }
+                        }
+                    }
                 }
                 Err(e) => {
                     println!("{} {}", "✗".red(), e);
@@ -266,11 +333,19 @@ fn handle_settings_command(command: SettingsCommands, config: &mut AppConfig) ->
 
     match command {
         SettingsCommands::SetServer { url } => {
+            // Check if we can write to the config file
+            if !check_can_write_config() {
+                println!("{}", "✗ Cannot write to config file".red());
+                println!("  Config is stored at: {}", config::SystemConfig::system_config_path().display());
+                println!("  Run with sudo: sudo axiom-connect settings set-server {}", url);
+                std::process::exit(1);
+            }
+
             println!("Setting server URL to: {}", url.cyan());
             config.server_url = url;
             config.save()?;
             println!("{}", "Server URL saved".green());
-            println!("  Config file: {}", AppConfig::config_path()?.display());
+            println!("  Config file: {}", AppConfig::config_path().display());
         }
         SettingsCommands::Show => {
             println!("Current settings:");
@@ -280,7 +355,7 @@ fn handle_settings_command(command: SettingsCommands, config: &mut AppConfig) ->
             println!("  Auth token: {}",
                 if config.auth_token.is_some() { "set".green().to_string() } else { "(not set)".to_string() });
             println!();
-            println!("  Config file: {}", AppConfig::config_path()?.display());
+            println!("  Config file: {}", AppConfig::config_path().display());
         }
     }
 
@@ -310,6 +385,23 @@ fn handle_device_command(command: DeviceCommands, config: &mut AppConfig) -> Res
 
     match command {
         DeviceCommands::Register { token } => {
+            use colored::Colorize;
+
+            // Check if we can write to the config file
+            if !check_can_write_config() {
+                println!("{}", "✗ Cannot write to config file".red());
+                println!("  Config is stored at: {}", config::SystemConfig::system_config_path().display());
+                println!("  Run with sudo: sudo axiom-connect device register");
+                std::process::exit(1);
+            }
+
+            // Check for auth token - required for device registration
+            if config.auth_token.is_none() {
+                println!("{}", "✗ Not authenticated".red());
+                println!("  Run 'sudo axiom-connect auth login' first.");
+                std::process::exit(1);
+            }
+
             let device_token = token.unwrap_or_else(|| {
                 // Generate a token from hostname
                 hostname::get()
@@ -319,28 +411,23 @@ fn handle_device_command(command: DeviceCommands, config: &mut AppConfig) -> Res
 
             println!("Registering device with token: {}", device_token);
 
-            // For now, use a placeholder secret since auth is disabled
-            let secret = "placeholder-secret-for-development-only";
-            
-            match client.register_device(&device_token, secret) {
+            // Generate a secure 32+ char secret using UUID v4 (36 chars)
+            let secret = uuid::Uuid::new_v4().to_string();
+
+            match client.register_device(&device_token, &secret) {
                 Ok(response) => {
-                    println!("✓ Device registered successfully");
+                    println!("{}", "✓ Device registered successfully".green());
                     println!("  Token: {}", response.device_token);
                     println!("  Created: {}", response.created_at);
 
-                    // Save token to config
-                    config.device_token = Some(device_token);
+                    // Save token and secret to config
+                    config.device_token = Some(device_token.clone());
+                    config.device_secret = Some(secret);
                     config.save()?;
-                    println!("  Config saved to: {}", AppConfig::config_path()?.display());
+                    println!("  Config saved to: {}", config::SystemConfig::system_config_path().display());
                 }
                 Err(e) => {
-                    if e.to_string().contains("already_exists") {
-                        println!("Device already registered. Saving token to config...");
-                        config.device_token = Some(device_token);
-                        config.save()?;
-                    } else {
-                        return Err(e);
-                    }
+                    return Err(e);
                 }
             }
         }

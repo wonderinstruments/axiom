@@ -66,3 +66,6 @@ ctrlc = "3"
 
 # Password input without echo
 rpassword = "7"
+
+# File watching for config reload
+notify = "7"
