@@ -19,7 +19,7 @@ use crate::api::ApiClient;
 #[derive(Debug, Clone, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum AgentMessage {
-    Connect { device_token: String },
+    Connect { device_token: String, secret: String },
     Heartbeat { device_token: String },
     CommandResult {
         command_id: String,
@@ -63,6 +63,9 @@ pub async fn run_agent(_config: &AppConfig) -> Result<()> {
 
     let device_token = config.device_token.as_ref()
         .context("No device token configured. Run 'axiom-connect device register' first.")?;
+
+    let device_secret = config.device_secret.as_ref()
+        .context("No device secret configured. Run 'axiom-connect device register' first.")?;
 
     info!("Starting axiom-connect agent for device: {}", device_token);
     println!("{} {}", "Starting agent for device:".green(), device_token);
@@ -147,7 +150,16 @@ pub async fn run_agent(_config: &AppConfig) -> Result<()> {
             }
         };
 
-        match connect_and_run(&current_config, device_token, shutdown.clone()).await {
+        let device_secret = match current_config.device_secret.as_ref() {
+            Some(s) => s,
+            None => {
+                println!("{}", "No device secret configured, waiting...".yellow());
+                tokio::time::sleep(Duration::from_secs(10)).await;
+                continue;
+            }
+        };
+
+        match connect_and_run(&current_config, device_token, device_secret, shutdown.clone()).await {
             Ok(_) => {
                 if shutdown.load(std::sync::atomic::Ordering::SeqCst) {
                     return Ok(());
@@ -177,6 +189,7 @@ pub async fn run_agent(_config: &AppConfig) -> Result<()> {
 async fn connect_and_run(
     config: &AppConfig,
     device_token: &str,
+    device_secret: &str,
     shutdown: std::sync::Arc<std::sync::atomic::AtomicBool>,
 ) -> Result<()> {
     // Build WebSocket URL
@@ -201,9 +214,10 @@ async fn connect_and_run(
     
     let (mut write, mut read) = ws_stream.split();
     
-    // Send connect message
+    // Send connect message with device secret for authentication
     let connect_msg = AgentMessage::Connect {
         device_token: device_token.to_string(),
+        secret: device_secret.to_string(),
     };
     let msg_text = serde_json::to_string(&connect_msg)?;
     write.send(Message::Text(msg_text.into())).await?;
@@ -214,9 +228,9 @@ async fn connect_and_run(
     
     // Clone values for async move
     let device_token_owned = device_token.to_string();
+    let device_secret_owned = device_secret.to_string();
     let server_url = config.server_url.clone();
-    let auth_token = config.auth_token.clone();
-    
+
     loop {
         tokio::select! {
             // Handle incoming messages
@@ -226,7 +240,7 @@ async fn connect_and_run(
                         match serde_json::from_str::<ServerCommand>(&text) {
                             Ok(cmd) => {
                                 info!("Received command: {:?}", cmd);
-                                let result = handle_command(&cmd, &server_url, &device_token_owned, auth_token.as_deref()).await;
+                                let result = handle_command(&cmd, &server_url, &device_token_owned, &device_secret_owned).await;
                                 
                                 // Send result back
                                 let result_msg = match result {
@@ -321,11 +335,11 @@ fn get_command_id(cmd: &ServerCommand) -> String {
     }
 }
 
-async fn handle_command(cmd: &ServerCommand, server_url: &str, device_token: &str, auth_token: Option<&str>) -> Result<String> {
+async fn handle_command(cmd: &ServerCommand, server_url: &str, device_token: &str, device_secret: &str) -> Result<String> {
     match cmd {
         ServerCommand::PullConfig { users, .. } => {
             println!("{}", "Received pull_config command".cyan());
-            handle_pull_config(server_url, device_token, users.as_deref(), auth_token).await
+            handle_pull_config(server_url, device_token, users.as_deref(), device_secret).await
         }
         ServerCommand::Rebuild { users, .. } => {
             println!("{}", "Received rebuild command".cyan());
@@ -341,7 +355,7 @@ async fn handle_pull_config(
     server_url: &str,
     device_token: &str,
     users: Option<&[String]>,
-    auth_token: Option<&str>,
+    device_secret: &str,
 ) -> Result<String> {
     println!("  {} configs from server...", "Pulling".blue());
 
@@ -349,11 +363,12 @@ async fn handle_pull_config(
     let server_url = server_url.to_string();
     let device_token = device_token.to_string();
     let users = users.map(|u| u.to_vec());
-    let auth_token = auth_token.map(|s| s.to_string());
+    let device_secret = device_secret.to_string();
 
     // Run blocking API call in a separate thread
     let result = tokio::task::spawn_blocking(move || {
-        let client = ApiClient::new(&server_url, auth_token.as_deref());
+        // Use device secret for authentication (not user auth token)
+        let client = ApiClient::new(&server_url, Some(&device_secret));
         
         // Use the existing pull logic
         let user_filter = users.as_ref().and_then(|u| u.first().map(|s| s.as_str()));
