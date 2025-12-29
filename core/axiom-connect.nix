@@ -12,12 +12,6 @@ in
       default = true;
       description = "Enable the axiom-connect agent service";
     };
-
-    serverUrl = lib.mkOption {
-      type = lib.types.str;
-      default = "https://curator.wonderinstruments.com";
-      description = "URL of the Curator server";
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -25,14 +19,6 @@ in
     systemd.tmpfiles.rules = [
       "d /etc/axiom-connect 0755 root root -"
     ];
-
-    # Create initial config file if server URL is set
-    environment.etc."axiom-connect/config.toml" = lib.mkIf (cfg.serverUrl != "") {
-      text = ''
-        server_url = "${cfg.serverUrl}"
-      '';
-      mode = "0644";
-    };
 
     # Install axiom-connect system-wide
     environment.systemPackages = [ pkgs.axiom-connect ];
@@ -66,7 +52,9 @@ in
         SyslogIdentifier = "axiom-connect";
       };
 
-      # Wait for device to be registered before starting
+      # Configuration is managed by axiom-connect CLI:
+      #   sudo axiom-connect auth login
+      #   sudo axiom-connect device register
       # The service will wait internally if no device token is configured
     };
   };
