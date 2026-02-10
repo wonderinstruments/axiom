@@ -402,47 +402,7 @@ let
     };
 
     # TUI Applications
-    tttui = {
-      package = pkgs.stdenv.mkDerivation rec {
-        pname = "tttui";
-        version = "unstable-2024-01-01";
-
-        src = pkgs.fetchFromGitHub {
-          owner = "reidoboss";
-          repo = "tttui";
-          rev = "main";
-          sha256 = "sha256-pCN5xBsKfva13nJk/1EDB+uK4qJWwXGogDiSFrkPd4Y=";
-        };
-
-        buildInputs = [ pkgs.python3 ];
-
-        installPhase = ''
-          mkdir -p $out/bin $out/lib
-          cp -r tttui $out/lib/
-          cp bin/tttui $out/bin/tttui
-          chmod +x $out/bin/tttui
-
-          # Fix the PYTHONPATH in the wrapper script
-          substituteInPlace $out/bin/tttui \
-            --replace 'PROJECT_ROOT=$(dirname "$SCRIPT_DIR")' "PROJECT_ROOT=$out/lib" \
-            --replace '"$PYTHON_CMD"' '${pkgs.python3}/bin/python3'
-        '';
-
-        meta = with pkgs.lib; {
-          description = "Typing test terminal user interface";
-          homepage = "https://github.com/reidoboss/tttui";
-          license = licenses.mit;
-          platforms = platforms.linux;
-        };
-      };
-      exec = "tttui";
-      icon = "utilities-terminal";
-      comment = "Test your typing speed";
-      categories = [
-        "Game"
-      ];
-      isTui = true;
-    };
+    
     gittype = {
       # No package specified: we only create desktop entries and do not
       # add anything to home.packages. Assumes gittype is available on PATH
