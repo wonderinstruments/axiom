@@ -10,7 +10,7 @@
       flake = false;
     };
     stylix = {
-      url = "github:nix-community/stylix/release-25.11";
+      url = "github:nix-community/stylix";  # main branch - release-25.11 has bugs
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixvim = {
