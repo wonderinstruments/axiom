@@ -174,8 +174,7 @@
             ];
           }
           ./configuration.nix
-          # Note: stylix is configured at home-manager level, not NixOS level
-          # See modules/stylix.nix - using stylix.homeModules.stylix in sharedModules
+          stylix.nixosModules.stylix
           guideModule
           home-manager.nixosModules.home-manager
           {
