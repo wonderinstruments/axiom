@@ -122,6 +122,7 @@ in
       '';
     }
     // lib.mkIf (!cfg.configureByConfigFile) {
+      stylix.targets.nixvim.enable = false; # incompatible with current nixvim version
       programs.nixvim = {
         enable = true;
         opts = {
