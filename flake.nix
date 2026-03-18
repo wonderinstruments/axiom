@@ -170,6 +170,11 @@
                 axiom-rebuild = axiom-rebuild;
                 axiom-connect = axiom-connect;
                 ck = ck-pkg;
+                # Use unstable llama-cpp for qwen35 model support
+                llama-cpp = (import nixpkgs-unstable {
+                  system = "x86_64-linux";
+                  config.allowUnfree = true;
+                }).llama-cpp;
               })
             ];
           }
