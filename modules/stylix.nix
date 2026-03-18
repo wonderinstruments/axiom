@@ -49,6 +49,12 @@ in
       targets.firefox.enable = false;
       targets.kde.enable = false;
 
+      # Placeholder image required by stylix (actual wallpaper set by fractal-wallpaper module)
+      image = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/NixOS/nixos-artwork/master/wallpapers/nix-wallpaper-simple-dark-gray.png";
+        sha256 = "sha256-PK1YzLenPE8gdUpTdWFxS8JAEGdIoKmr0kCZrviMB4A=";
+      };
+
       base16Scheme = "${pkgs.base16-schemes}/share/themes/${cfg.colors}.yaml";
 
       fonts = {
