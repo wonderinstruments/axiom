@@ -47,6 +47,7 @@ in
     stylix = {
       enable = true;
       targets.firefox.enable = false;
+      targets.kde.enable = false;
 
       base16Scheme = "${pkgs.base16-schemes}/share/themes/${cfg.colors}.yaml";
 
