@@ -175,6 +175,11 @@
                   system = "x86_64-linux";
                   config.allowUnfree = true;
                 }).llama-cpp;
+                # Use unstable claude-code for latest version
+                claude-code = (import nixpkgs-unstable {
+                  system = "x86_64-linux";
+                  config.allowUnfree = true;
+                }).claude-code;
               })
             ];
           }
