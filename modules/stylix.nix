@@ -19,6 +19,8 @@ in
         "spaceduck"
         "woodland"
         "sandcastle"
+        "caroline"
+        "ascendancy"
         "selenized-dark"
         "tokyo-night-storm"
         "zenbones"
