@@ -10,9 +10,9 @@ let
 
   # Download model using fetchurl (streams to disk, doesn't load into RAM)
   qwenModel = pkgs.fetchurl {
-    url = "https://huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF/resolve/main/Qwen3-Coder-30B-A3B-Instruct-Q8_0.gguf";
-    hash = "sha256-T/HP9geAQDe/bSFoJJxXC6pOFiEpKxWcDgZZHg18MGY=";
-    name = "Qwen3-Coder-30B-A3B-Instruct-Q8_0.gguf";
+    url = "https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/main/Qwen3.5-0.8B-Q8_0.gguf";
+    hash = "sha256-CtiF/9S7Ai/E8NM6Mwj6EI74YTFZ07OmfiOrygVremw=";
+    name = "Qwen3.5-0.8B-Q8_0.gguf";
   };
 
   # Configuration file generator
@@ -89,7 +89,7 @@ in
       modelPath = mkOption {
         type = types.str;
         default = "${qwenModel}";
-        defaultText = "Qwen3-Coder-30B model fetched via Nix";
+        defaultText = "Qwen3.5-0.8B model fetched via Nix";
         description = "Path to the GGUF model file (defaults to bundled model)";
       };
 
