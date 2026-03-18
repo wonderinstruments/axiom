@@ -10,9 +10,9 @@ let
 
   # Download model using fetchurl (streams to disk, doesn't load into RAM)
   qwenModel = pkgs.fetchurl {
-    url = "https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/main/Qwen3.5-0.8B-Q8_0.gguf";
-    hash = "sha256-CtiF/9S7Ai/E8NM6Mwj6EI74YTFZ07OmfiOrygVremw=";
-    name = "Qwen3.5-0.8B-Q8_0.gguf";
+    url = "https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/main/Qwen3.5-0.8B-Q4_K_M.gguf";
+    hash = "sha256-vSWHguNff0WPis7RrcBT5ukuibxzW6O+idOKBhIdxRc=";
+    name = "Qwen3.5-0.8B-Q4_K_M.gguf";
   };
 
   # Configuration file generator
