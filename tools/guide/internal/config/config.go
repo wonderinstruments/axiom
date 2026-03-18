@@ -47,7 +47,7 @@ func defaults() Config {
 		Llama: Llama{
 			Threads:     0, // 0 means auto-detect
 			CtxSize:     4096,
-			Temperature: 0.7,
+			Temperature: 0.8,
 			Batch:       512,
 		},
 	}
