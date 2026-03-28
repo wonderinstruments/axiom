@@ -401,8 +401,18 @@ let
       ];
     };
 
+    brightworker = {
+      # No package - built from ~/brightworker/brightworker
+      exec = "${config.home.homeDirectory}/brightworker/brightworker/target/release/glints-tauri";
+      icon = "brightworker";
+      comment = "Build and run declarative apps with SQL, HTML, and Mustache templates";
+      categories = [
+        "Development"
+      ];
+    };
+
     # TUI Applications
-    
+
     gittype = {
       # No package specified: we only create desktop entries and do not
       # add anything to home.packages. Assumes gittype is available on PATH
