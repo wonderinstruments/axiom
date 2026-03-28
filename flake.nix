@@ -21,7 +21,7 @@
       url = "github:unhappychoice/gittype";
     };
     brightworker = {
-      url = "github:brightworks/brightworker-release/v0.0.3";
+      url = "github:brightworks/brightworker-release/v0.0.4";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
