@@ -20,6 +20,10 @@
     gittype = {
       url = "github:unhappychoice/gittype";
     };
+    brightworker = {
+      url = "github:brightworks/brightworker-release/v0.0.1";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =
@@ -32,6 +36,7 @@
       stylix,
       nixvim,
       gittype,
+      brightworker,
       ...
     }:
     let
@@ -192,7 +197,7 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = {
-              inherit kickstart gittype;
+              inherit kickstart gittype brightworker;
               launcher = launcher;
               axiom-connect = axiom-connect;
               pkgs-unstable = import nixpkgs-unstable {

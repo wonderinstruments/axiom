@@ -3,6 +3,7 @@
   lib,
   pkgs,
   pkgs-unstable,
+  brightworker,
   ...
 }:
 
@@ -402,8 +403,8 @@ let
     };
 
     brightworker = {
-      # No package - built from ~/brightworker/brightworker
-      exec = "${config.home.homeDirectory}/brightworker/brightworker/target/release/glints-tauri";
+      package = brightworker.packages.x86_64-linux.default;
+      exec = "brightworker";
       icon = "brightworker";
       comment = "Build and run declarative apps with SQL, HTML, and Mustache templates";
       categories = [
