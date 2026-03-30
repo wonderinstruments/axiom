@@ -76,16 +76,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1774733122,
-        "narHash": "sha256-3xBZmMyAIPLsbbCX8xS5cy/+2vZ/FLZY4NcOROmdZdM=",
+        "lastModified": 1774872524,
+        "narHash": "sha256-uEDbuZM+jvT/VX4lH8Ed1X0xw73y4pkgsdiYEOdtrdQ=",
         "owner": "brightworks",
         "repo": "brightworker-release",
-        "rev": "7b1d807c5c40f705052a745eea53214833215a27",
+        "rev": "9a5dd5bd9a68b365985c6c3536de99ec908c80ae",
         "type": "github"
       },
       "original": {
         "owner": "brightworks",
-        "ref": "v0.0.5",
+        "ref": "v0.0.6",
         "repo": "brightworker-release",
         "type": "github"
       }
