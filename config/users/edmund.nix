@@ -25,7 +25,6 @@
   axiom.clipboardMonitor.enable = true;
   axiom.docs.enable = true;
   axiom.fileCommands.enable = true;
-  axiom.musopen.enable = true;
   axiom.gittype.enable = true;
   axiom.keybindings.enable = true;
   axiom.keybindings.newTerminal = "Mod4+Return";

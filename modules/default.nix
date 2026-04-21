@@ -29,7 +29,6 @@
   ./file-commands.nix
   ./xplr.nix
   ./navi.nix
-  ./musopen.nix
   ./gittype.nix
   ./axiom-config.nix
   ./axiom-connect.nix
